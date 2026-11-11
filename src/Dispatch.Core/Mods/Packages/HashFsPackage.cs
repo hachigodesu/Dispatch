@@ -103,18 +103,17 @@ internal sealed class HashFsPackage : IModPackage
 
     public byte[]? TryReadFile(string path)
     {
-        if (!_entries.TryGetValue(HashPath(path), out var list))
+        if (!TryGetEntries(path, out var list) || !list.Any(e => !e.IsDirectory))
         {
             return null;
         }
 
-        var entry = list.FirstOrDefault(e => !e.IsDirectory);
-        return entry.Hash == 0 && entry.Size == 0 && entry.Offset == 0 ? null : ReadEntry(entry);
+        return ReadEntry(list.First(e => !e.IsDirectory));
     }
 
     public IReadOnlyList<string>? ListDirectory(string path)
     {
-        if (!_entries.TryGetValue(HashPath(path), out var list) || !list.Any(e => e.IsDirectory))
+        if (!TryGetEntries(path, out var list) || !list.Any(e => e.IsDirectory))
         {
             return null;
         }
@@ -135,6 +134,20 @@ internal sealed class HashFsPackage : IModPackage
     }
 
     public void Dispose() => _stream.Dispose();
+
+    /// <summary>
+    /// Looks a path up by hash. How a non-zero salt applies is unconfirmed (every real archive seen so far has
+    /// salt 0), so a salted miss falls back to the unsalted hash.
+    /// </summary>
+    private bool TryGetEntries(string path, out List<Entry> list)
+    {
+        if (_entries.TryGetValue(HashPath(path), out list!))
+        {
+            return true;
+        }
+
+        return _salt != 0 && _entries.TryGetValue(CityHash.Hash64(ModPackage.Normalize(path)), out list!);
+    }
 
     private byte[]? ReadEntry(Entry e)
     {

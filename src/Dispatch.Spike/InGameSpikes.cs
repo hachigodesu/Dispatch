@@ -31,6 +31,7 @@ internal static class InGameSpikes
                 "s4-duplicate" => Duplicate(Arg(args, 0), Arg(args, 1)),
                 "restore" => Restore(Arg(args, 0)),
                 "roundtrip" => RoundTrip(args.Length > 0 ? args[0] : "spike-output"),
+                "decode" => DecodeFile(Arg(args, 0)),
                 _ => throw new ArgumentException($"Unknown command {command}"),
             };
         }
@@ -76,6 +77,28 @@ internal static class InGameSpikes
         }
 
         Console.WriteLine("Compare with the in-game Mod Manager list, top to bottom.");
+        return 0;
+    }
+
+    /// <summary>Read-only: decode any profile.sii (e.g. a copy of a cloud profile) and print its load order.</summary>
+    private static int DecodeFile(string path)
+    {
+        var result = SiiFileCodec.Decode(File.ReadAllBytes(path));
+        File.WriteAllText(path + ".decoded.sii", result.Text);
+        if (!result.Text.Contains("user_profile :", StringComparison.Ordinal))
+        {
+            Console.WriteLine($"{Path.GetFileName(path)}: {string.Join(" > ", result.Layers)}, {result.Text.Length:N0} chars → {path}.decoded.sii");
+            return 0;
+        }
+
+        var mods = ProfileText.ReadActiveMods(result.Text);
+        Console.WriteLine($"{Path.GetFileName(path)}: {string.Join(" > ", result.Layers)}, " +
+                          $"profile_name '{ProfileText.ReadProfileName(result.Text)}', {mods.Count} active mods (file order):");
+        for (int i = 0; i < mods.Count; i++)
+        {
+            Console.WriteLine($"  [{i}] {mods[i].DisplayName}   ({mods[i].PackageId})");
+        }
+
         return 0;
     }
 

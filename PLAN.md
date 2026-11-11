@@ -210,11 +210,11 @@ logs\dispatch-<date>.log
 |---|---|
 | "Steam Cloud profiles possibly in `steam_profiles\`" | ✅ **Only the machine-local part** (`controls.sii`, `config_local.cfg`, gearbox layouts) is in `Documents\…\steam_profiles\<hex>\`. **`profile.sii`, `config.cfg` and `save\`** are in `Steam\userdata\<accountId>\227300\remote\profiles\<hex>\`, which Steam syncs. A cloud profile belongs to one Steam account, and **your PC has several accounts**. |
 | profile.sii is usually encrypted | ✅ All 7 local profiles are `ScsC`, **even with `g_save_format "0"`**. |
-| "Find out whether the game accepts plain text back" | 🌐 Yes, according to several independent tools. 🌐 **Re-encrypting does not work**: the game checks the ScsC HMAC (its key is unknown), and on failure it **silently falls back to `profile.bak.sii`**, discarding the edit. To be confirmed in spike S2. |
+| "Find out whether the game accepts plain text back" | 🌐 Yes, according to several independent tools. 🌐 **Re-encrypting does not work**: the game checks the ScsC HMAC (its key is unknown), and on failure it **silently falls back to `profile.bak.sii`**, discarding the edit. S2 confirmed that plain text works. |
 | `g_save_format` | 🌐 Official values: 0 = default, 1 = binary, 2 = text, 3 = both (debug). It affects saves. Dispatch doesn't need to change it and never does. |
 | Folder = "UTF-8 → lowercase hex"? | ✅ **UPPERCASE** hex of UTF-8 (`日本` → `E697A5E69CAC`). Accept either case when reading. |
 | Workshop identifier "different format" | ✅ `mod_workshop_package.` + Workshop ID as **16-digit uppercase hex**: 3284953293 → `mod_workshop_package.00000000C3CC68CD`. |
-| Load order: top = highest priority? | 🌐 In the game UI, yes. 🟡 **S1 evidence: `active_mods[0]` is the *bottom*** (lowest priority) and the last index is the top: your ProMods profile stores DLC support at index 0 and Definition at index 7. Final in-game confirmation in S3. |
+| Load order: top = highest priority? | 🌐 In the game UI, yes. ✅ **S3 (in-game): `active_mods[0]` is the *bottom*** (lowest priority) and the last index is the top. Dispatch's UI index *i* maps to file index *N−1−i*. |
 | HashFS v2 since 1.50 | 🌐 Correct. The game still accepts ZIP and folders. ✅ Your mods: 184 ZIP, 28 HashFS v1, 10 HashFS v2, and **6 in an unknown format** (`AEM!` ×5, `MZ` ×1). |
 | Game version from files or logs | ✅ **`eurotrucks2.exe` FileVersion = `1.62.2.1`**, which is the best source. |
 | — | ✅ The game makes its own versioned backups (`profiles(1.62.2.1s).bak`, listed in `backups.txt`). Dispatch shows them read-only as a recovery source. |
@@ -238,7 +238,7 @@ logs\dispatch-<date>.log
 2. ✅ `game.log.txt`: `[ufs] Loaded pack set version 1.62.2.1` (🌐 older builds: `init ver.1.48.1.6s`; strip the `s`). Fallback only; it may be stale.
 3. ✅ `buildid` in the ACF: change detection only.
 
-**`compatible_versions` matching** 🌐: a `*` is allowed only at the end. `"1.62.*"` matches 1.62.x and 1.62.x.y. Without `*`, the prefix must match exactly ❓ (checked in S8 against the game's own log verdicts). Workshop mods use `versions.sii`, not the manifest's `compatible_versions`.
+**`compatible_versions` matching** 🌐: a `*` is allowed only at the end. `"1.62.*"` matches 1.62.x and 1.62.x.y. Without `*`, the pattern must equal the version or be a whole-component prefix of it (`"1.62"` matches 1.62.2.1). ⚠ Unverified, because no real mod uses this form. Accepted fallback: Dispatch's verdict is cross-checked against the game's own `Incompatible mod` log lines, and a disagreement is shown. Your 225 readable mods: 225/225 agree (S8). Workshop mods use `versions.sii`, not the manifest's `compatible_versions`.
 
 **Owned DLC** ✅ (S8): list `dlc_*.scs` in the install directory (`dlc_north.scs` → `dlc_north`; 106 on your PC). Steam only downloads owned DLC. Mods declare these package names in `dlc_dependencies[]`.
 
@@ -251,9 +251,9 @@ Every `.scs`, `.zip` or folder **directly** in `mod\` is one mod. Subfolders are
 | `PK 03 04` | ZIP | Tolerant: find the EOCD, read the central directory (ZIP64), use the central-directory sizes and offsets, ignore broken local headers. |
 | `SCS#` + `01 00` | HashFS v1 🌐 | Header 24 B (magic, ver, salt u16, `"CITY"`, count u32, table offset u64). Entries 32 B (hash, offset, flags, crc, size, csize). Flags: dir, compressed (zlib), verify, encrypted. Locked files may give a fake table offset, so fall back to "table at end". Dir listing = text lines, `*` = subdir. |
 | `SCS#` + `02 00` | HashFS v2 🌐 (1.50+) | Header 49 B. Entry table and metadata table are each zlib-compressed. Entries 16 B (hash, meta index, meta count, flags). Metadata chunks (plain, directory, image/mip…). Sizes are 28-bit, offset = block × 16. Dir listing = count + length bytes + names, `/` = subdir. Textures (GDeflate) are skipped. |
-| `AEM!`, `MZ…`, other | **Opaque** ❓ | Listed by file name with an "unreadable package" badge. No manifest, icon or conflict data. Spike S9 investigates. |
+| `AEM!`, `MZ…`, other | **Opaque** ✅ (S9) | Deliberately protected; Dispatch does not decrypt them. Shown with the best available name (a profile's `active_mods` entry, else the file name), an "unreadable package" badge and the game's own log verdict. No manifest, icon or conflict data. |
 
-**Path lookup:** `CityHash64` (2011 variant, no seed) of the UTF-8 path, without a leading `/` (root = `""`). With a non-zero salt, the salt (decimal) is prepended ❓ (unconfirmed for v2, so check in S10). Some locked archives have no directory listings. That's fine for us, because we look up known paths (`manifest.sii`, icon, description) by hash.
+**Path lookup:** `CityHash64` (2011 variant, no seed) of the UTF-8 path, without a leading `/` (root = `""`). With a non-zero salt, the salt (decimal) is prepended. ⚠ Unverified: all 38 real archives on your PC have salt 0. Accepted fallback: a salted miss retries the unsalted hash. Some locked archives have no directory listings. That's fine for us, because we look up known paths (`manifest.sii`, icon, description) by hash.
 
 ### 5.4 manifest.sii 🌐 ✅
 ```
@@ -306,30 +306,32 @@ mod_package : .package_name
   - `BSII` = binary v1–3, structure blocks and data blocks, decoded to text using the SII_Decrypt format spec.
   - `3nK` = obfuscated (rare here; supported for completeness).
 - ✅ (S1) On your PC **every profile.sii is ScsC → text** (not BSII); `game.sii` saves are ScsC → BSII v3. The decoder handles both: 8/8 profiles and 164/164 save files.
-- **Writing: plain-text `SiiNunit`**, the way the working tools do it (to be confirmed in S2 ❓). **Never ScsC.** The game re-checks the format on every read, because it may re-encrypt the file when it next saves.
+- **Writing: plain-text `SiiNunit`** ✅ (S2, in-game): the game loaded Dispatch's plain-text profile.sii and showed the new order, with no warning and no fallback to the stale `profile.bak.sii`. On its next save it re-encrypted the file and kept our order. **Never ScsC.** The game re-checks the format on every read, because it may re-encrypt the file when it next saves.
 - Fields 🌐: `user_profile : _nameless.… { face, brand, map_path, logo, company_name, male, cached_* …, version, online_user_name, online_password, profile_name, creation_time, save_time, active_mods … }`.
 - `active_mods: N` then `active_mods[i]: "<PackageId>|<Display Name>"`. Split on the **first** `|` only. Escape `\` and `"`. Zero mods = `active_mods: 0`.
-- **Index ↔ priority 🟡** S1 evidence: index 0 = bottom (see §5.0). Spike S3 confirms in-game. Dispatch's UI always shows top = highest priority, the same as the game's mod manager, and the codec maps that to file order.
-- **`profile.bak.sii`**: the game's fallback copy. Dispatch backs it up but leaves it unchanged. The S2 spike checks that a stale `.bak` causes no problems.
+- **Index ↔ priority ✅** (S3): index 0 = bottom of the in-game list, the last index = top (see §5.0). Dispatch's UI always shows top = highest priority, the same as the game's mod manager, and the codec maps that to file order.
+- **`profile.bak.sii`**: the game's fallback copy. Dispatch backs it up but leaves it unchanged. ✅ (S2) A stale `.bak` caused no problems, and the game refreshes it from the live profile at world load.
 
 ### 5.8 Profile names and folders
 - Folder = UPPERCASE hex of the name's UTF-8 bytes ✅, and it must match `profile_name` 🌐.
 - Validation:
   - not empty or whitespace-only, no leading or trailing spaces;
-  - **≤ 20 characters** 🌐 (the limit Truck Tools uses; the real in-game limit is checked in S7 ❓);
-  - only characters the game's name field accepts (S7; CJK names definitely work ✅);
+  - **≤ 20 characters** ✅ (S7: the game's field stops at 20);
+  - no emoji or other non-BMP characters ✅ (S7: rejected by the game); no control characters. CJK, `.`, `-` and even `/ \ : * ? " < > |` are accepted by the game ✅ (the folder is hex, so they're safe);
   - unique by decoded name and by folder name, across local *and* cloud profiles;
   - every copied path must be ≤ 260 characters (CJK characters take 6 hex characters each).
-- Duplicate 🌐: copy the folder, then change **only `profile_name`** (Truck Tools does exactly this). Dispatch also resets `creation_time` to now ❓ (checked in S4). `online_user_name`/`online_password` (World of Trucks link): the duplicate dialog has a **"Keep World of Trucks link"** checkbox, checked by default. Unticked, both fields are cleared in the copy.
+- Duplicate 🌐: copy the folder, then change **only `profile_name`** (Truck Tools does exactly this). ✅ (S4, in-game) That's all that's needed. There's no unique ID, and the copied `creation_time` works, so Dispatch keeps it as-is. `online_user_name`/`online_password` (World of Trucks link): the duplicate dialog has a **"Keep World of Trucks link"** checkbox, checked by default. Unticked, both fields are cleared in the copy.
 
 ### 5.9 Profile folder contents
 Local ✅: `profile.sii`, `profile.bak.sii`, `config.cfg`, `config_local.cfg`, `controls.sii`, `gearbox_layout_*.sii`, `tutorial_hint_data.sii`, `academy\`, `album\`, `save\<slot>\` (`game.sii`, `info.sii`, previews; slots `1`, `autosave`, `autosave_drive_N`, …).
 - **Full copy** = everything.
 - **Fresh start** = everything except `save\` (and `album\` optional).
-- 🌐 Saves don't reference the profile name; `info.sii` holds the save's own name and mod dependencies (checked in S4).
+- ✅ (S4) Saves don't reference the profile name or folder; `info.sii` holds the save's own name and mod dependencies.
 
 ### 5.10 Steam Cloud policy (MVP)
 🌐 Community consensus is to never edit `userdata\…\remote` directly, because Steam can overwrite or remove the changes. The safe route the game supports is: turn off "Use Steam Cloud" for that profile in-game (which moves it to `profiles\`), edit it, then turn it back on.
+
+✅ (S2 spike) Unticking "Use Steam Cloud" in-game moves the **whole** profile into `profiles\` and removes the `steam_profiles\` part and Steam's `remote` copy, so the guided in-game step really is a clean move.
 
 **MVP behaviour:**
 - Cloud profiles are **read-only**, and their load order can be viewed.
@@ -401,12 +403,12 @@ All spikes work on **copies** in a scratch folder, or on a throwaway profile **`
 | # | Risk / unknown | Spike | Pass → / Fail → |
 |---|---|---|---|
 | **S1** | ScsC/BSII decoding | Decode copies of all 8 profile.sii files. Compare with SII_Decrypt's output, used as an oracle | Identical → done. Diff → fix decoder |
-| **S2** | **Plain-text profile.sii accepted?** (#1 risk) | On `DispatchTest`: change `active_mods` in the decoded text, write plain text, launch and check the Mod Manager. Exit, inspect the magic and `.bak` afterwards | Accepted → plain text is the write format. Rejected → try unencrypted BSII (encoder = larger task, re-plan M2) |
-| **S3** | UI order ↔ `active_mods[i]` | Order A, B, C top→bottom in-game, decode, then reverse and decode again | Rule written into the codec + tests |
-| **S4** | Duplicate/rename: required field changes | Copy `DispatchTest` to a new hex folder, set `profile_name`. Do both appear, both load saves, and neither affects the other? Diff the decoded fields. Search decoded saves for the name | List of fields to change (expected: only `profile_name`) |
+| **S2** ✅ | **Plain-text profile.sii accepted?** (#1 risk) | On `DispatchTest`: change `active_mods` in the decoded text, write plain text, launch and check the Mod Manager. Exit, inspect the magic and `.bak` afterwards | Accepted → plain text is the write format. Rejected → try unencrypted BSII (encoder = larger task, re-plan M2) |
+| **S3** ✅ | UI order ↔ `active_mods[i]` | Order A, B, C top→bottom in-game, decode, then reverse and decode again | Rule written into the codec + tests |
+| **S4** ✅ | Duplicate/rename: required field changes | Copy `DispatchTest` to a new hex folder, set `profile_name`. Do both appear, both load saves, and neither affects the other? Diff the decoded fields. Search decoded saves for the name | List of fields to change (expected: only `profile_name`) |
 | **S5** | `g_save_format` | Documentation only. Dispatch reads it for diagnostics, never sets it | — |
 | **S6** | Steam Cloud write safety | Throwaway cloud profile: edit with Steam closed, then start Steam and the game. Conflict dialog, or the edit lost? | Safe → v1 feature. Unsafe → stay with the §5.10 policy |
-| **S7** | Name rules | Try 20/21/40 characters, CJK, emoji, `/\:*?"<>\|` in the in-game dialog | Validator rules |
+| **S7** ✅ | Name rules | Try 20/21/40 characters, CJK, emoji, `/\:*?"<>\|` in the in-game dialog | Validator rules |
 | **S8** | Readers on real data + version/DLC matching | Scan your 228 + 3 mods. Report format, manifest success, failures and timings. Compare Dispatch's compatibility verdicts with the `Incompatible mod` lines in `game.log.txt` | All non-opaque mods parsed. Verdicts agree. Cold scan < 15 s, cached < 1 s |
 | **S9** | `AEM!` / `MZ` packages (you chose "try harder") | **Started in M0.** Findings: the game reads them, but they are deliberately protected (encrypted-looking data, thousands of fake ZIP signatures, forged ZIP directories). **Decrypting them would circumvent the authors' protection, so Dispatch won't.** Remaining non-circumventing work (time-boxed): (a) take the display name from any profile's `active_mods` entry (`…\|Display Name`); (b) use the game's own verdicts in `game.log.txt` (`Incompatible mod - <id>`); (c) check whether the game caches mod info or icons in `Documents\…\cache` or `mods_info.sii`. | Opaque, but with the best available name and the game's compatibility verdict. Never write to these files |
 | **S10** | HashFS v2 details (salt, metadata) | Read the 10 v2 mods. Compare file lists with Extractor's output (oracle) | Lists match |
@@ -494,7 +496,7 @@ Dispatch\
 | 8 | Spike help | **You'll run the in-game checks**: a local `DispatchTest` profile, plus a throwaway Steam Cloud profile for S6. I'll provide numbered checklists. |
 | 9 | Opaque mods (`AEM!`, `MZ`) | **Try harder in the MVP**: time-boxed investigation (S9), with best-available names as the fallback. |
 
-**Still open (no answer needed yet):** the questions marked ❓ in §5, all answered by the M0 spikes.
+**M0 status:** every ❓ in §5 is resolved or has an accepted fallback; see `docs/spikes/README.md`. Still optional: S6 (direct Steam Cloud writes; the MVP keeps cloud profiles read-only) and the oracle comparisons with SII_Decrypt and Extractor.
 
 ---
 

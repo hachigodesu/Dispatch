@@ -23,8 +23,8 @@ public sealed record ActiveModEntry(string PackageId, string DisplayName)
 /// <c>user_profile</c> unit are touched; every other byte (comments, line endings, unknown fields) stays as-is.
 /// </summary>
 /// <remarks>
-/// File order: <c>active_mods[0]</c> is the BOTTOM of the in-game list (lowest priority) — strong evidence from
-/// spike S1, final confirmation in S3. These methods work in file order; UI order is the reverse.
+/// File order: <c>active_mods[0]</c> is the BOTTOM of the in-game list (lowest priority); confirmed in-game in
+/// spike S3. These methods work in file order; UI order (top = highest priority) is the reverse.
 /// </remarks>
 public static partial class ProfileText
 {

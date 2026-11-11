@@ -36,9 +36,12 @@ recommended order (as I understand it; not re-checked against their site) puts t
 **top** and DLC support at the **bottom**. The Middle-East add-on, which must sit above ProMods Europe, also has
 *higher* indices (8–9).
 
-**Conclusion (strong evidence):** `active_mods[0]` = bottom of the in-game list (lowest priority),
-and the last index = top (highest priority). Dispatch's codec maps UI index *i* to file index *N−1−i*.
-This still gets a final confirmation in S3 (in-game).
+**Conclusion:** `active_mods[0]` = bottom of the in-game list (lowest priority), and the last index = top
+(highest priority). Dispatch's codec maps UI index *i* to file index *N−1−i*.
+
+**S3 in-game confirmation (2026-11-12):** in the new test profile `DispatchTest`, three mods were arranged
+top → bottom as High_Detail_Vegetation, Man TGX blinkers, Iveco Sway sound. The saved file had
+`[0]` Iveco (bottom), `[1]` Man TGX, `[2]` High_Detail_Vegetation (top). ✅ Confirmed.
 
 ## Pending
 - Oracle comparison with TheLazyTomcat's SII_Decrypt. It needs downloading SII_Decrypt.exe (MPL-2.0) and running it locally on
