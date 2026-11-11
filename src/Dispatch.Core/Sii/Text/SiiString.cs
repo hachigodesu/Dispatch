@@ -39,6 +39,13 @@ public static class SiiString
         return sb.Append('"').ToString();
     }
 
+    /// <summary>
+    /// Formats a string value the way the game does: bare when it is a simple word (<c>profile_name: Promods</c>),
+    /// quoted otherwise (<c>profile_name: "Tuned EU"</c>). Observed in real profiles (spike S1).
+    /// </summary>
+    public static string Format(string value) =>
+        value.Length > 0 && value.All(c => char.IsAsciiLetterOrDigit(c) || c == '_') ? value : Quote(value);
+
     /// <summary>Reverses <see cref="Quote"/>. Accepts quoted or bare input; tolerates raw UTF-8.</summary>
     public static string Unquote(string text)
     {

@@ -296,7 +296,7 @@ mod_package : .package_name
   - vectors `(x, y, z)`, quaternions `(w; x, y, z)`
   - pointers and `null`
 - Unit names: `.name`, `_nameless.27a.c7a9.1bf8`.
-- ✅ (S1) **How the game writes text:** CRLF line endings; `class : id {`; attributes indented one space; **non-ASCII as UTF-8 byte escapes** (`"\xe6\x97\xa5\xe6\x9c\xac"` = 日本). Dispatch writes the same way.
+- ✅ (S1) **How the game writes text:** CRLF line endings; `class : id {`; attributes indented one space; **non-ASCII as UTF-8 byte escapes** (`"\xe6\x97\xa5\xe6\x9c\xac"` = 日本). Simple word values are written **bare** (`profile_name: Promods`), anything else quoted (`profile_name: "Tuned EU"`). Dispatch writes the same way; re-writing `active_mods` and `profile_name` is byte-identical on all 8 real profiles.
 - **The document model is lossless.** Unchanged bytes, line endings and comments are written back exactly. Edits are surgical, touching only `active_mods` and `profile_name`.
 
 ### 5.7 profile.sii

@@ -7,20 +7,22 @@ using Microsoft.Win32;
 namespace Dispatch.Spike;
 
 /// <summary>
-/// Milestone 0 spike tool. Reads the real game folders READ-ONLY: every file is first copied into
-/// the output folder (default: ./spike-output, git-ignored) and only the copy is processed.
+/// Milestone 0 spike tool. The S1/S8 commands read the real game folders READ-ONLY (copies go to
+/// ./spike-output, git-ignored). Only the in-game spike commands write, and only to "DispatchTest*" profiles.
 /// </summary>
 internal static partial class Program
 {
     private static int Main(string[] args)
     {
         string command = args.Length > 0 ? args[0] : "help";
-        string outDir = Path.GetFullPath(args.Length > 1 ? args[1] : "spike-output");
+        string OutDir() => Path.GetFullPath(args.Length > 1 ? args[1] : "spike-output");
         return command switch
         {
-            "profiles" => ProfilesSpike.Run(outDir),
-            "mods" => ModsSpike.Run(outDir),
+            "profiles" => ProfilesSpike.Run(OutDir()),
+            "mods" => ModsSpike.Run(OutDir()),
             "probe" => ProbeSpike.Run(args[1], args.Skip(2)),
+            "s3-read" or "s2-write" or "s2-check" or "s4-duplicate" or "restore" or "roundtrip"
+                => InGameSpikes.Run(command, args[1..]),
             _ => Help(),
         };
     }
@@ -28,9 +30,18 @@ internal static partial class Program
     private static int Help()
     {
         Console.WriteLine("""
-            Dispatch.Spike <command> [outDir]
-              profiles   S1: copy every profile.sii and decode the copies to text
-              mods       S8: scan mod packages (read-only) and report formats/manifests
+            Dispatch.Spike <command> [args]
+              profiles [outDir]           S1: copy every profile.sii and decode the copies (read-only)
+              mods [outDir]               S8: scan mod packages (read-only)
+              probe <archive> [path...]   HashFS diagnostics (read-only)
+              roundtrip [outDir]          re-encode decoded profile copies, expect byte-identical (read-only)
+
+            In-game spikes — only for local profiles named DispatchTest…; refuse while the game runs:
+              s3-read <name>              print active_mods in file order (read-only)
+              s2-write <name>             back up, then write plain-text profile.sii with the order reversed
+              s2-check <name>             show format/order of profile.sii and profile.bak.sii (read-only)
+              s4-duplicate <name> <new>   copy the profile to a new name (never overwrites)
+              restore <name>              restore the latest Dispatch backup of the profile
             """);
         return 1;
     }
