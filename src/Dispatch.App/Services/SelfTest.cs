@@ -68,6 +68,7 @@ internal static class SelfTest
             byte[] original = File.ReadAllBytes(sii);
             var before = p.LoadOrder.Select(l => l.PackageId).ToList();
             Step($"before (top-first): {string.Join(" | ", before)}; file {SiiFormatDetector.Detect(original)}");
+            Step($"mod types offered: {string.Join(", ", vm.Mods.TypeOptions)}; no separate Maps entry: {!vm.Mods.TypeOptions.Contains("Maps")}");
             if (before.Count < 2)
             {
                 throw new InvalidOperationException("Needs at least 2 active mods.");
@@ -93,7 +94,7 @@ internal static class SelfTest
             bool bulk = await BulkAndDeleteAsync(vm, dialogs, profileName, Step);
             m4 = m4 && bulk;
             Step($"dialog errors: {(dialogs.Errors.Count == 0 ? "none" : string.Join(" / ", dialogs.Errors))}");
-            ok = saved && restored && m3 && m4 && dialogs.Errors.Count == 0;
+            ok = saved && restored && m3 && m4 && !vm.Mods.TypeOptions.Contains("Maps") && dialogs.Errors.Count == 0;
         }
         catch (Exception ex)
         {

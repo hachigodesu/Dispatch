@@ -5,12 +5,8 @@ namespace Dispatch.Core.Mods;
 /// </summary>
 public static class ModLinter
 {
-    /// <summary>Valid <c>category[]</c> values from the SCS modding wiki.</summary>
-    public static readonly IReadOnlySet<string> Categories = new HashSet<string>(StringComparer.Ordinal)
-    {
-        "truck", "trailer", "interior", "tuning_parts", "ai_traffic", "sound", "paint_job", "cargo_pack", "map",
-        "ui", "weather_setup", "physics", "graphics", "models", "movers", "walkers", "prefabs", "other",
-    };
+    /// <summary>Valid <c>category[]</c> values (see <see cref="ModCategories"/>).</summary>
+    public static IReadOnlySet<string> Categories => ModCategories.Valid;
 
     private static readonly Dictionary<string, string> CommonTypos = new(StringComparer.Ordinal)
     {
@@ -37,8 +33,9 @@ public static class ModLinter
 
         foreach (var c in m.Categories.Where(c => !Categories.Contains(c)))
         {
-            issues.Add(new ModIssue(IssueSeverity.Info,
-                c == "maps" ? "Category 'maps' isn't valid (the game expects 'map')." : $"Unknown category '{c}' (ignored by the game)."));
+            issues.Add(new ModIssue(IssueSeverity.Info, ModCategories.Canonical(c) is { } meant
+                ? $"Category '{c}' isn't valid (the game expects '{meant}'), so the game ignores it. Dispatch treats it as '{meant}'."
+                : $"Unknown category '{c}' (ignored by the game)."));
         }
 
         if (m.Categories.Count > 2)

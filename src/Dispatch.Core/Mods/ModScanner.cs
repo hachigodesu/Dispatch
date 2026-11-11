@@ -16,7 +16,7 @@ public sealed record ModScanResult(IReadOnlyList<ModInfo> Mods, TimeSpan Elapsed
 /// </summary>
 public sealed class ModScanner(string cacheDir)
 {
-    private const int CacheSchema = 1;
+    private const int CacheSchema = 2; // bump when ModInfo or lint messages change
     private static readonly string[] SubPackageExtensions = ["", ".zip", ".scs"];
     private static readonly JsonSerializerOptions Json = new() { WriteIndented = false };
 

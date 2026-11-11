@@ -49,10 +49,13 @@ public sealed partial class ModItemViewModel : ObservableObject
         ["models"] = "Models", ["movers"] = "Movers", ["walkers"] = "Walkers", ["prefabs"] = "Prefabs", ["other"] = "Other",
     };
 
-    /// <summary>The mod's types (manifest categories) as display names, e.g. ["Map"] or ["Sound", "Truck"].</summary>
+    /// <summary>
+    /// The mod's types (manifest categories) as display names, e.g. ["Map"] or ["Sound", "Truck"]. Common author
+    /// mistakes are matched to the real category first ("maps" → Map), so the type filter doesn't split them.
+    /// </summary>
     public IReadOnlyList<string> TypeLabels => _typeLabels ??= (Mod.Manifest?.Categories ?? [])
-        .Select(c => TypeNames.TryGetValue(c, out var name) ? name
-                     : c.Length == 0 ? c : char.ToUpperInvariant(c[0]) + c[1..].Replace('_', ' '))
+        .Select(c => ModCategories.Canonical(c) is { } key && TypeNames.TryGetValue(key, out var name) ? name
+                     : c.Trim().Length == 0 ? "" : char.ToUpperInvariant(c.Trim()[0]) + c.Trim()[1..].Replace('_', ' '))
         .Where(c => c.Length > 0).Distinct().ToList();
 
     private IReadOnlyList<string>? _typeLabels;
