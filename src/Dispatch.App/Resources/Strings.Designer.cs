@@ -281,4 +281,42 @@ public static class Strings
     public static string AboutDisclaimer => Get(nameof(AboutDisclaimer));
 
     public static string AboutSafety => Get(nameof(AboutSafety));
+
+    public static string DeleteProfile => Get(nameof(DeleteProfile));
+
+    public static string ConfirmDeleteProfileTitle => Get(nameof(ConfirmDeleteProfileTitle));
+
+    public static string ConfirmDeleteProfile => Get(nameof(ConfirmDeleteProfile));
+
+    public static string DeletedStatus => Get(nameof(DeletedStatus));
+
+    public static string RecycleBackup => Get(nameof(RecycleBackup));
+
+    public static string ConfirmRecycleTitle => Get(nameof(ConfirmRecycleTitle));
+
+    public static string ConfirmRecycle => Get(nameof(ConfirmRecycle));
+
+    public static string AddToProfile => Get(nameof(AddToProfile));
+
+    public static string RemoveFromProfile => Get(nameof(RemoveFromProfile));
+
+    public static string AddedToProfileStatus => Get(nameof(AddedToProfileStatus));
+
+    public static string AddedToUnsavedStatus => Get(nameof(AddedToUnsavedStatus));
+
+    public static string RemovedFromProfileStatus => Get(nameof(RemovedFromProfileStatus));
+
+    public static string RemovedFromUnsavedStatus => Get(nameof(RemovedFromUnsavedStatus));
+
+    public static string NothingToAdd => Get(nameof(NothingToAdd));
+
+    public static string SelectedCount => Get(nameof(SelectedCount));
+
+    public static string AllTypes => Get(nameof(AllTypes));
+
+    public static string NoType => Get(nameof(NoType));
+
+    public static string MultiSelectHint => Get(nameof(MultiSelectHint));
+
+    public static string NoEditableProfiles => Get(nameof(NoEditableProfiles));
 }

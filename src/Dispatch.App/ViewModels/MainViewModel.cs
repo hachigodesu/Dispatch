@@ -32,6 +32,7 @@ public sealed partial class MainViewModel : ObservableObject
         BackupService Backups() => new(paths.Backups, new BackupRetention(settings.BackupRetentionSmall, settings.BackupRetentionFull));
         Profiles = new ProfilesViewModel(dialogs, () => new SafeWriter(platform, Backups(), game.ProcessName), Backups,
                                          () => RefreshCommand.ExecuteAsync(null));
+        Mods = new ModsViewModel(Profiles);
 
         // Poll for the game process every 2 seconds (cheap) so the banner is always current.
         _gameWatch = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
@@ -43,7 +44,7 @@ public sealed partial class MainViewModel : ObservableObject
 
     public ProfilesViewModel Profiles { get; }
 
-    public ModsViewModel Mods { get; } = new();
+    public ModsViewModel Mods { get; }
 
     public SettingsViewModel Settings { get; }
 
@@ -91,6 +92,7 @@ public sealed partial class MainViewModel : ObservableObject
             Mods.Load(snapshot);
             Profiles.ConfigurePresets(Path.Combine(_paths.Root, "presets"), snapshot.Environment.Version?.ToString());
             Profiles.Load(snapshot, Mods.ById);
+            Mods.RefreshTargets();
             Settings.Load(snapshot.Environment);
 
             Problems.Clear();

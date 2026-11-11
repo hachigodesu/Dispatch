@@ -143,4 +143,27 @@ The profile's current files are backed up first, so you can undo this.</value></
   <data name="AboutLicence" xml:space="preserve"><value>Public domain (The Unlicense). Third-party libraries keep their own licences (see THIRD-PARTY-NOTICES.md).</value></data>
   <data name="AboutDisclaimer" xml:space="preserve"><value>Dispatch is not affiliated with or endorsed by SCS Software. Euro Truck Simulator 2 is a trademark of SCS Software.</value></data>
   <data name="AboutSafety" xml:space="preserve"><value>Dispatch backs up profile files before every change, never writes while the game is running, and never modifies Workshop content or the game's own backups.</value></data>
+  <data name="DeleteProfile" xml:space="preserve"><value>Delete…</value></data>
+  <data name="ConfirmDeleteProfileTitle" xml:space="preserve"><value>Delete profile</value></data>
+  <data name="ConfirmDeleteProfile" xml:space="preserve"><value>Delete the profile "{0}" ({1} mods, {2} saves)?
+
+It is moved out of the game into Dispatch's backups, so you can restore it later from Settings → Removed and renamed profiles.</value></data>
+  <data name="DeletedStatus" xml:space="preserve"><value>Deleted "{0}". You can restore it from Settings → Removed and renamed profiles.</value></data>
+  <data name="RecycleBackup" xml:space="preserve"><value>Move to Recycle Bin</value></data>
+  <data name="ConfirmRecycleTitle" xml:space="preserve"><value>Move backup to Recycle Bin</value></data>
+  <data name="ConfirmRecycle" xml:space="preserve"><value>Move the backup of "{0}" from {1} ({2}) to the Recycle Bin?
+
+You can still get it back from the Recycle Bin until you empty it.</value></data>
+  <data name="AddToProfile" xml:space="preserve"><value>Add to profile</value></data>
+  <data name="RemoveFromProfile" xml:space="preserve"><value>Remove from profile</value></data>
+  <data name="AddedToProfileStatus" xml:space="preserve"><value>Added {0} mod(s) to "{1}" (at the top). Backup taken first.</value></data>
+  <data name="AddedToUnsavedStatus" xml:space="preserve"><value>Added {0} mod(s) to "{1}" in the Profiles tab. They are unsaved: press Save there.</value></data>
+  <data name="RemovedFromProfileStatus" xml:space="preserve"><value>Removed {0} mod(s) from "{1}". Backup taken first.</value></data>
+  <data name="RemovedFromUnsavedStatus" xml:space="preserve"><value>Removed {0} mod(s) from "{1}" in the Profiles tab. They are unsaved: press Save there.</value></data>
+  <data name="NothingToAdd" xml:space="preserve"><value>All selected mods are already active in "{0}".</value></data>
+  <data name="SelectedCount" xml:space="preserve"><value>{0} selected</value></data>
+  <data name="AllTypes" xml:space="preserve"><value>All types</value></data>
+  <data name="NoType" xml:space="preserve"><value>(no type)</value></data>
+  <data name="MultiSelectHint" xml:space="preserve"><value>Ctrl+click or Shift+click to select several. Right-click for more.</value></data>
+  <data name="NoEditableProfiles" xml:space="preserve"><value>No local profiles</value></data>
 </root>

@@ -12,6 +12,9 @@ public enum BackupReason
     PreRestore,
     PresetApply,
     Manual,
+
+    // Append new values only: backup.json stores these as numbers.
+    Delete,
 }
 
 /// <summary>One backup folder. <see cref="IsFullProfile"/> backups hold a whole profile folder (from rename).</summary>

@@ -1,13 +1,14 @@
 # Manual test checklist (MVP)
 
-Automated coverage: 135 unit tests (`dotnet test`) plus the end-to-end self-test, which drives the real view models on
+Automated coverage: 149 unit tests (`dotnet test`) plus the end-to-end self-test, which drives the real view models on
 the throwaway profile `DispatchTest`:
 
 ```
 Dispatch.exe --selftest DispatchTest result.txt
 ```
 
-It covers save, restore, duplicate, rename, undoing the rename and presets, and leaves `DispatchTest` unchanged.
+It covers save, restore, duplicate, rename, undoing the rename, presets, bulk moves, adding/removing mods from the Mods tab,
+and deleting/restoring a profile, and leaves `DispatchTest` unchanged.
 
 The items below need a person: real mouse and keyboard, real dialogs, the running game. Use **`DispatchTest` only**,
 and close the game unless a step says otherwise.
@@ -22,6 +23,28 @@ and close the game unless a step says otherwise.
 - [ ] Change something, then close the window → the same question; Cancel keeps the window open.
 - [ ] Open the **Backups** panel → select the newest backup → **Restore** → the old order is back. A "Before restoring a backup" entry appears.
 - [ ] Select a **Steam Cloud** profile → the blue read-only note shows; toolbar, Add mods and Save are unavailable.
+
+## Multi-select and bulk actions
+- [ ] In DispatchTest's list, **Ctrl+click** two mods, then **Up/Down/To top/To bottom**: they move together and stay selected.
+- [ ] **Shift+click** a range and press **Remove** (or Delete): all of them go. Discard.
+- [ ] Select several rows and **drag** them: they move as a block to where you drop them.
+- [ ] **Add mods** panel: select several and press **Add to top**, or drag them in together.
+
+## Mods tab
+- [ ] Every mod shows its **type** (Map, Sound, UI, …). The **All types** dropdown filters, e.g. only Sound.
+- [ ] Select several mods → "N selected" shows → **right-click → Add to profile → DispatchTest**: they appear at the top
+  of DispatchTest (a backup is taken first). The game shows them there too.
+- [ ] Right-click → **Remove from profile** lists only profiles where a selected mod is active; removing works the same way.
+- [ ] With unsaved edits open for DispatchTest in the Profiles tab, add a mod to it from the Mods tab: it's added to the
+  unsaved list instead (nothing is lost), with a message saying so.
+- [ ] With the game running, the right-click actions are disabled.
+
+## Delete profiles
+- [ ] Duplicate DispatchTest to a throwaway name, select it, **Delete…** → the confirmation names the profile and its saves → it
+  disappears from Dispatch and from the game.
+- [ ] Settings → **Removed and renamed profiles** shows it ("Whole profile, deleted") → **Restore profile** brings it back.
+- [ ] Delete it again, then **Move to Recycle Bin** on its backup → it's gone from the list and is in the Windows Recycle Bin.
+- [ ] A Steam Cloud profile can't be deleted (Delete is disabled).
 
 ## M3: duplicate and rename
 - [ ] **Duplicate…** on DispatchTest: the suggested name is "DispatchTest 2". Type an existing name → red error, OK disabled.

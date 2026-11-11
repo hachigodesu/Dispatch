@@ -90,6 +90,8 @@ internal static class SelfTest
             Step($"restore → original bytes back: {restored}; backups now: {vm.Profiles.Backups.Count}");
             bool m3 = await DuplicateRenameAsync(vm, dialogs, profileName, Step);
             bool m4 = Presets(vm, dialogs, profileName, resultFile, Step);
+            bool bulk = await BulkAndDeleteAsync(vm, dialogs, profileName, Step);
+            m4 = m4 && bulk;
             Step($"dialog errors: {(dialogs.Errors.Count == 0 ? "none" : string.Join(" / ", dialogs.Errors))}");
             ok = saved && restored && m3 && m4 && dialogs.Errors.Count == 0;
         }
@@ -101,6 +103,88 @@ internal static class SelfTest
         Step(ok ? "RESULT: PASS" : "RESULT: FAIL");
         await File.WriteAllTextAsync(resultFile, log.ToString());
         return ok;
+    }
+
+    /// <summary>
+    /// Multi-select bulk move (discarded), add/remove two mods from the Mods tab (then the original file is restored),
+    /// and delete + restore a temporary copy.
+    /// </summary>
+    private static async Task<bool> BulkAndDeleteAsync(MainViewModel vm, AutoYesDialogs dialogs, string profileName, Action<string> step)
+    {
+        var p = vm.Profiles;
+        p.Selected = p.Items.First(i => i.Name == profileName && !i.IsCloud);
+        string sii = p.Selected.Profile.ProfileSiiPath;
+        byte[] originalBytes = File.ReadAllBytes(sii);
+        var original = p.LoadOrder.Select(l => l.PackageId).ToList();
+
+        // 1) bulk move: the first two rows to the bottom, as a block
+        p.SelectedEntries.Clear();
+        p.SelectedEntries.Add(p.LoadOrder[0]);
+        p.SelectedEntries.Add(p.LoadOrder[1]);
+        p.MoveBottomCommand.Execute(null);
+        var moved = p.LoadOrder.Select(l => l.PackageId).ToList();
+        bool bulkMove = moved.SequenceEqual(original.Skip(2).Concat(original.Take(2)));
+        p.DiscardCommand.Execute(null);
+        step($"bulk move of 2 selected rows to bottom: {bulkMove}; discarded: {!p.IsDirty}");
+
+        // 2) Mods tab: add two mods that aren't active, then remove them
+        var mods = vm.Mods;
+        mods.TypeFilter = Resources.Strings.AllTypes;
+        mods.Filter = "";
+        var extra = mods.Items.Where(m => !original.Contains(m.PackageId) && m.Mod.IsReadable).Take(2).ToList();
+        mods.SelectedMods.Clear();
+        foreach (var m in extra)
+        {
+            mods.SelectedMods.Add(m);
+        }
+
+        var target = vm.Profiles.Items.First(i => i.Name == profileName && !i.IsCloud);
+        await mods.AddToProfileCommand.ExecuteAsync(target);
+        target = vm.Profiles.Items.First(i => i.Name == profileName && !i.IsCloud);
+        var afterAdd = Dispatch.Core.Profiles.ProfileRepository.ReadLoadOrder(target.Profile).TopFirst.Select(e => e.PackageId).ToList();
+        bool added = afterAdd.SequenceEqual(extra.Select(m => m.PackageId).Concat(original));
+        step($"add 2 mods from Mods tab → top of {profileName}: {added}; message: {mods.Message}");
+
+        var removeTargets = mods.RemoveTargets.Select(t => t.Name).ToList();
+        await mods.RemoveFromProfileCommand.ExecuteAsync(target);
+        target = vm.Profiles.Items.First(i => i.Name == profileName && !i.IsCloud);
+        var afterRemove = Dispatch.Core.Profiles.ProfileRepository.ReadLoadOrder(target.Profile).TopFirst.Select(e => e.PackageId).ToList();
+        bool removed = afterRemove.SequenceEqual(original) && removeTargets.Contains(profileName);
+        step($"remove them again (offered for: {string.Join(", ", removeTargets)}): {removed}");
+
+        // Put the game's own original file back (the edits above left a plain-text file with the same order).
+        vm.Profiles.Selected = target;
+        vm.Profiles.SelectedBackup = vm.Profiles.Backups
+            .Where(b => b.Backup.Reason == Dispatch.Core.Safety.BackupReason.LoadOrderSave)
+            .OrderBy(b => b.Backup.CreatedUtc).Last(b => File.ReadAllBytes(Path.Combine(
+                Dispatch.Core.Safety.BackupService.ContentDir(b.Backup), "profile.sii")).AsSpan().SequenceEqual(originalBytes));
+        await vm.Profiles.RestoreBackupCommand.ExecuteAsync(null);
+        bool bytesBack = File.ReadAllBytes(sii).AsSpan().SequenceEqual(originalBytes);
+        step($"original file restored byte-for-byte: {bytesBack}");
+
+        // 3) delete: make a throwaway copy, delete it, restore it, tidy up
+        string delName = profileName + "Del";
+        vm.Profiles.Selected = vm.Profiles.Items.First(i => i.Name == profileName && !i.IsCloud);
+        dialogs.ProfileDialogAnswers.Enqueue((delName, false));
+        await vm.Profiles.DuplicateCommand.ExecuteAsync(null);
+        vm.Profiles.Selected = vm.Profiles.Items.First(i => i.Name == delName);
+        string delDir = vm.Profiles.Selected.Profile.MainDir;
+        await vm.Profiles.DeleteProfileCommand.ExecuteAsync(null);
+        var deletedBackup = vm.Profiles.FullBackups.FirstOrDefault(b => b.Backup.ProfileName == delName &&
+                                                                         b.Backup.Reason == Dispatch.Core.Safety.BackupReason.Delete);
+        bool deleted = !Directory.Exists(delDir) && vm.Profiles.Items.All(i => i.Name != delName) && deletedBackup is not null;
+        step($"delete {delName}: gone from the game and kept as a backup: {deleted}");
+
+        vm.Profiles.SelectedFullBackup = deletedBackup;
+        await vm.Profiles.RestoreFolderCommand.ExecuteAsync(null);
+        bool undeleted = Directory.Exists(delDir);
+        var tidy = new Dispatch.Core.Safety.BackupService(Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dispatch", "backups"));
+        tidy.BackupWholeFolder(vm.Profiles.Items.First(i => i.Name == delName).Profile, Dispatch.Core.Safety.BackupReason.Manual, move: true);
+        await vm.RefreshCommand.ExecuteAsync(null);
+        step($"restore deleted profile: {undeleted}; tidied: {vm.Profiles.Items.All(i => i.Name != delName)}");
+
+        return bulkMove && added && removed && bytesBack && deleted && undeleted;
     }
 
     /// <summary>M4: save a preset → export → import → apply into the editor → discard → delete. No game files are written.</summary>

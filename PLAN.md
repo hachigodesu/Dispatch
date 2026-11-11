@@ -414,6 +414,14 @@ folder" opens the daily log files. Version 0.4.0.
 - Save, load, export and import presets. Apply a preset to a profile, with a missing-mods report.
 - Inno Setup installer, icon, About page (with SCS trademark disclaimer), log viewer.
 
+### Post-MVP additions (2026-11-12, requested after hand testing)
+- **Delete profile:** moves the folder into Dispatch's backups (reason `Delete`), restorable; whole-profile backups can be
+  sent to the Windows Recycle Bin to free space. Steam Cloud profiles can't be deleted in Dispatch.
+- **Multi-select and bulk actions** in the load order (move/remove/drag as a block), the Add-mods panel and the Mods tab
+  (`Behaviors/MultiSelect.cs`, pure list logic in `Core/Profiles/LoadOrderEdits.cs`).
+- **Mods tab:** mod types shown as badges and a type filter. Right-click → **Add to profile / Remove from profile**:
+  saved straight away through the safe save, or added to the editor when that profile has unsaved edits.
+
 ### v1
 - Copy the load order from one profile to another existing profile.
 - Search, filters (category, format, compatibility, source), tags and notes.

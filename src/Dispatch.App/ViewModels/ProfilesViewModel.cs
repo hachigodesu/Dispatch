@@ -34,6 +34,8 @@ public sealed partial class ProfilesViewModel : ObservableObject
         _backups = backups;
         _refresh = refresh;
         LoadOrder.CollectionChanged += OnLoadOrderChanged;
+        SelectedEntries.CollectionChanged += (_, _) => NotifyMoveCommands();
+        SelectedAvailables.CollectionChanged += (_, _) => AddSelectedCommand.NotifyCanExecuteChanged();
         DropHandler = new LoadOrderDropHandler(this);
     }
 
@@ -60,8 +62,6 @@ public sealed partial class ProfilesViewModel : ObservableObject
     private ProfileItemViewModel? _selected;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(MoveUpCommand), nameof(MoveDownCommand), nameof(MoveTopCommand),
-                                nameof(MoveBottomCommand), nameof(RemoveCommand))]
     private LoadOrderItemViewModel? _selectedEntry;
 
     [ObservableProperty]
@@ -80,15 +80,16 @@ public sealed partial class ProfilesViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanSave))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand), nameof(RestoreBackupCommand), nameof(DuplicateCommand),
-                                nameof(RenameCommand), nameof(RestoreFolderCommand))]
+                                nameof(RenameCommand), nameof(RestoreFolderCommand), nameof(DeleteProfileCommand))]
     private bool _isGameRunning;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(RestoreFolderCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RestoreFolderCommand), nameof(RecycleFullBackupCommand))]
     private BackupItemViewModel? _selectedFullBackup;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(RenameCommand), nameof(RestoreFolderCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(RenameCommand), nameof(RestoreFolderCommand),
+                                nameof(DeleteProfileCommand), nameof(RecycleFullBackupCommand))]
     private bool _isWorking;
 
     [ObservableProperty]
@@ -162,6 +163,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
     {
         DuplicateCommand.NotifyCanExecuteChanged();
         RenameCommand.NotifyCanExecuteChanged();
+        DeleteProfileCommand.NotifyCanExecuteChanged();
         if (_selectingProgrammatically || newValue == _shown)
         {
             return;
@@ -206,6 +208,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
     {
         value?.Mod?.EnsureDescriptionLoaded();
         OnPropertyChanged(nameof(SelectedEntryMod));
+        NotifyMoveCommands();
     }
 
     partial void OnSelectedAvailableChanged(ModItemViewModel? value) => value?.EnsureDescriptionLoaded();
@@ -256,63 +259,134 @@ public sealed partial class ProfilesViewModel : ObservableObject
         }
     }
 
-    // ---- editing commands -----------------------------------------------------------------------
+    // ---- editing commands (all work on the whole selection) ---------------------------------------
 
-    private bool HasEntry => CanEdit && SelectedEntry is not null;
+    /// <summary>Selected rows of the load order (multi-select; kept in sync by Behaviors.MultiSelect).</summary>
+    public ObservableCollection<LoadOrderItemViewModel> SelectedEntries { get; } = [];
 
-    [RelayCommand(CanExecute = nameof(CanMoveUp))]
-    private void MoveUp() => Move(SelectedEntry!, LoadOrder.IndexOf(SelectedEntry!) - 1);
+    /// <summary>Selected mods in the "Add mods" panel.</summary>
+    public ObservableCollection<ModItemViewModel> SelectedAvailables { get; } = [];
 
-    private bool CanMoveUp() => HasEntry && LoadOrder.IndexOf(SelectedEntry!) > 0;
-
-    [RelayCommand(CanExecute = nameof(CanMoveDown))]
-    private void MoveDown() => Move(SelectedEntry!, LoadOrder.IndexOf(SelectedEntry!) + 1);
-
-    private bool CanMoveDown() => HasEntry && LoadOrder.IndexOf(SelectedEntry!) < LoadOrder.Count - 1;
-
-    [RelayCommand(CanExecute = nameof(CanMoveUp))]
-    private void MoveTop() => Move(SelectedEntry!, 0);
-
-    [RelayCommand(CanExecute = nameof(CanMoveDown))]
-    private void MoveBottom() => Move(SelectedEntry!, LoadOrder.Count - 1);
-
-    [RelayCommand(CanExecute = nameof(HasEntry))]
-    private void Remove()
+    /// <summary>The selection, or the focused row when nothing is multi-selected.</summary>
+    private HashSet<LoadOrderItemViewModel> Selection()
     {
-        int index = LoadOrder.IndexOf(SelectedEntry!);
-        LoadOrder.RemoveAt(index);
-        SelectedEntry = LoadOrder.Count == 0 ? null : LoadOrder[Math.Min(index, LoadOrder.Count - 1)];
-    }
-
-    [RelayCommand(CanExecute = nameof(CanAdd))]
-    private void AddSelected() => Insert(SelectedAvailable!, 0);
-
-    private bool CanAdd() => CanEdit && SelectedAvailable is not null;
-
-    internal void Move(LoadOrderItemViewModel item, int newIndex)
-    {
-        int old = LoadOrder.IndexOf(item);
-        newIndex = Math.Clamp(newIndex, 0, LoadOrder.Count - 1);
-        if (old < 0 || old == newIndex)
+        var set = SelectedEntries.Where(LoadOrder.Contains).ToHashSet();
+        if (set.Count == 0 && SelectedEntry is { } single)
         {
-            return;
+            set.Add(single);
         }
 
-        LoadOrder.Move(old, newIndex);
-        SelectedEntry = item;
+        return set;
+    }
+
+    public int SelectionCount => Selection().Count;
+
+    private bool HasSelection() => CanEdit && Selection().Count > 0;
+
+    private bool CanMoveUp()
+    {
+        var sel = Selection();
+        return CanEdit && sel.Count > 0 && LoadOrder.Select((item, i) => (item, i)).Any(x => sel.Contains(x.item) && x.i > 0 && !sel.Contains(LoadOrder[x.i - 1]));
+    }
+
+    private bool CanMoveDown()
+    {
+        var sel = Selection();
+        return CanEdit && sel.Count > 0 &&
+               LoadOrder.Select((item, i) => (item, i)).Any(x => sel.Contains(x.item) && x.i < LoadOrder.Count - 1 && !sel.Contains(LoadOrder[x.i + 1]));
+    }
+
+    [RelayCommand(CanExecute = nameof(CanMoveUp))]
+    private void MoveUp() => Reorder(LoadOrderEdits.MoveUp(LoadOrder, Selection()));
+
+    [RelayCommand(CanExecute = nameof(CanMoveDown))]
+    private void MoveDown() => Reorder(LoadOrderEdits.MoveDown(LoadOrder, Selection()));
+
+    [RelayCommand(CanExecute = nameof(CanMoveUp))]
+    private void MoveTop() => Reorder(LoadOrderEdits.MoveToTop(LoadOrder, Selection()));
+
+    [RelayCommand(CanExecute = nameof(CanMoveDown))]
+    private void MoveBottom() => Reorder(LoadOrderEdits.MoveToBottom(LoadOrder, Selection()));
+
+    [RelayCommand(CanExecute = nameof(HasSelection))]
+    private void Remove()
+    {
+        var sel = Selection();
+        int first = LoadOrder.Select((item, i) => (item, i)).First(x => sel.Contains(x.item)).i;
+        foreach (var item in sel)
+        {
+            LoadOrder.Remove(item);
+        }
+
+        SelectedEntries.Clear();
+        SelectedEntry = LoadOrder.Count == 0 ? null : LoadOrder[Math.Min(first, LoadOrder.Count - 1)];
         NotifyMoveCommands();
     }
 
-    internal void Insert(ModItemViewModel mod, int index)
+    [RelayCommand(CanExecute = nameof(CanAdd))]
+    private void AddSelected() => InsertMany(SelectedMods(), 0);
+
+    private List<ModItemViewModel> SelectedMods()
     {
-        if (LoadOrder.Any(l => l.PackageId == mod.PackageId))
+        var mods = Available.Where(SelectedAvailables.Contains).ToList(); // in list order
+        if (mods.Count == 0 && SelectedAvailable is { } one)
         {
-            return;
+            mods.Add(one);
         }
 
-        var item = new LoadOrderItemViewModel(new ActiveModEntry(mod.PackageId, mod.DisplayName), mod);
-        LoadOrder.Insert(Math.Clamp(index, 0, LoadOrder.Count), item);
-        SelectedEntry = item;
+        return mods;
+    }
+
+    private bool CanAdd() => CanEdit && (SelectedAvailables.Count > 0 || SelectedAvailable is not null);
+
+    /// <summary>Applies a new order with ObservableCollection.Move, so selected rows stay selected.</summary>
+    private void Reorder(List<LoadOrderItemViewModel> target)
+    {
+        for (int i = 0; i < target.Count; i++)
+        {
+            int current = LoadOrder.IndexOf(target[i]);
+            if (current != i)
+            {
+                LoadOrder.Move(current, i);
+            }
+        }
+
+        NotifyMoveCommands();
+    }
+
+    internal void MoveBlock(IReadOnlyCollection<LoadOrderItemViewModel> items, int insertIndex)
+    {
+        Reorder(LoadOrderEdits.MoveTo(LoadOrder, items.ToHashSet(), insertIndex));
+        SelectedEntries.Clear();
+        foreach (var item in items)
+        {
+            SelectedEntries.Add(item);
+        }
+    }
+
+    internal void InsertMany(IReadOnlyList<ModItemViewModel> mods, int index)
+    {
+        var added = new List<LoadOrderItemViewModel>();
+        int at = Math.Clamp(index, 0, LoadOrder.Count);
+        foreach (var mod in mods)
+        {
+            if (LoadOrder.Any(l => l.PackageId == mod.PackageId))
+            {
+                continue;
+            }
+
+            var item = new LoadOrderItemViewModel(new ActiveModEntry(mod.PackageId, mod.DisplayName), mod);
+            LoadOrder.Insert(at++, item);
+            added.Add(item);
+        }
+
+        SelectedEntries.Clear();
+        foreach (var item in added)
+        {
+            SelectedEntries.Add(item);
+        }
+
+        SelectedEntry = added.FirstOrDefault() ?? SelectedEntry;
         NotifyMoveCommands();
     }
 
@@ -322,6 +396,9 @@ public sealed partial class ProfilesViewModel : ObservableObject
         MoveDownCommand.NotifyCanExecuteChanged();
         MoveTopCommand.NotifyCanExecuteChanged();
         MoveBottomCommand.NotifyCanExecuteChanged();
+        RemoveCommand.NotifyCanExecuteChanged();
+        AddSelectedCommand.NotifyCanExecuteChanged();
+        OnPropertyChanged(nameof(SelectionCount));
     }
 
     // ---- save / discard / restore ---------------------------------------------------------------
@@ -516,38 +593,39 @@ public sealed partial class ProfilesViewModel
 /// <summary>Drag & drop on the load order: reorder rows, or drop a mod from "Add mods" at a position.</summary>
 internal sealed class LoadOrderDropHandler(ProfilesViewModel owner) : DefaultDropHandler
 {
+    /// <summary>gong passes one item, or a list when several selected rows are dragged.</summary>
+    private static List<object> Items(object data) =>
+        data is System.Collections.IEnumerable list and not string ? list.Cast<object>().ToList() : [data];
+
     public override void DragOver(IDropInfo dropInfo)
     {
-        if (!owner.CanEdit)
+        var items = Items(dropInfo.Data);
+        if (!owner.CanEdit || items.Count == 0 ||
+            !(items.All(i => i is LoadOrderItemViewModel) || items.All(i => i is ModItemViewModel)))
         {
             dropInfo.Effects = DragDropEffects.None;
             return;
         }
 
-        if (dropInfo.Data is LoadOrderItemViewModel or ModItemViewModel)
-        {
-            dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-            dropInfo.Effects = dropInfo.Data is ModItemViewModel ? DragDropEffects.Copy : DragDropEffects.Move;
-        }
+        dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+        dropInfo.Effects = items[0] is ModItemViewModel ? DragDropEffects.Copy : DragDropEffects.Move;
     }
 
     public override void Drop(IDropInfo dropInfo)
     {
-        if (!owner.CanEdit)
+        var items = Items(dropInfo.Data);
+        if (!owner.CanEdit || items.Count == 0)
         {
             return;
         }
 
-        int index = dropInfo.InsertIndex;
-        switch (dropInfo.Data)
+        if (items[0] is LoadOrderItemViewModel)
         {
-            case LoadOrderItemViewModel item:
-                int old = owner.LoadOrder.IndexOf(item);
-                owner.Move(item, index > old ? index - 1 : index);
-                break;
-            case ModItemViewModel mod:
-                owner.Insert(mod, index);
-                break;
+            owner.MoveBlock(items.Cast<LoadOrderItemViewModel>().ToList(), dropInfo.InsertIndex);
+        }
+        else if (items[0] is ModItemViewModel)
+        {
+            owner.InsertMany(items.Cast<ModItemViewModel>().ToList(), dropInfo.InsertIndex);
         }
     }
 }
@@ -565,6 +643,7 @@ public sealed class BackupItemViewModel(Backup backup)
         BackupReason.Rename => "Whole profile, before renaming",
         BackupReason.Duplicate => "Before duplicating",
         BackupReason.PresetApply => "Before applying a preset",
+        BackupReason.Delete => "Whole profile, deleted",
         _ => "Manual",
     };
 

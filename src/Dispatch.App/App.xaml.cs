@@ -57,6 +57,10 @@ public partial class App : Application
             }
 
             viewModel.Mods.Selected = viewModel.Mods.Items.FirstOrDefault(m => m.HasIssues && m.IconFile is not null);
+            foreach (var m in viewModel.Mods.Items.Where(m => m.HasType).Take(3))
+            {
+                viewModel.Mods.SelectedMods.Add(m); // shows the multi-selection in screenshots
+            }
             await Task.Delay(1500); // let the selected mod's description load
             if (tab == 3 && viewModel.Profiles.Selected is { } sel)
             {

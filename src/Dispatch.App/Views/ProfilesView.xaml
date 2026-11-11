@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:b="clr-namespace:Dispatch.App.Behaviors"
              xmlns:res="clr-namespace:Dispatch.App.Resources"
              xmlns:v="clr-namespace:Dispatch.App.Views"
              xmlns:vm="clr-namespace:Dispatch.App.ViewModels"
@@ -19,10 +20,11 @@
         <!-- Left: profiles -->
         <DockPanel Margin="0,0,12,0">
             <TextBlock DockPanel.Dock="Top" Text="{Binding Summary}" Style="{StaticResource Muted}" Margin="4,0,0,6" />
-            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
-                <Button Content="{x:Static res:Strings.Duplicate}" Command="{Binding DuplicateCommand}" />
-                <Button Content="{x:Static res:Strings.Rename}" Command="{Binding RenameCommand}" Margin="6,0,0,0" />
-            </StackPanel>
+            <WrapPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+                <Button Content="{x:Static res:Strings.Duplicate}" Command="{Binding DuplicateCommand}" Margin="0,0,6,6" />
+                <Button Content="{x:Static res:Strings.Rename}" Command="{Binding RenameCommand}" Margin="0,0,6,6" />
+                <Button Content="{x:Static res:Strings.DeleteProfile}" Command="{Binding DeleteProfileCommand}" Margin="0,0,6,6" />
+            </WrapPanel>
             <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="vm:ProfileItemViewModel">
@@ -70,6 +72,7 @@
                 <TextBlock Text="{x:Static res:Strings.SaveBlockedGameRunning}" Foreground="DarkOrange"
                            Visibility="{Binding IsGameRunning, Converter={StaticResource VisibleWhen}}" />
                 <TextBlock Text="{x:Static res:Strings.EditHint}" Style="{StaticResource Muted}" FontSize="11" />
+                <TextBlock Text="{x:Static res:Strings.MultiSelectHint}" Style="{StaticResource Muted}" FontSize="11" />
                 <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Foreground="SeaGreen" FontSize="11"
                            Visibility="{Binding Message, Converter={StaticResource VisibleWhen}}" />
             </StackPanel>
@@ -79,6 +82,7 @@
                            Visibility="{Binding Selected, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
                 <ListBox x:Name="LoadOrderList" ItemsSource="{Binding LoadOrder}" SelectedItem="{Binding SelectedEntry}"
                          HorizontalContentAlignment="Stretch"
+                         SelectionMode="Extended" b:MultiSelect.SelectedItems="{Binding SelectedEntries}"
                          dd:DragDrop.IsDragSource="{Binding CanEdit}" dd:DragDrop.IsDropTarget="{Binding CanEdit}"
                          dd:DragDrop.DropHandler="{Binding DropHandler}">
                     <ListBox.InputBindings>
@@ -103,10 +107,16 @@
                                     <TextBlock Text="{Binding PackageId}" Style="{StaticResource Muted}" FontSize="11"
                                                TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                                 </StackPanel>
-                                <Border Grid.Column="3" Style="{StaticResource Badge}"
-                                        Background="{Binding CompatStatus, Converter={StaticResource CompatToBrush}}">
-                                    <TextBlock Text="{Binding StatusLabel}" Style="{StaticResource BadgeText}" />
-                                </Border>
+                                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Border Style="{StaticResource Badge}" Background="#33808080" Margin="0,0,6,0"
+                                            Visibility="{Binding Mod.HasType, Converter={StaticResource VisibleWhen}}">
+                                        <TextBlock Text="{Binding Mod.TypeLabel}" FontSize="11" />
+                                    </Border>
+                                    <Border Style="{StaticResource Badge}"
+                                            Background="{Binding CompatStatus, Converter={StaticResource CompatToBrush}}">
+                                        <TextBlock Text="{Binding StatusLabel}" Style="{StaticResource BadgeText}" />
+                                    </Border>
+                                </StackPanel>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -131,6 +141,7 @@
                     <Button DockPanel.Dock="Bottom" Content="{x:Static res:Strings.AddSelected}" Command="{Binding AddSelectedCommand}"
                             HorizontalAlignment="Left" Margin="0,6,0,0" />
                     <ListBox ItemsSource="{Binding Available}" SelectedItem="{Binding SelectedAvailable}" HorizontalContentAlignment="Stretch"
+                             SelectionMode="Extended" b:MultiSelect.SelectedItems="{Binding SelectedAvailables}"
                              dd:DragDrop.IsDragSource="True"
                              VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                         <ListBox.InputBindings>
@@ -145,7 +156,9 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel>
                                         <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
-                                        <TextBlock Text="{Binding ListSubtitle}" Style="{StaticResource Muted}" FontSize="11" TextWrapping="NoWrap" />
+                                        <TextBlock Style="{StaticResource Muted}" FontSize="11" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
+                                            <Run Text="{Binding TypeLabel, Mode=OneWay}" FontWeight="SemiBold" /> <Run Text="{Binding ListSubtitle, Mode=OneWay}" />
+                                        </TextBlock>
                                     </StackPanel>
                                     <Border Grid.Column="1" Style="{StaticResource Badge}"
                                             Background="{Binding CompatStatus, Converter={StaticResource CompatToBrush}}">

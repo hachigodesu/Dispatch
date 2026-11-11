@@ -41,6 +41,26 @@ public sealed partial class ModItemViewModel : ObservableObject
 
     public string Categories => string.Join(", ", Mod.Manifest?.Categories ?? []);
 
+    private static readonly Dictionary<string, string> TypeNames = new(StringComparer.Ordinal)
+    {
+        ["truck"] = "Truck", ["trailer"] = "Trailer", ["interior"] = "Interior", ["tuning_parts"] = "Tuning parts",
+        ["ai_traffic"] = "AI traffic", ["sound"] = "Sound", ["paint_job"] = "Paint job", ["cargo_pack"] = "Cargo pack",
+        ["map"] = "Map", ["ui"] = "UI", ["weather_setup"] = "Weather", ["physics"] = "Physics", ["graphics"] = "Graphics",
+        ["models"] = "Models", ["movers"] = "Movers", ["walkers"] = "Walkers", ["prefabs"] = "Prefabs", ["other"] = "Other",
+    };
+
+    /// <summary>The mod's types (manifest categories) as display names, e.g. ["Map"] or ["Sound", "Truck"].</summary>
+    public IReadOnlyList<string> TypeLabels => _typeLabels ??= (Mod.Manifest?.Categories ?? [])
+        .Select(c => TypeNames.TryGetValue(c, out var name) ? name
+                     : c.Length == 0 ? c : char.ToUpperInvariant(c[0]) + c[1..].Replace('_', ' '))
+        .Where(c => c.Length > 0).Distinct().ToList();
+
+    private IReadOnlyList<string>? _typeLabels;
+
+    public string TypeLabel => TypeLabels.Count == 0 ? "" : string.Join(" · ", TypeLabels);
+
+    public bool HasType => TypeLabels.Count > 0;
+
     public string CompatibleVersions => string.Join(", ", Mod.Manifest?.CompatibleVersions ?? []);
 
     public string DlcDependencies => string.Join(", ", Mod.Manifest?.DlcDependencies ?? []);
