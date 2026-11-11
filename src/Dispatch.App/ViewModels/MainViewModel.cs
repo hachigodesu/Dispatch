@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using Dispatch.App.Resources;
 using Dispatch.App.Services;
 using Dispatch.Core.Platform;
+using Dispatch.Core.Safety;
 using Serilog;
 
 namespace Dispatch.App.ViewModels;
@@ -22,20 +23,25 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly AppPaths _paths;
     private readonly DispatcherTimer _gameWatch;
 
-    public MainViewModel(IPlatform platform, AppPaths paths, AppSettings settings)
+    public MainViewModel(IPlatform platform, AppPaths paths, AppSettings settings, IDialogs dialogs)
     {
         _platform = platform;
         _paths = paths;
         Settings = new SettingsViewModel(settings, paths, () => RefreshCommand.ExecuteAsync(null));
+        var game = Dispatch.Core.Games.GameDefinition.Ets2;
+        BackupService Backups() => new(paths.Backups, new BackupRetention(settings.BackupRetentionSmall, settings.BackupRetentionFull));
+        Profiles = new ProfilesViewModel(dialogs, () => new SafeWriter(platform, Backups(), game.ProcessName), Backups,
+                                         () => RefreshCommand.ExecuteAsync(null));
 
         // Poll for the game process every 2 seconds (cheap) so the banner is always current.
         _gameWatch = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _gameWatch.Tick += (_, _) => IsGameRunning = _platform.IsProcessRunning(Dispatch.Core.Games.GameDefinition.Ets2.ProcessName);
         _gameWatch.Start();
         IsGameRunning = _platform.IsProcessRunning(Dispatch.Core.Games.GameDefinition.Ets2.ProcessName);
+        Profiles.IsGameRunning = IsGameRunning;
     }
 
-    public ProfilesViewModel Profiles { get; } = new();
+    public ProfilesViewModel Profiles { get; }
 
     public ModsViewModel Mods { get; } = new();
 
@@ -62,6 +68,8 @@ public sealed partial class MainViewModel : ObservableObject
 
     public bool IsIdle => !IsBusy;
 
+    partial void OnIsGameRunningChanged(bool value) => Profiles.IsGameRunning = value;
+
     public ObservableCollection<string> Problems { get; } = [];
 
     [RelayCommand]
@@ -81,6 +89,7 @@ public sealed partial class MainViewModel : ObservableObject
             var snapshot = await Task.Run(() => GameSnapshot.Load(_platform, _paths, Settings.Current, progress, CancellationToken.None));
 
             Mods.Load(snapshot);
+            Profiles.ConfigurePresets(Path.Combine(_paths.Root, "presets"), snapshot.Environment.Version?.ToString());
             Profiles.Load(snapshot, Mods.ById);
             Settings.Load(snapshot.Environment);
 

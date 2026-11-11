@@ -379,15 +379,38 @@ The spikes in §7, each with a written result in `docs/spikes/Sx-*.md`. **Exit:*
 - Solution file is `Dispatch.slnx` (.NET 10's XML format).
 
 ### M2: Editing load orders safely
+
+**M2 status (2026-11-12): done.** `SafeWriter` is the single write path (game check → unchanged-since-read check →
+backup → temp file → verify → game re-check → atomic replace → rollback on failure). `BackupService` keeps a
+`backup.json` in each backup folder instead of one global index, so every backup can be restored on its own.
+Restore takes a pre-restore backup. Editing: toolbar, Alt+↑/↓, Delete, drag & drop (gong-wpf-dragdrop 4.0 builds and
+renders on .NET 10; **real mouse dragging is in docs/manual-tests.md**), Add-mods panel, unsaved-changes prompts.
+
 - Enable/disable and drag & drop reordering. A newly enabled mod goes to the top, as in-game. Save via `SafeWriter`.
 - Game-running guard, concurrent-change detection, unsaved-changes prompt.
 - Automatic backups, a backup browser, and one-click restore (which takes a pre-restore backup first). Retention per profile: the last **20 small** backups (profile files only) and the last **5 full-profile** backups (from rename), both configurable. The backup browser shows total size.
 
 ### M3: Duplicating and renaming profiles
+
+**M3 status (2026-11-12): done.** `ProfileCloner` stages copies under `.dispatch-staging-*`, changes only
+`profile_name` (optionally clears the World of Trucks fields), verifies, then makes the copy appear with one move. A damaged
+`profile.bak.sii` in the copy is replaced by the renamed `profile.sii`. Rename = staged copy → original moved into a full backup →
+copy moved into place (rolled back on failure). Undo via Settings → "Removed and renamed profiles". Steam Cloud
+destination = local copy plus the guided in-game step (§5.10).
+
 - Duplicate: full copy or fresh start. Destination local, or Steam Cloud (guided step, §5.10). Name validation, free-space check, progress, never overwrites.
 - Rename (local): stage a renamed copy → verify → **move the original into Dispatch's backups** (same drive, so it's instant and fully reversible) → swap the copy in.
 
 ### M4: Presets and release = **MVP**
+
+**M4 status (2026-11-12): done, apart from compiling the installer.** Presets: create/save/import/export/delete and
+apply. Apply loads the preset into the editor as *unsaved changes*, so writing still goes through the normal safe save.
+Mods are matched by ID, then by file name; missing ones are listed with Workshop links. Release: app icon
+(`tools/make-icon.py`), About section, `installer/Dispatch.iss` (per-user, keeps data on uninstall unless asked) and
+`installer/build.ps1` (tests → self-contained, compressed single-file publish of about 65 MB → Inno Setup). **Inno Setup isn't
+installed on the dev PC yet, so the setup.exe hasn't been compiled.** No separate log viewer: Settings → "Open log
+folder" opens the daily log files. Version 0.4.0.
+
 - Save, load, export and import presets. Apply a preset to a profile, with a missing-mods report.
 - Inno Setup installer, icon, About page (with SCS trademark disclaimer), log viewer.
 
@@ -423,7 +446,7 @@ All spikes work on **copies** in a scratch folder, or on a throwaway profile **`
 | **S8** | Readers on real data + version/DLC matching | Scan your 228 + 3 mods. Report format, manifest success, failures and timings. Compare Dispatch's compatibility verdicts with the `Incompatible mod` lines in `game.log.txt` | All non-opaque mods parsed. Verdicts agree. Cold scan < 15 s, cached < 1 s |
 | **S9** | `AEM!` / `MZ` packages (you chose "try harder") | **Started in M0.** Findings: the game reads them, but they are deliberately protected (encrypted-looking data, thousands of fake ZIP signatures, forged ZIP directories). **Decrypting them would circumvent the authors' protection, so Dispatch won't.** Remaining non-circumventing work (time-boxed): (a) take the display name from any profile's `active_mods` entry (`…\|Display Name`); (b) use the game's own verdicts in `game.log.txt` (`Incompatible mod - <id>`); (c) check whether the game caches mod info or icons in `Documents\…\cache` or `mods_info.sii`. | Opaque, but with the best available name and the game's compatibility verdict. Never write to these files |
 | **S10** | HashFS v2 details (salt, metadata) | Read the 10 v2 mods. Compare file lists with Extractor's output (oracle) | Lists match |
-| **S11** (moved to M2) | gong-wpf-dragdrop on .NET 10 | Tiny WPF prototype list | Works → use it. Breaks → hand-rolled drag & drop |
+| **S11** ✅ build/render, ⏳ mouse | gong-wpf-dragdrop on .NET 10 | Tiny WPF prototype list | Works → use it. Breaks → hand-rolled drag & drop |
 
 Other risks, handled by design:
 - **A game update changes a format**: readers are version-aware. Dispatch refuses to write a file it couldn't fully read, and shows clear "unknown format" messages.

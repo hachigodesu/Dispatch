@@ -10,6 +10,7 @@
         d:DataContext="{d:DesignInstance vm:MainViewModel}"
         Title="{x:Static res:Strings.AppTitle}"
         Width="1280" Height="800" MinWidth="900" MinHeight="560"
+        Icon="/Assets/dispatch.ico"
         WindowStartupLocation="CenterScreen">
     <DockPanel>
         <!-- Header: name, game version, refresh -->

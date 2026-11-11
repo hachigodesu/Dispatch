@@ -130,9 +130,13 @@ public sealed class ProfileItemViewModel(ProfileInfo profile, LoadOrderRead? loa
 }
 
 /// <summary>One row of a profile's load order. Position 1 = top of the in-game list = highest priority.</summary>
-public sealed class LoadOrderItemViewModel(int position, ActiveModEntry entry, ModItemViewModel? mod)
+public sealed partial class LoadOrderItemViewModel(ActiveModEntry entry, ModItemViewModel? mod) : ObservableObject
 {
-    public int Position { get; } = position;
+    /// <summary>Kept as read from the profile, so saving writes back the exact same "id|Name" entry.</summary>
+    public ActiveModEntry Entry { get; } = entry;
+
+    [ObservableProperty]
+    private int _position;
 
     public string DisplayName { get; } = entry.DisplayName;
 

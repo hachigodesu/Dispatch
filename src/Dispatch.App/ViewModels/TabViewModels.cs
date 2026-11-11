@@ -11,54 +11,6 @@ using Microsoft.Win32;
 
 namespace Dispatch.App.ViewModels;
 
-/// <summary>Profiles tab: list of profiles on the left, the selected profile's load order on the right.</summary>
-public sealed partial class ProfilesViewModel : ObservableObject
-{
-    private IReadOnlyDictionary<string, ModItemViewModel> _mods = new Dictionary<string, ModItemViewModel>();
-
-    public ObservableCollection<ProfileItemViewModel> Items { get; } = [];
-
-    public ObservableCollection<LoadOrderItemViewModel> LoadOrder { get; } = [];
-
-    [ObservableProperty]
-    private ProfileItemViewModel? _selected;
-
-    [ObservableProperty]
-    private LoadOrderItemViewModel? _selectedEntry;
-
-    [ObservableProperty]
-    private string _summary = "";
-
-    public void Load(GameSnapshot snapshot, IReadOnlyDictionary<string, ModItemViewModel> mods)
-    {
-        _mods = mods;
-        string? keep = Selected?.Profile.MainDir;
-        Items.Clear();
-        foreach (var p in snapshot.Profiles)
-        {
-            Items.Add(new ProfileItemViewModel(p.Profile, p.LoadOrder, p.Error));
-        }
-
-        Summary = string.Format(CultureInfo.CurrentCulture, Strings.ProfilesSummary, Items.Count);
-        Selected = Items.FirstOrDefault(i => i.Profile.MainDir == keep) ?? Items.FirstOrDefault();
-    }
-
-    partial void OnSelectedChanged(ProfileItemViewModel? value)
-    {
-        LoadOrder.Clear();
-        int position = 1;
-        foreach (var entry in value?.LoadOrder?.TopFirst ?? [])
-        {
-            _mods.TryGetValue(entry.PackageId, out var mod);
-            LoadOrder.Add(new LoadOrderItemViewModel(position++, entry, mod));
-        }
-
-        SelectedEntry = null;
-    }
-
-    partial void OnSelectedEntryChanged(LoadOrderItemViewModel? value) => value?.Mod?.EnsureDescriptionLoaded();
-}
-
 /// <summary>Mods tab: every installed mod with a search box and a details panel.</summary>
 public sealed partial class ModsViewModel : ObservableObject
 {
@@ -161,6 +113,9 @@ public sealed partial class SettingsViewModel(AppSettings settings, AppPaths pat
     private string _dlc = "";
 
     public string DataFolder => paths.Root;
+
+    public string AppVersion => string.Format(CultureInfo.CurrentCulture, Strings.AboutVersion,
+        typeof(SettingsViewModel).Assembly.GetName().Version?.ToString(3) ?? "?");
 
     public void Load(GameEnvironment env)
     {

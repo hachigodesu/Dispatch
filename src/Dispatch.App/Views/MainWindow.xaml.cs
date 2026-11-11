@@ -9,20 +9,38 @@ public partial class MainWindow : Window
 {
     public MainWindow() => InitializeComponent();
 
+    /// <summary>Asks about unsaved load-order changes before the window closes.</summary>
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    {
+        if (DataContext is ViewModels.MainViewModel vm && !vm.Profiles.ConfirmLeave())
+        {
+            e.Cancel = true;
+        }
+
+        base.OnClosing(e);
+    }
+
     /// <summary>Renders the window to a PNG (used by the --screenshot development option).</summary>
     public void SaveScreenshot(string path, int tab)
     {
         Tabs.SelectedIndex = tab;
-        Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-        var content = (FrameworkElement)Content;
+        SaveScreenshot(this, path);
+    }
+
+    /// <summary>Renders any window's content to a PNG.</summary>
+    public static void SaveScreenshot(Window window, string path)
+    {
+        window.Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        var content = (FrameworkElement)window.Content;
+        var background = window.Background;
         content.UpdateLayout();
-        var dpi = VisualTreeHelper.GetDpi(this);
+        var dpi = VisualTreeHelper.GetDpi(window);
         var bitmap = new RenderTargetBitmap((int)(content.ActualWidth * dpi.DpiScaleX), (int)(content.ActualHeight * dpi.DpiScaleY),
                                             dpi.PixelsPerInchX, dpi.PixelsPerInchY, PixelFormats.Pbgra32);
         var visual = new DrawingVisual();
         using (var dc = visual.RenderOpen())
         {
-            dc.DrawRectangle(Background, null, new Rect(0, 0, content.ActualWidth, content.ActualHeight));
+            dc.DrawRectangle(background, null, new Rect(0, 0, content.ActualWidth, content.ActualHeight));
             dc.DrawRectangle(new VisualBrush(content), null, new Rect(0, 0, content.ActualWidth, content.ActualHeight));
         }
 

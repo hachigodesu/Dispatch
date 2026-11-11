@@ -76,8 +76,24 @@ Dispatch.exe --screenshot out.png [tab] [profile]
 This loads everything, renders the window to a PNG and exits (tab: 0 Profiles, 1 Mods, 2 Settings). It's handy for
 spotting layout regressions.
 
-## Safety in M1
+## M2–M4: what was added and where
 
-M1 **only reads**. Game files are opened with shared read access. The only things Dispatch writes are its own
-files under `%LOCALAPPDATA%\Dispatch` (settings, cache, logs). Writing profiles arrives in M2 through the single
-safe write path described in PLAN.md §3.
+- **Writing safely:** [SafeWriter.cs](../src/Dispatch.Core/Safety/SafeWriter.cs) is the *only* code that changes game files.
+  [BackupService.cs](../src/Dispatch.Core/Safety/BackupService.cs) makes the timestamped backups and prunes old ones.
+  [LoadOrderService.cs](../src/Dispatch.Core/Profiles/LoadOrderService.cs) turns a top-first list into a `profile.sii` write.
+- **Editing UI:** [ProfilesViewModel.cs](../src/Dispatch.App/ViewModels/ProfilesViewModel.cs). Commands like
+  `MoveUpCommand` are generated from `[RelayCommand]` methods; `CanExecute = nameof(...)` decides when a button is enabled.
+  `LoadOrderDropHandler` handles drag & drop.
+- **Duplicate/rename:** [ProfileCloner.cs](../src/Dispatch.Core/Profiles/ProfileCloner.cs) plus the dialog
+  ([ProfileDialog.xaml](../src/Dispatch.App/Views/ProfileDialog.xaml), [ProfileDialogViewModel.cs](../src/Dispatch.App/ViewModels/ProfileDialogViewModel.cs)).
+- **Presets:** [Preset.cs](../src/Dispatch.Core/Presets/Preset.cs) and
+  [ProfilesViewModel.Presets.cs](../src/Dispatch.App/ViewModels/ProfilesViewModel.Presets.cs). `partial class` lets one view
+  model live in several files.
+- **Dialogs** go through [IDialogs](../src/Dispatch.App/Services/Dialogs.cs), so the self-test can answer them automatically
+  ([SelfTest.cs](../src/Dispatch.App/Services/SelfTest.cs)).
+
+## Safety (all milestones)
+
+Reading never locks game files (shared read access). Every write to a profile goes through `SafeWriter`, backs up first,
+and is refused while `eurotrucks2` runs. Steam Cloud profiles are never written. Dispatch never touches Workshop
+content or the game's own `profiles(…).bak` folders.

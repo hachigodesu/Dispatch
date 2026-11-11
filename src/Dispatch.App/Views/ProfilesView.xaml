@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:res="clr-namespace:Dispatch.App.Resources"
              xmlns:v="clr-namespace:Dispatch.App.Views"
              xmlns:vm="clr-namespace:Dispatch.App.ViewModels"
@@ -10,14 +11,18 @@
              d:DataContext="{d:DesignInstance vm:ProfilesViewModel}">
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="280" />
-            <ColumnDefinition Width="*" MinWidth="320" />
-            <ColumnDefinition Width="340" />
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="*" MinWidth="360" />
+            <ColumnDefinition Width="360" />
         </Grid.ColumnDefinitions>
 
         <!-- Left: profiles -->
         <DockPanel Margin="0,0,12,0">
             <TextBlock DockPanel.Dock="Top" Text="{Binding Summary}" Style="{StaticResource Muted}" Margin="4,0,0,6" />
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
+                <Button Content="{x:Static res:Strings.Duplicate}" Command="{Binding DuplicateCommand}" />
+                <Button Content="{x:Static res:Strings.Rename}" Command="{Binding RenameCommand}" Margin="6,0,0,0" />
+            </StackPanel>
             <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="vm:ProfileItemViewModel">
@@ -31,10 +36,16 @@
             </ListBox>
         </DockPanel>
 
-        <!-- Middle: load order of the selected profile -->
+        <!-- Middle: editable load order -->
         <DockPanel Grid.Column="1" Margin="0,0,12,0">
             <StackPanel DockPanel.Dock="Top" Margin="4,0,0,6">
-                <TextBlock Text="{Binding Selected.Name}" Style="{StaticResource SectionHeader}" Margin="0" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Selected.Name}" Style="{StaticResource SectionHeader}" Margin="0" />
+                    <Border Style="{StaticResource Badge}" Background="#B25E00" Margin="10,0,0,0"
+                            Visibility="{Binding IsDirty, Converter={StaticResource VisibleWhen}}">
+                        <TextBlock Text="{x:Static res:Strings.UnsavedChanges}" Style="{StaticResource BadgeText}" />
+                    </Border>
+                </StackPanel>
                 <TextBlock Text="{x:Static res:Strings.LoadOrderHint}" Style="{StaticResource Muted}" />
                 <Border Background="#220078D4" BorderBrush="#0078D4" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,6,0,0"
                         Visibility="{Binding Selected.IsCloud, Converter={StaticResource VisibleWhen}}">
@@ -43,11 +54,38 @@
                 <TextBlock Text="{Binding Selected.Error}" Foreground="IndianRed" TextWrapping="Wrap"
                            Visibility="{Binding Selected.Error, Converter={StaticResource VisibleWhen}}" />
             </StackPanel>
+
+            <!-- Toolbar (only for editable profiles) -->
+            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,6" Visibility="{Binding CanEdit, Converter={StaticResource VisibleWhen}}">
+                <WrapPanel>
+                    <Button Content="{x:Static res:Strings.MoveUp}" Command="{Binding MoveUpCommand}" Margin="0,0,4,4" />
+                    <Button Content="{x:Static res:Strings.MoveDown}" Command="{Binding MoveDownCommand}" Margin="0,0,4,4" />
+                    <Button Content="{x:Static res:Strings.MoveTop}" Command="{Binding MoveTopCommand}" Margin="0,0,4,4" />
+                    <Button Content="{x:Static res:Strings.MoveBottom}" Command="{Binding MoveBottomCommand}" Margin="0,0,4,4" />
+                    <Button Content="{x:Static res:Strings.Remove}" Command="{Binding RemoveCommand}" Margin="0,0,16,4" />
+                    <Button Content="{x:Static res:Strings.Save}" Command="{Binding SaveCommand}" Margin="0,0,4,4" MinWidth="80"
+                            Style="{StaticResource AccentButtonStyle}" />
+                    <Button Content="{x:Static res:Strings.Discard}" Command="{Binding DiscardCommand}" Margin="0,0,4,4" />
+                </WrapPanel>
+                <TextBlock Text="{x:Static res:Strings.SaveBlockedGameRunning}" Foreground="DarkOrange"
+                           Visibility="{Binding IsGameRunning, Converter={StaticResource VisibleWhen}}" />
+                <TextBlock Text="{x:Static res:Strings.EditHint}" Style="{StaticResource Muted}" FontSize="11" />
+                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Foreground="SeaGreen" FontSize="11"
+                           Visibility="{Binding Message, Converter={StaticResource VisibleWhen}}" />
+            </StackPanel>
+
             <Grid>
                 <TextBlock Text="{x:Static res:Strings.NoProfileSelected}" Style="{StaticResource Muted}" Margin="4"
                            Visibility="{Binding Selected, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
-                <ListBox ItemsSource="{Binding LoadOrder}" SelectedItem="{Binding SelectedEntry}"
-                         VirtualizingPanel.IsVirtualizing="True" HorizontalContentAlignment="Stretch">
+                <ListBox x:Name="LoadOrderList" ItemsSource="{Binding LoadOrder}" SelectedItem="{Binding SelectedEntry}"
+                         HorizontalContentAlignment="Stretch"
+                         dd:DragDrop.IsDragSource="{Binding CanEdit}" dd:DragDrop.IsDropTarget="{Binding CanEdit}"
+                         dd:DragDrop.DropHandler="{Binding DropHandler}">
+                    <ListBox.InputBindings>
+                        <KeyBinding Modifiers="Alt" Key="Up" Command="{Binding MoveUpCommand}" />
+                        <KeyBinding Modifiers="Alt" Key="Down" Command="{Binding MoveDownCommand}" />
+                        <KeyBinding Key="Delete" Command="{Binding RemoveCommand}" />
+                    </ListBox.InputBindings>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="vm:LoadOrderItemViewModel">
                             <Grid Margin="0,2">
@@ -76,7 +114,100 @@
             </Grid>
         </DockPanel>
 
-        <!-- Right: details of the selected mod -->
-        <v:ModDetailsView Grid.Column="2" DataContext="{Binding SelectedEntry.Mod}" />
+        <!-- Right: details / add mods / backups -->
+        <TabControl x:Name="SidePanel" Grid.Column="2">
+            <TabItem Header="{x:Static res:Strings.PanelDetails}">
+                <v:ModDetailsView DataContext="{Binding SelectedEntryMod}" Margin="0,8,0,0" />
+            </TabItem>
+            <TabItem Header="{x:Static res:Strings.PanelAdd}" IsEnabled="{Binding CanEdit}">
+                <DockPanel Margin="0,8,0,0">
+                    <TextBlock DockPanel.Dock="Top" Text="{x:Static res:Strings.AddHint}" Style="{StaticResource Muted}" Margin="0,0,0,6" />
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,6">
+                        <TextBox x:Name="AvailableSearch" Text="{Binding AvailableFilter, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{x:Static res:Strings.FilterAvailable}" IsHitTestVisible="False" Margin="12,0,0,0"
+                                   VerticalAlignment="Center" Style="{StaticResource Muted}"
+                                   Visibility="{Binding Text, ElementName=AvailableSearch, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
+                    </Grid>
+                    <Button DockPanel.Dock="Bottom" Content="{x:Static res:Strings.AddSelected}" Command="{Binding AddSelectedCommand}"
+                            HorizontalAlignment="Left" Margin="0,6,0,0" />
+                    <ListBox ItemsSource="{Binding Available}" SelectedItem="{Binding SelectedAvailable}" HorizontalContentAlignment="Stretch"
+                             dd:DragDrop.IsDragSource="True"
+                             VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                        <ListBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding AddSelectedCommand}" />
+                        </ListBox.InputBindings>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="vm:ModItemViewModel">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding ListSubtitle}" Style="{StaticResource Muted}" FontSize="11" TextWrapping="NoWrap" />
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Style="{StaticResource Badge}"
+                                            Background="{Binding CompatStatus, Converter={StaticResource CompatToBrush}}">
+                                        <TextBlock Text="{Binding CompatLabel}" Style="{StaticResource BadgeText}" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="{x:Static res:Strings.PanelPresets}">
+                <DockPanel Margin="0,8,0,0">
+                    <TextBlock DockPanel.Dock="Top" Text="{x:Static res:Strings.PresetsHint}" Style="{StaticResource Muted}" Margin="0,0,0,6" />
+                    <WrapPanel DockPanel.Dock="Bottom" Margin="0,6,0,0">
+                        <Button Content="{x:Static res:Strings.ApplyPreset}" Command="{Binding ApplyPresetCommand}" Margin="0,0,6,6"
+                                Style="{StaticResource AccentButtonStyle}" />
+                        <Button Content="{x:Static res:Strings.SavePreset}" Command="{Binding SavePresetCommand}" Margin="0,0,6,6" />
+                        <Button Content="{x:Static res:Strings.ImportPreset}" Command="{Binding ImportPresetCommand}" Margin="0,0,6,6" />
+                        <Button Content="{x:Static res:Strings.ExportPreset}" Command="{Binding ExportPresetCommand}" Margin="0,0,6,6" />
+                        <Button Content="{x:Static res:Strings.DeletePreset}" Command="{Binding DeletePresetCommand}" Margin="0,0,6,6" />
+                    </WrapPanel>
+                    <Grid>
+                        <TextBlock Text="{x:Static res:Strings.NoPresets}" Style="{StaticResource Muted}"
+                                   Visibility="{Binding Presets.Count, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
+                        <ListBox ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}" HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="vm:PresetItemViewModel">
+                                    <StackPanel Margin="0,2">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding Summary}" Style="{StaticResource Muted}" FontSize="11" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="{x:Static res:Strings.PanelBackups}">
+                <DockPanel Margin="0,8,0,0">
+                    <TextBlock DockPanel.Dock="Top" Text="{x:Static res:Strings.BackupsHint}" Style="{StaticResource Muted}" Margin="0,0,0,6" />
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
+                        <Button Content="{x:Static res:Strings.RestoreBackup}" Command="{Binding RestoreBackupCommand}" />
+                        <Button Content="{x:Static res:Strings.OpenBackupFolder}" Command="{Binding OpenBackupFolderCommand}" Margin="6,0,0,0" />
+                    </StackPanel>
+                    <Grid>
+                        <TextBlock Text="{x:Static res:Strings.NoBackups}" Style="{StaticResource Muted}"
+                                   Visibility="{Binding Backups.Count, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
+                        <ListBox ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}" HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="vm:BackupItemViewModel">
+                                    <StackPanel Margin="0,2">
+                                        <TextBlock Text="{Binding When}" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding ReasonLabel}" Style="{StaticResource Muted}" FontSize="11" />
+                                        <TextBlock Text="{Binding FilesLabel}" Style="{StaticResource Muted}" FontSize="11" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

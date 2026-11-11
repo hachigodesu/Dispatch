@@ -2,8 +2,13 @@
 
 A mod manager for Euro Truck Simulator 2 (Windows).
 
-Status: **Milestone 1: read-only app** (M0 spikes done). See [PLAN.md](PLAN.md) and
-[docs/walkthrough-m1.md](docs/walkthrough-m1.md) for how the code is organised.
+Status: **MVP feature-complete (M0–M4)**, version 0.4.0. See [PLAN.md](PLAN.md),
+[docs/walkthrough-m1.md](docs/walkthrough-m1.md) for how the code is organised, and
+[docs/manual-tests.md](docs/manual-tests.md) for the checks that need a person.
+
+What it does: shows every mod (any package format) with compatibility warnings; edits each profile's load order
+(drag & drop); duplicates and renames profiles; saves and shares load-order presets; backs up before every change,
+with one-click restore; never writes while the game is running.
 
 Dispatch is not affiliated with or endorsed by SCS Software. "Euro Truck Simulator 2"
 is a trademark of SCS Software.
@@ -18,7 +23,13 @@ dotnet test
 dotnet run --project src/Dispatch.App
 ```
 
-M1 only reads game files. Dispatch's own data (settings, cache, logs) lives in `%LOCALAPPDATA%\Dispatch`.
+Dispatch's own data (settings, cache, logs, presets, **backups**) lives in `%LOCALAPPDATA%\Dispatch`.
+
+Release build (tests → self-contained single-file exe → installer if Inno Setup 6 is installed):
+
+```
+powershell -ExecutionPolicy Bypass -File installer\build.ps1
+```
 
 ## Licence
 

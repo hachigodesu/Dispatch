@@ -91,6 +91,33 @@ public static partial class ProfileText
         return string.Concat(text.AsSpan(0, start), newBody, text.AsSpan(end));
     }
 
+    /// <summary>Reads a single string-valued attribute of user_profile (e.g. "online_user_name"); null if absent.</summary>
+    public static string? ReadField(string text, string key)
+    {
+        var (start, end) = UserProfileBody(text);
+        var m = FieldRegex(key).Match(text[start..end]);
+        return m.Success ? SiiString.Unquote(m.Groups["value"].Value) : null;
+    }
+
+    /// <summary>Replaces a single attribute's value; leaves the text unchanged if the attribute doesn't exist.</summary>
+    public static string WriteField(string text, string key, string value)
+    {
+        var (start, end) = UserProfileBody(text);
+        string body = text[start..end];
+        var m = FieldRegex(key).Match(body);
+        if (!m.Success)
+        {
+            return text;
+        }
+
+        var g = m.Groups["value"];
+        string newBody = string.Concat(body.AsSpan(0, g.Index), SiiString.Format(value), body.AsSpan(g.Index + g.Length));
+        return string.Concat(text.AsSpan(0, start), newBody, text.AsSpan(end));
+    }
+
+    private static Regex FieldRegex(string key) =>
+        new($@"^[ \t]*{Regex.Escape(key)}[ \t]*:[ \t]*(?<value>""(?:[^""\\]|\\.)*""|[^\r\n]*?)[ \t]*\r?$", RegexOptions.Multiline);
+
     /// <summary>Character range of the user_profile unit's body (between its braces).</summary>
     private static (int Start, int End) UserProfileBody(string text)
     {

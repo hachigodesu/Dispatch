@@ -127,4 +127,158 @@ public static class Strings
     public static string ProfilesSummary => Get(nameof(ProfilesSummary));
 
     public static string StatusScanned => Get(nameof(StatusScanned));
+
+    public static string MoveUp => Get(nameof(MoveUp));
+
+    public static string MoveDown => Get(nameof(MoveDown));
+
+    public static string MoveTop => Get(nameof(MoveTop));
+
+    public static string MoveBottom => Get(nameof(MoveBottom));
+
+    public static string Remove => Get(nameof(Remove));
+
+    public static string Save => Get(nameof(Save));
+
+    public static string Discard => Get(nameof(Discard));
+
+    public static string UnsavedChanges => Get(nameof(UnsavedChanges));
+
+    public static string EditHint => Get(nameof(EditHint));
+
+    public static string SaveBlockedGameRunning => Get(nameof(SaveBlockedGameRunning));
+
+    public static string PanelDetails => Get(nameof(PanelDetails));
+
+    public static string PanelAdd => Get(nameof(PanelAdd));
+
+    public static string PanelBackups => Get(nameof(PanelBackups));
+
+    public static string AddSelected => Get(nameof(AddSelected));
+
+    public static string AddHint => Get(nameof(AddHint));
+
+    public static string FilterAvailable => Get(nameof(FilterAvailable));
+
+    public static string BackupsHint => Get(nameof(BackupsHint));
+
+    public static string RestoreBackup => Get(nameof(RestoreBackup));
+
+    public static string OpenBackupFolder => Get(nameof(OpenBackupFolder));
+
+    public static string NoBackups => Get(nameof(NoBackups));
+
+    public static string SavedStatus => Get(nameof(SavedStatus));
+
+    public static string ConfirmRestoreTitle => Get(nameof(ConfirmRestoreTitle));
+
+    public static string ConfirmRestore => Get(nameof(ConfirmRestore));
+
+    public static string RestoredStatus => Get(nameof(RestoredStatus));
+
+    public static string AskSaveTitle => Get(nameof(AskSaveTitle));
+
+    public static string AskSave => Get(nameof(AskSave));
+
+    public static string ErrorTitle => Get(nameof(ErrorTitle));
+
+    public static string Duplicate => Get(nameof(Duplicate));
+
+    public static string Rename => Get(nameof(Rename));
+
+    public static string DuplicateTitle => Get(nameof(DuplicateTitle));
+
+    public static string RenameTitle => Get(nameof(RenameTitle));
+
+    public static string DuplicateIntro => Get(nameof(DuplicateIntro));
+
+    public static string RenameIntro => Get(nameof(RenameIntro));
+
+    public static string NewName => Get(nameof(NewName));
+
+    public static string CopyWhat => Get(nameof(CopyWhat));
+
+    public static string CopyEverything => Get(nameof(CopyEverything));
+
+    public static string CopyFresh => Get(nameof(CopyFresh));
+
+    public static string KeepWotLink => Get(nameof(KeepWotLink));
+
+    public static string Destination => Get(nameof(Destination));
+
+    public static string DestinationLocal => Get(nameof(DestinationLocal));
+
+    public static string DestinationCloud => Get(nameof(DestinationCloud));
+
+    public static string DestinationCloudHint => Get(nameof(DestinationCloudHint));
+
+    public static string Ok => Get(nameof(Ok));
+
+    public static string Cancel => Get(nameof(Cancel));
+
+    public static string Working => Get(nameof(Working));
+
+    public static string DuplicatedStatus => Get(nameof(DuplicatedStatus));
+
+    public static string DuplicatedCloudStatus => Get(nameof(DuplicatedCloudStatus));
+
+    public static string RenamedStatus => Get(nameof(RenamedStatus));
+
+    public static string FullBackupsHeader => Get(nameof(FullBackupsHeader));
+
+    public static string FullBackupsHint => Get(nameof(FullBackupsHint));
+
+    public static string RestoreFolder => Get(nameof(RestoreFolder));
+
+    public static string ConfirmRestoreFolder => Get(nameof(ConfirmRestoreFolder));
+
+    public static string RestoredFolderStatus => Get(nameof(RestoredFolderStatus));
+
+    public static string PanelPresets => Get(nameof(PanelPresets));
+
+    public static string PresetsHint => Get(nameof(PresetsHint));
+
+    public static string SavePreset => Get(nameof(SavePreset));
+
+    public static string ApplyPreset => Get(nameof(ApplyPreset));
+
+    public static string ImportPreset => Get(nameof(ImportPreset));
+
+    public static string ExportPreset => Get(nameof(ExportPreset));
+
+    public static string DeletePreset => Get(nameof(DeletePreset));
+
+    public static string NoPresets => Get(nameof(NoPresets));
+
+    public static string PresetNameTitle => Get(nameof(PresetNameTitle));
+
+    public static string PresetNamePrompt => Get(nameof(PresetNamePrompt));
+
+    public static string PresetSavedStatus => Get(nameof(PresetSavedStatus));
+
+    public static string PresetAppliedStatus => Get(nameof(PresetAppliedStatus));
+
+    public static string PresetMissingTitle => Get(nameof(PresetMissingTitle));
+
+    public static string PresetMissing => Get(nameof(PresetMissing));
+
+    public static string PresetRenamedNote => Get(nameof(PresetRenamedNote));
+
+    public static string ConfirmDeletePreset => Get(nameof(ConfirmDeletePreset));
+
+    public static string PresetImportedStatus => Get(nameof(PresetImportedStatus));
+
+    public static string PresetExportedStatus => Get(nameof(PresetExportedStatus));
+
+    public static string PresetFileFilter => Get(nameof(PresetFileFilter));
+
+    public static string AboutHeader => Get(nameof(AboutHeader));
+
+    public static string AboutVersion => Get(nameof(AboutVersion));
+
+    public static string AboutLicence => Get(nameof(AboutLicence));
+
+    public static string AboutDisclaimer => Get(nameof(AboutDisclaimer));
+
+    public static string AboutSafety => Get(nameof(AboutSafety));
 }

@@ -87,6 +87,14 @@ public sealed class PathToImageConverter : IValueConverter
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotSupportedException();
 }
 
+/// <summary>true ⇄ false, both ways (used to bind the second radio button of a pair to the same bool).</summary>
+public sealed class NotConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) => value is not true;
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => value is not true;
+}
+
 /// <summary>Visible when the value is true / non-null / a non-empty string. Parameter "invert" flips it.</summary>
 public sealed class VisibleWhenConverter : IValueConverter
 {

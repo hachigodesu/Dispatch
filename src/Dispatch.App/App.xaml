@@ -10,6 +10,7 @@
         <c:SeverityToBrushConverter x:Key="SeverityToBrush" />
         <c:PathToImageConverter x:Key="PathToImage" />
         <c:VisibleWhenConverter x:Key="VisibleWhen" />
+        <c:NotConverter x:Key="Not" />
 
         <!-- A small coloured pill used for compatibility and "not installed" badges. -->
         <Style x:Key="Badge" TargetType="Border">

@@ -11,7 +11,7 @@
   <data name="TabSettings" xml:space="preserve"><value>Settings</value></data>
   <data name="Refresh" xml:space="preserve"><value>Refresh</value></data>
   <data name="GameRunning" xml:space="preserve"><value>Euro Truck Simulator 2 is running. Close the game before making changes.</value></data>
-  <data name="ReadOnlyNotice" xml:space="preserve"><value>This version only reads your files. Editing comes in the next milestone.</value></data>
+  <data name="ReadOnlyNotice" xml:space="preserve"><value>Dispatch backs up a profile before every change and never writes while the game is running.</value></data>
   <data name="Scanning" xml:space="preserve"><value>Scanning mods…</value></data>
   <data name="Ready" xml:space="preserve"><value>Ready</value></data>
   <data name="NoProfileSelected" xml:space="preserve"><value>Select a profile to see its mods.</value></data>
@@ -62,4 +62,85 @@
   <data name="ModsSummary" xml:space="preserve"><value>{0} mods · {1} local · {2} Workshop</value></data>
   <data name="ProfilesSummary" xml:space="preserve"><value>{0} profiles</value></data>
   <data name="StatusScanned" xml:space="preserve"><value>{0} mods scanned in {1:F1} s ({2} from cache)</value></data>
+  <data name="MoveUp" xml:space="preserve"><value>Up</value></data>
+  <data name="MoveDown" xml:space="preserve"><value>Down</value></data>
+  <data name="MoveTop" xml:space="preserve"><value>To top</value></data>
+  <data name="MoveBottom" xml:space="preserve"><value>To bottom</value></data>
+  <data name="Remove" xml:space="preserve"><value>Remove</value></data>
+  <data name="Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Discard" xml:space="preserve"><value>Discard changes</value></data>
+  <data name="UnsavedChanges" xml:space="preserve"><value>Unsaved changes</value></data>
+  <data name="EditHint" xml:space="preserve"><value>Drag to reorder, or use the buttons (Alt+↑/↓). Add mods from the "Add mods" panel.</value></data>
+  <data name="SaveBlockedGameRunning" xml:space="preserve"><value>Close the game to save.</value></data>
+  <data name="PanelDetails" xml:space="preserve"><value>Details</value></data>
+  <data name="PanelAdd" xml:space="preserve"><value>Add mods</value></data>
+  <data name="PanelBackups" xml:space="preserve"><value>Backups</value></data>
+  <data name="AddSelected" xml:space="preserve"><value>Add to top</value></data>
+  <data name="AddHint" xml:space="preserve"><value>Mods that aren't active in this profile. New mods go to the top, like in the game.</value></data>
+  <data name="FilterAvailable" xml:space="preserve"><value>Filter</value></data>
+  <data name="BackupsHint" xml:space="preserve"><value>Dispatch backs up the profile before every change. Restoring also backs up the current state first.</value></data>
+  <data name="RestoreBackup" xml:space="preserve"><value>Restore selected backup</value></data>
+  <data name="OpenBackupFolder" xml:space="preserve"><value>Open backup folder</value></data>
+  <data name="NoBackups" xml:space="preserve"><value>No backups yet.</value></data>
+  <data name="SavedStatus" xml:space="preserve"><value>Saved {0}. Backup: {1}</value></data>
+  <data name="ConfirmRestoreTitle" xml:space="preserve"><value>Restore backup</value></data>
+  <data name="ConfirmRestore" xml:space="preserve"><value>Restore the backup from {0}?
+
+The profile's current files are backed up first, so you can undo this.</value></data>
+  <data name="RestoredStatus" xml:space="preserve"><value>Restored the backup from {0}.</value></data>
+  <data name="AskSaveTitle" xml:space="preserve"><value>Unsaved changes</value></data>
+  <data name="AskSave" xml:space="preserve"><value>Save the changes to "{0}" first?</value></data>
+  <data name="ErrorTitle" xml:space="preserve"><value>Dispatch</value></data>
+  <data name="Duplicate" xml:space="preserve"><value>Duplicate…</value></data>
+  <data name="Rename" xml:space="preserve"><value>Rename…</value></data>
+  <data name="DuplicateTitle" xml:space="preserve"><value>Duplicate profile</value></data>
+  <data name="RenameTitle" xml:space="preserve"><value>Rename profile</value></data>
+  <data name="DuplicateIntro" xml:space="preserve"><value>Make a copy of "{0}" under a new name. The original isn't changed.</value></data>
+  <data name="RenameIntro" xml:space="preserve"><value>Give "{0}" a new name. The original folder is moved into Dispatch's backups, so you can undo the rename.</value></data>
+  <data name="NewName" xml:space="preserve"><value>New name</value></data>
+  <data name="CopyWhat" xml:space="preserve"><value>What to copy</value></data>
+  <data name="CopyEverything" xml:space="preserve"><value>Everything (saves, settings, mods)</value></data>
+  <data name="CopyFresh" xml:space="preserve"><value>Fresh start: settings and mods, but no saves</value></data>
+  <data name="KeepWotLink" xml:space="preserve"><value>Keep the World of Trucks link</value></data>
+  <data name="Destination" xml:space="preserve"><value>Where the copy goes</value></data>
+  <data name="DestinationLocal" xml:space="preserve"><value>Local profile</value></data>
+  <data name="DestinationCloud" xml:space="preserve"><value>Steam Cloud (through the game)</value></data>
+  <data name="DestinationCloudHint" xml:space="preserve"><value>Dispatch creates a local copy. To move it to Steam Cloud, select it in the game, edit the profile and tick "Use Steam Cloud"; the game then moves it.</value></data>
+  <data name="Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Working" xml:space="preserve"><value>Working…</value></data>
+  <data name="DuplicatedStatus" xml:space="preserve"><value>Created "{0}".</value></data>
+  <data name="DuplicatedCloudStatus" xml:space="preserve"><value>Created "{0}" as a local profile. In the game, edit it and tick "Use Steam Cloud" to move it to Steam Cloud.</value></data>
+  <data name="RenamedStatus" xml:space="preserve"><value>Renamed to "{0}". The original is in Dispatch's backups (Settings → Removed and renamed profiles).</value></data>
+  <data name="FullBackupsHeader" xml:space="preserve"><value>Removed and renamed profiles</value></data>
+  <data name="FullBackupsHint" xml:space="preserve"><value>When you rename a profile, Dispatch keeps the original folder here. Restoring puts it back under its old name (only if that name is free).</value></data>
+  <data name="RestoreFolder" xml:space="preserve"><value>Restore profile</value></data>
+  <data name="ConfirmRestoreFolder" xml:space="preserve"><value>Put "{0}" back as it was on {1}?</value></data>
+  <data name="RestoredFolderStatus" xml:space="preserve"><value>"{0}" is back.</value></data>
+  <data name="PanelPresets" xml:space="preserve"><value>Presets</value></data>
+  <data name="PresetsHint" xml:space="preserve"><value>Save a load order to reuse it in other profiles or share it as a file.</value></data>
+  <data name="SavePreset" xml:space="preserve"><value>Save current load order…</value></data>
+  <data name="ApplyPreset" xml:space="preserve"><value>Apply to this profile</value></data>
+  <data name="ImportPreset" xml:space="preserve"><value>Import…</value></data>
+  <data name="ExportPreset" xml:space="preserve"><value>Export…</value></data>
+  <data name="DeletePreset" xml:space="preserve"><value>Delete</value></data>
+  <data name="NoPresets" xml:space="preserve"><value>No presets yet.</value></data>
+  <data name="PresetNameTitle" xml:space="preserve"><value>Save preset</value></data>
+  <data name="PresetNamePrompt" xml:space="preserve"><value>Name for this preset:</value></data>
+  <data name="PresetSavedStatus" xml:space="preserve"><value>Saved preset "{0}".</value></data>
+  <data name="PresetAppliedStatus" xml:space="preserve"><value>Applied "{0}": {1} mods. Review the list, then press Save.</value></data>
+  <data name="PresetMissingTitle" xml:space="preserve"><value>Some mods aren't installed</value></data>
+  <data name="PresetMissing" xml:space="preserve"><value>{0} of the preset's mods aren't installed and were left out:
+
+{1}</value></data>
+  <data name="PresetRenamedNote" xml:space="preserve"><value>{0} mods were matched by file name (their ID differs on this PC).</value></data>
+  <data name="ConfirmDeletePreset" xml:space="preserve"><value>Delete the preset "{0}"? This can't be undone.</value></data>
+  <data name="PresetImportedStatus" xml:space="preserve"><value>Imported "{0}".</value></data>
+  <data name="PresetExportedStatus" xml:space="preserve"><value>Exported to {0}.</value></data>
+  <data name="PresetFileFilter" xml:space="preserve"><value>Dispatch presets (*.dispatch-preset.json)|*.dispatch-preset.json|JSON files (*.json)|*.json</value></data>
+  <data name="AboutHeader" xml:space="preserve"><value>About</value></data>
+  <data name="AboutVersion" xml:space="preserve"><value>Dispatch {0}</value></data>
+  <data name="AboutLicence" xml:space="preserve"><value>Public domain (The Unlicense). Third-party libraries keep their own licences (see THIRD-PARTY-NOTICES.md).</value></data>
+  <data name="AboutDisclaimer" xml:space="preserve"><value>Dispatch is not affiliated with or endorsed by SCS Software. Euro Truck Simulator 2 is a trademark of SCS Software.</value></data>
+  <data name="AboutSafety" xml:space="preserve"><value>Dispatch backs up profile files before every change, never writes while the game is running, and never modifies Workshop content or the game's own backups.</value></data>
 </root>

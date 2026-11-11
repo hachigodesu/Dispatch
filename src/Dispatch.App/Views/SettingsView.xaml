@@ -74,6 +74,36 @@
                 <Button Content="{x:Static res:Strings.OpenLogFolder}" Command="{Binding OpenLogFolderCommand}" Margin="8,0,0,0" />
             </StackPanel>
             <TextBlock Text="{Binding Settings.DataFolder}" Style="{StaticResource Muted}" FontSize="11" Margin="0,6,0,0" />
+
+            <TextBlock Text="{x:Static res:Strings.FullBackupsHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
+            <TextBlock Text="{x:Static res:Strings.FullBackupsHint}" Style="{StaticResource Muted}" Margin="0,0,0,8" />
+            <TextBlock Text="{x:Static res:Strings.NoBackups}" Style="{StaticResource Muted}"
+                       Visibility="{Binding Profiles.FullBackups.Count, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
+            <ListBox ItemsSource="{Binding Profiles.FullBackups}" SelectedItem="{Binding Profiles.SelectedFullBackup}" MaxHeight="220"
+                     Visibility="{Binding Profiles.FullBackups.Count, Converter={StaticResource VisibleWhen}}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="vm:BackupItemViewModel">
+                        <StackPanel Margin="0,2">
+                            <TextBlock FontWeight="SemiBold"><Run Text="{Binding Backup.ProfileName, Mode=OneWay}" /> · <Run Text="{Binding When, Mode=OneWay}" /></TextBlock>
+                            <TextBlock Text="{Binding FilesLabel}" Style="{StaticResource Muted}" FontSize="11" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Content="{x:Static res:Strings.RestoreFolder}" Command="{Binding Profiles.RestoreFolderCommand}"
+                    HorizontalAlignment="Left" Margin="0,8,0,0" />
+
+            <TextBlock Text="{x:Static res:Strings.AboutHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/Assets/dispatch.ico" Width="48" Height="48" Margin="0,0,12,0" VerticalAlignment="Top" />
+                <StackPanel MaxWidth="760">
+                    <TextBlock Text="{Binding Settings.AppVersion}" FontWeight="SemiBold" />
+                    <TextBlock Text="{x:Static res:Strings.AppSubtitle}" Style="{StaticResource Muted}" />
+                    <TextBlock Text="{x:Static res:Strings.AboutSafety}" TextWrapping="Wrap" Margin="0,6,0,0" />
+                    <TextBlock Text="{x:Static res:Strings.AboutLicence}" Style="{StaticResource Muted}" Margin="0,6,0,0" />
+                    <TextBlock Text="{x:Static res:Strings.AboutDisclaimer}" Style="{StaticResource Muted}" Margin="0,2,0,12" />
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

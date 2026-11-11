@@ -28,7 +28,9 @@ public sealed record ProfileInfo(
 }
 
 /// <summary>A profile's load order, top of the in-game list (highest priority) first.</summary>
-public sealed record LoadOrderRead(IReadOnlyList<ActiveModEntry> TopFirst, IReadOnlyList<SiiFormat> Layers, DateTime FileWriteUtc);
+/// <param name="SourceHash">SHA-256 of profile.sii as read; saving is refused if the file no longer matches.</param>
+public sealed record LoadOrderRead(IReadOnlyList<ActiveModEntry> TopFirst, IReadOnlyList<SiiFormat> Layers, DateTime FileWriteUtc,
+                                   byte[] SourceHash);
 
 public static class ProfileRepository
 {
@@ -67,7 +69,8 @@ public static class ProfileRepository
         var fileOrder = ProfileText.ReadActiveMods(decoded.Text);
 
         // active_mods[0] is the BOTTOM of the in-game list (spike S3), so reverse for top-first.
-        return new LoadOrderRead(fileOrder.Reverse().ToList(), decoded.Layers, File.GetLastWriteTimeUtc(profile.ProfileSiiPath));
+        return new LoadOrderRead(fileOrder.Reverse().ToList(), decoded.Layers, File.GetLastWriteTimeUtc(profile.ProfileSiiPath),
+                                 System.Security.Cryptography.SHA256.HashData(data));
     }
 
     /// <summary>Only folders whose name is valid hex-encoded UTF-8 and that contain profile.sii are profiles.</summary>
