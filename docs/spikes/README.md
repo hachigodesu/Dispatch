@@ -24,7 +24,7 @@ Accepted fallbacks (unverified because no real data uses them):
 - 20-character name limit for CJK names: counted as characters.
 
 Optional, not blocking M1: S6 (direct Steam Cloud writes; the MVP keeps cloud profiles read-only) and the oracle
-comparisons against SII_Decrypt and Extractor. S11 (drag & drop on .NET 10) runs at the start of M1.
+comparisons against SII_Decrypt and Extractor. S11 (drag & drop on .NET 10) runs at the start of M2.
 
 | Spike | Topic | Status | Report |
 |---|---|---|---|
@@ -38,4 +38,4 @@ comparisons against SII_Decrypt and Extractor. S11 (drag & drop on .NET 10) runs
 | S8 | Package readers on real data | ✅ Done | [S8-mod-scan.md](S8-mod-scan.md) |
 | S9 | `AEM!` / `MZ` packages | ✅ Closed: no decryption; names from profiles' `active_mods` (2 of 6), the game's log verdicts, else the file name. The game keeps no mod-info cache | [S8-mod-scan.md](S8-mod-scan.md#opaque-packages-s9-preview) |
 | S10 | HashFS v2 details | ✅ Layout confirmed on 10 real archives; all real archives use salt 0 (oracle comparison optional) | [S8-mod-scan.md](S8-mod-scan.md#hashfs-v2) |
-| S11 | gong-wpf-dragdrop on .NET 10 | ⏳ M1 | — |
+| S11 | gong-wpf-dragdrop on .NET 10 | ⏳ Start of M2 (first needed for reordering) | — |

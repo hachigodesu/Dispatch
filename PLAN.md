@@ -367,6 +367,17 @@ The spikes in §7, each with a written result in `docs/spikes/Sx-*.md`. **Exit:*
 - Compatibility badges (version mismatch, missing DLC, no version info, unreadable).
 - "Game is running" banner.
 
+**M1 status (2026-11-12): done.** Built as planned, with these deliberate simplifications:
+- **No first-run wizard yet:** detection problems show as a banner, and Settings has manual path overrides. A
+  wizard isn't needed while auto-detection works; it can come with the installer (M4).
+- **No DI container:** services are created in `App.OnStartup` (easier to follow for a beginner).
+  Microsoft.Extensions.Hosting is dropped.
+- **Own VDF reader** (`Detection/Vdf.cs`, ~150 lines) instead of ValveKeyValue: one fewer dependency, no licence question.
+- **Tests use real temp-folder trees** (`FakePc`) instead of `System.IO.Abstractions`' MockFileSystem: closer to
+  reality, nothing to learn.
+- **S11 (drag & drop on .NET 10) moved to the start of M2**, where reordering is first needed.
+- Solution file is `Dispatch.slnx` (.NET 10's XML format).
+
 ### M2: Editing load orders safely
 - Enable/disable and drag & drop reordering. A newly enabled mod goes to the top, as in-game. Save via `SafeWriter`.
 - Game-running guard, concurrent-change detection, unsaved-changes prompt.
@@ -412,7 +423,7 @@ All spikes work on **copies** in a scratch folder, or on a throwaway profile **`
 | **S8** | Readers on real data + version/DLC matching | Scan your 228 + 3 mods. Report format, manifest success, failures and timings. Compare Dispatch's compatibility verdicts with the `Incompatible mod` lines in `game.log.txt` | All non-opaque mods parsed. Verdicts agree. Cold scan < 15 s, cached < 1 s |
 | **S9** | `AEM!` / `MZ` packages (you chose "try harder") | **Started in M0.** Findings: the game reads them, but they are deliberately protected (encrypted-looking data, thousands of fake ZIP signatures, forged ZIP directories). **Decrypting them would circumvent the authors' protection, so Dispatch won't.** Remaining non-circumventing work (time-boxed): (a) take the display name from any profile's `active_mods` entry (`…\|Display Name`); (b) use the game's own verdicts in `game.log.txt` (`Incompatible mod - <id>`); (c) check whether the game caches mod info or icons in `Documents\…\cache` or `mods_info.sii`. | Opaque, but with the best available name and the game's compatibility verdict. Never write to these files |
 | **S10** | HashFS v2 details (salt, metadata) | Read the 10 v2 mods. Compare file lists with Extractor's output (oracle) | Lists match |
-| **S11** | gong-wpf-dragdrop on .NET 10 | Tiny WPF prototype list | Works → use it. Breaks → hand-rolled drag & drop |
+| **S11** (moved to M2) | gong-wpf-dragdrop on .NET 10 | Tiny WPF prototype list | Works → use it. Breaks → hand-rolled drag & drop |
 
 Other risks, handled by design:
 - **A game update changes a format**: readers are version-aware. Dispatch refuses to write a file it couldn't fully read, and shows clear "unknown format" messages.

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>Dispatch</AssemblyName>
+    <RootNamespace>Dispatch.App</RootNamespace>
+    <Product>Dispatch</Product>
+    <Description>A mod manager for Euro Truck Simulator 2</Description>
+    <Version>0.1.0</Version>
+    <!-- WPF0001: the Fluent theme (ThemeMode) is marked experimental. CA1001/CA1515/CA1822: noisy for view models. -->
+    <NoWarn>$(NoWarn);WPF0001;CA1515;CA1822;CA1001;CA1863</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Sinks.File" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dispatch.Core\Dispatch.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- UI strings live in Strings.resx so the app can be translated later (PLAN.md decision).
+         Strings.Designer.cs is regenerated with tools/gen-strings.py; a unit test checks they match. -->
+    <EmbeddedResource Update="Resources\Strings.resx" LogicalName="Dispatch.App.Resources.Strings.resources" />
+  </ItemGroup>
+</Project>

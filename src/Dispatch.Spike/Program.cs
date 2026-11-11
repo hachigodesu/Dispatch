@@ -21,6 +21,7 @@ internal static partial class Program
             "profiles" => ProfilesSpike.Run(OutDir()),
             "mods" => ModsSpike.Run(OutDir()),
             "probe" => ProbeSpike.Run(args[1], args.Skip(2)),
+            "env" => EnvSpike.Run(),
             "s3-read" or "s2-write" or "s2-check" or "s4-duplicate" or "restore" or "roundtrip" or "decode"
                 => InGameSpikes.Run(command, args[1..]),
             _ => Help(),

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AppTitle" xml:space="preserve"><value>Dispatch</value></data>
+  <data name="AppSubtitle" xml:space="preserve"><value>A mod manager for Euro Truck Simulator 2</value></data>
+  <data name="TabProfiles" xml:space="preserve"><value>Profiles</value></data>
+  <data name="TabMods" xml:space="preserve"><value>Mods</value></data>
+  <data name="TabSettings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="GameRunning" xml:space="preserve"><value>Euro Truck Simulator 2 is running. Close the game before making changes.</value></data>
+  <data name="ReadOnlyNotice" xml:space="preserve"><value>This version only reads your files. Editing comes in the next milestone.</value></data>
+  <data name="Scanning" xml:space="preserve"><value>Scanning mods…</value></data>
+  <data name="Ready" xml:space="preserve"><value>Ready</value></data>
+  <data name="NoProfileSelected" xml:space="preserve"><value>Select a profile to see its mods.</value></data>
+  <data name="LoadOrderHint" xml:space="preserve"><value>Top of the list = highest priority, as in the game's Mod Manager.</value></data>
+  <data name="CloudReadOnly" xml:space="preserve"><value>Steam Cloud profile: read-only in Dispatch. To edit it, turn off "Use Steam Cloud" for this profile in the game.</value></data>
+  <data name="NotInstalled" xml:space="preserve"><value>Not installed</value></data>
+  <data name="ActiveMods" xml:space="preserve"><value>Active mods</value></data>
+  <data name="Saves" xml:space="preserve"><value>saves</value></data>
+  <data name="SearchMods" xml:space="preserve"><value>Search mods</value></data>
+  <data name="ModDetailsNone" xml:space="preserve"><value>Select a mod to see its details.</value></data>
+  <data name="Author" xml:space="preserve"><value>Author</value></data>
+  <data name="Version" xml:space="preserve"><value>Version</value></data>
+  <data name="Categories" xml:space="preserve"><value>Categories</value></data>
+  <data name="Format" xml:space="preserve"><value>Format</value></data>
+  <data name="Location" xml:space="preserve"><value>Location</value></data>
+  <data name="Size" xml:space="preserve"><value>Size</value></data>
+  <data name="CompatibleVersions" xml:space="preserve"><value>Compatible versions</value></data>
+  <data name="DlcDependencies" xml:space="preserve"><value>Requires DLC</value></data>
+  <data name="Issues" xml:space="preserve"><value>Notes</value></data>
+  <data name="Description" xml:space="preserve"><value>Description</value></data>
+  <data name="Compatibility" xml:space="preserve"><value>Compatibility</value></data>
+  <data name="UsedIn" xml:space="preserve"><value>Active in profiles</value></data>
+  <data name="SettingsDetected" xml:space="preserve"><value>What Dispatch found</value></data>
+  <data name="UserDataFolder" xml:space="preserve"><value>Game user folder</value></data>
+  <data name="InstallFolder" xml:space="preserve"><value>Game install folder</value></data>
+  <data name="GameVersion" xml:space="preserve"><value>Game version</value></data>
+  <data name="SteamLibraries" xml:space="preserve"><value>Steam libraries</value></data>
+  <data name="SteamAccounts" xml:space="preserve"><value>Steam accounts</value></data>
+  <data name="OwnedDlc" xml:space="preserve"><value>DLC installed</value></data>
+  <data name="Overrides" xml:space="preserve"><value>Manual paths</value></data>
+  <data name="OverridesHint" xml:space="preserve"><value>Leave a box empty to detect the folder automatically.</value></data>
+  <data name="Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="SaveAndRedetect" xml:space="preserve"><value>Save and detect again</value></data>
+  <data name="OpenDataFolder" xml:space="preserve"><value>Open Dispatch's data folder</value></data>
+  <data name="OpenLogFolder" xml:space="preserve"><value>Open log folder</value></data>
+  <data name="Problems" xml:space="preserve"><value>Problems</value></data>
+  <data name="ProblemsBanner" xml:space="preserve"><value>Dispatch couldn't find everything. See Settings.</value></data>
+  <data name="NoProblems" xml:space="preserve"><value>No problems found.</value></data>
+  <data name="CompatOk" xml:space="preserve"><value>Compatible</value></data>
+  <data name="CompatNoInfo" xml:space="preserve"><value>No version info</value></data>
+  <data name="CompatMismatch" xml:space="preserve"><value>Other game version</value></data>
+  <data name="CompatMissingDlc" xml:space="preserve"><value>Missing DLC</value></data>
+  <data name="CompatUnreadable" xml:space="preserve"><value>Unreadable</value></data>
+  <data name="SourceLocal" xml:space="preserve"><value>Local</value></data>
+  <data name="SourceWorkshop" xml:space="preserve"><value>Workshop</value></data>
+  <data name="KindLocal" xml:space="preserve"><value>Local</value></data>
+  <data name="KindCloud" xml:space="preserve"><value>Steam Cloud</value></data>
+  <data name="ModsSummary" xml:space="preserve"><value>{0} mods · {1} local · {2} Workshop</value></data>
+  <data name="ProfilesSummary" xml:space="preserve"><value>{0} profiles</value></data>
+  <data name="StatusScanned" xml:space="preserve"><value>{0} mods scanned in {1:F1} s ({2} from cache)</value></data>
+</root>

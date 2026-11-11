@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Dispatch.App/Dispatch.App.csproj" />
     <Project Path="src/Dispatch.Core/Dispatch.Core.csproj" />
     <Project Path="src/Dispatch.Spike/Dispatch.Spike.csproj" />
   </Folder>

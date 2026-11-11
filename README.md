@@ -2,7 +2,8 @@
 
 A mod manager for Euro Truck Simulator 2 (Windows).
 
-Status: **Milestone 0 — spikes.** See [PLAN.md](PLAN.md).
+Status: **Milestone 1: read-only app** (M0 spikes done). See [PLAN.md](PLAN.md) and
+[docs/walkthrough-m1.md](docs/walkthrough-m1.md) for how the code is organised.
 
 Dispatch is not affiliated with or endorsed by SCS Software. "Euro Truck Simulator 2"
 is a trademark of SCS Software.
@@ -14,7 +15,10 @@ Requires the .NET 10 SDK.
 ```
 dotnet build
 dotnet test
+dotnet run --project src/Dispatch.App
 ```
+
+M1 only reads game files. Dispatch's own data (settings, cache, logs) lives in `%LOCALAPPDATA%\Dispatch`.
 
 ## Licence
 
