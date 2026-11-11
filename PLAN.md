@@ -407,8 +407,7 @@ destination = local copy plus the guided in-game step (§5.10).
 apply. Apply loads the preset into the editor as *unsaved changes*, so writing still goes through the normal safe save.
 Mods are matched by ID, then by file name; missing ones are listed with Workshop links. Release: app icon
 (`tools/make-icon.py`), About section, `installer/Dispatch.iss` (per-user, keeps data on uninstall unless asked) and
-`installer/build.ps1` (tests → self-contained, compressed single-file publish of about 65 MB → Inno Setup). **Inno Setup isn't
-installed on the dev PC yet, so the setup.exe hasn't been compiled.** No separate log viewer: Settings → "Open log
+`installer/build.ps1` (tests → self-contained, compressed single-file publish of about 65 MB → Inno Setup). (The installer was compiled and smoke-tested later, with v1.) No separate log viewer: Settings → "Open log
 folder" opens the daily log files. Version 0.4.0.
 
 - Save, load, export and import presets. Apply a preset to a profile, with a missing-mods report.
@@ -423,6 +422,16 @@ folder" opens the daily log files. Version 0.4.0.
   saved straight away through the safe save, or added to the editor when that profile has unsaved edits.
 
 ### v1
+
+**v1 status (2026-11-12): done (version 0.5.0), except direct Steam Cloud editing (S6 not run; cloud stays read-only).**
+Copy load order to other profiles (each target backed up). Install by dropping or picking `.scs`/`.zip` (checked by content,
+temp-file copy, replaced versions and same-name folder mods go to the Recycle Bin); uninstall to the Recycle Bin, with the
+option to remove the mods from the profiles using them; Workshop items are never touched. Launch via `steam://rungameid/227300`
+(asks about unsaved changes first). Duplicates: same package ID, or same display name across packages, with the older copy
+(by version, then file date) marked; "Show" filter (duplicates / not used in any profile / problems). Tags and notes per
+mod in `%LOCALAPPDATA%\Dispatch\notes.json`, searchable. Installer compiled and smoke-tested (silent per-user install, app
+runs, uninstall keeps data).
+
 - Copy the load order from one profile to another existing profile.
 - Search, filters (category, format, compatibility, source), tags and notes.
 - Install mods by dropping `.scs`/`.zip` (header-checked, copied into `mod\`). Uninstall sends files to the Recycle Bin (`FileSystem.DeleteFile(…, RecycleOption.SendToRecycleBin)`). Workshop items are never deleted.

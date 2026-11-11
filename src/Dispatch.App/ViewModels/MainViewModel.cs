@@ -22,6 +22,7 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly IPlatform _platform;
     private readonly AppPaths _paths;
     private readonly DispatcherTimer _gameWatch;
+    private readonly IDialogs _dialogs;
 
     public MainViewModel(IPlatform platform, AppPaths paths, AppSettings settings, IDialogs dialogs)
     {
@@ -32,7 +33,10 @@ public sealed partial class MainViewModel : ObservableObject
         BackupService Backups() => new(paths.Backups, new BackupRetention(settings.BackupRetentionSmall, settings.BackupRetentionFull));
         Profiles = new ProfilesViewModel(dialogs, () => new SafeWriter(platform, Backups(), game.ProcessName), Backups,
                                          () => RefreshCommand.ExecuteAsync(null));
-        Mods = new ModsViewModel(Profiles);
+        var notes = Dispatch.Core.Mods.ModNotesStore.Load(Path.Combine(paths.Root, "notes.json"));
+        Mods = new ModsViewModel(Profiles, dialogs, () => new Dispatch.Core.Mods.ModInstaller(platform, game.ProcessName, RecycleBin.Send),
+                                 notes, () => RefreshCommand.ExecuteAsync(null));
+        _dialogs = dialogs;
 
         // Poll for the game process every 2 seconds (cheap) so the banner is always current.
         _gameWatch = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
@@ -69,7 +73,35 @@ public sealed partial class MainViewModel : ObservableObject
 
     public bool IsIdle => !IsBusy;
 
-    partial void OnIsGameRunningChanged(bool value) => Profiles.IsGameRunning = value;
+    partial void OnIsGameRunningChanged(bool value)
+    {
+        Profiles.IsGameRunning = value;
+        Mods.OnGameRunningChanged();
+        LaunchGameCommand.NotifyCanExecuteChanged();
+    }
+
+    private bool CanLaunch() => !IsGameRunning;
+
+    /// <summary>Starts the game through Steam (with your Steam launch options). Asks about unsaved changes first.</summary>
+    [RelayCommand(CanExecute = nameof(CanLaunch))]
+    private void LaunchGame()
+    {
+        if (!Profiles.ConfirmLeave())
+        {
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo("steam://rungameid/" + Dispatch.Core.Games.GameDefinition.Ets2.SteamAppId)
+            { UseShellExecute = true })?.Dispose();
+            Log.Information("Launched the game through Steam");
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            _dialogs.ShowError(string.Format(CultureInfo.CurrentCulture, Strings.LaunchFailed, ex.Message));
+        }
+    }
 
     public ObservableCollection<string> Problems { get; } = [];
 

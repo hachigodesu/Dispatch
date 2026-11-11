@@ -19,6 +19,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
                 <TextBlock Text="{x:Static res:Strings.AppTitle}" FontSize="24" FontWeight="SemiBold" />
@@ -27,7 +28,9 @@
             <TextBlock Grid.Column="1" Text="{Binding GameVersion}" VerticalAlignment="Center" Margin="0,0,16,0"
                        Style="{StaticResource Muted}" />
             <!-- The command disables the button while a refresh runs. -->
-            <Button Grid.Column="2" Content="{x:Static res:Strings.Refresh}" Command="{Binding RefreshCommand}"
+            <Button Grid.Column="2" Content="{x:Static res:Strings.LaunchGame}" Command="{Binding LaunchGameCommand}"
+                    MinWidth="110" VerticalAlignment="Center" Margin="0,0,8,0" Style="{StaticResource AccentButtonStyle}" />
+            <Button Grid.Column="3" Content="{x:Static res:Strings.Refresh}" Command="{Binding RefreshCommand}"
                     MinWidth="96" VerticalAlignment="Center" />
         </Grid>
 

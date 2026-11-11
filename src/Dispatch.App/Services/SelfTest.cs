@@ -26,6 +26,23 @@ internal sealed class AutoYesDialogs : IDialogs
 
     public Queue<string> TextAnswers { get; } = new();
 
+    public Queue<IReadOnlyList<string>> FilesAnswers { get; } = new();
+
+    public Queue<string[]> ProfilePicks { get; } = new();
+
+    public bool? YesNoCancelAnswer { get; set; } = true;
+
+    public IReadOnlyList<string> PickOpenFiles(string filter) => FilesAnswers.Count > 0 ? FilesAnswers.Dequeue() : [];
+
+    public bool? AskYesNoCancel(string title, string message) => YesNoCancelAnswer;
+
+    public IReadOnlyList<ViewModels.ProfileItemViewModel> PickProfiles(string title, string prompt,
+                                                                        IReadOnlyList<ViewModels.ProfileItemViewModel> profiles)
+    {
+        var names = ProfilePicks.Count > 0 ? ProfilePicks.Dequeue() : [];
+        return profiles.Where(p => names.Contains(p.Name)).ToList();
+    }
+
     public Queue<string> FileAnswers { get; } = new();
 
     public string? AskText(string title, string prompt, string initial) => TextAnswers.Count > 0 ? TextAnswers.Dequeue() : null;
@@ -92,7 +109,8 @@ internal static class SelfTest
             bool m3 = await DuplicateRenameAsync(vm, dialogs, profileName, Step);
             bool m4 = Presets(vm, dialogs, profileName, resultFile, Step);
             bool bulk = await BulkAndDeleteAsync(vm, dialogs, profileName, Step);
-            m4 = m4 && bulk;
+            bool v1 = await V1Async(vm, dialogs, profileName, resultFile, Step);
+            m4 = m4 && bulk && v1;
             Step($"dialog errors: {(dialogs.Errors.Count == 0 ? "none" : string.Join(" / ", dialogs.Errors))}");
             ok = saved && restored && m3 && m4 && !vm.Mods.TypeOptions.Contains("Maps") && dialogs.Errors.Count == 0;
         }
@@ -104,6 +122,86 @@ internal static class SelfTest
         Step(ok ? "RESULT: PASS" : "RESULT: FAIL");
         await File.WriteAllTextAsync(resultFile, log.ToString());
         return ok;
+    }
+
+    /// <summary>
+    /// v1: install two generated test mods (same name, different versions) → duplicate detection → notes → uninstall;
+    /// copy a load order onto a throwaway copy of the test profile.
+    /// </summary>
+    private static async Task<bool> V1Async(MainViewModel vm, AutoYesDialogs dialogs, string profileName, string resultFile, Action<string> step)
+    {
+        // Two tiny generated mods with the same display name: 1.0 and 1.1.
+        string dir = Path.Combine(Path.GetDirectoryName(resultFile)!, "selftest-mods");
+        Directory.CreateDirectory(dir);
+        string MakeMod(string file, string version)
+        {
+            string path = Path.Combine(dir, file);
+            File.Delete(path);
+            using var zip = System.IO.Compression.ZipFile.Open(path, System.IO.Compression.ZipArchiveMode.Create);
+            using var w = new StreamWriter(zip.CreateEntry("manifest.sii").Open());
+            w.Write($"SiiNunit\n{{\nmod_package : .package_name\n{{\n package_version: \"{version}\"\n display_name: \"Dispatch Self-Test Mod\"\n category[]: \"other\"\n}}\n}}\n");
+            return path;
+        }
+
+        var files = new[] { MakeMod("DispatchSelfTest_a.scs", "1.0"), MakeMod("DispatchSelfTest_b.scs", "1.1") };
+        step($"Install mods… button enabled: {vm.Mods.InstallCommand.CanExecute(null)}");
+        if (!vm.Mods.InstallCommand.CanExecute(null)) { return false; }
+        await vm.Mods.InstallFilesAsync(files);
+        var a = vm.Mods.ById.GetValueOrDefault("DispatchSelfTest_a");
+        var b = vm.Mods.ById.GetValueOrDefault("DispatchSelfTest_b");
+        bool installed = a is not null && b is not null;
+        bool dupes = installed && a!.IsDuplicate && a.Duplicate!.IsOlder && b!.IsDuplicate && !b.Duplicate!.IsOlder;
+        vm.Mods.Show = Resources.Strings.ShowDuplicates;
+        bool filter = vm.Mods.Items.Contains(a!) && vm.Mods.Items.Contains(b!);
+        vm.Mods.Show = Resources.Strings.ShowAll;
+        step($"install 2 test mods: {installed}; duplicate/older detected: {dupes}; Duplicates filter shows them: {filter}; message: {vm.Mods.Message}");
+
+        // Notes: set, reload from disk, clear.
+        b!.TagsText = "selftest, temporary";
+        b.NoteText = "made by the self-test";
+        var reloaded = Dispatch.Core.Mods.ModNotesStore.Load(Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dispatch", "notes.json")).Get(b.PackageId);
+        bool notes = reloaded.Tags.SequenceEqual(["selftest", "temporary"]) && reloaded.Note == "made by the self-test";
+        vm.Mods.Filter = "temporary";
+        bool searchable = vm.Mods.Items.Contains(b);
+        vm.Mods.Filter = "";
+        b.TagsText = "";
+        b.NoteText = "";
+        step($"tags/notes saved: {notes}; found by searching a tag: {searchable}");
+
+        // Uninstall both (to the Recycle Bin); they aren't active anywhere, so no profile question.
+        vm.Mods.SelectedMods.Clear();
+        vm.Mods.SelectedMods.Add(vm.Mods.ById["DispatchSelfTest_a"]);
+        vm.Mods.SelectedMods.Add(vm.Mods.ById["DispatchSelfTest_b"]);
+        await vm.Mods.UninstallCommand.ExecuteAsync(null);
+        bool uninstalled = !vm.Mods.ById.ContainsKey("DispatchSelfTest_a") && !vm.Mods.ById.ContainsKey("DispatchSelfTest_b");
+        step($"uninstall to Recycle Bin: {uninstalled}");
+
+        // Copy load order: make a throwaway copy, change its order, copy the test profile's order onto it.
+        string copyName = profileName + "Cp";
+        var p = vm.Profiles;
+        p.Selected = p.Items.First(i => i.Name == profileName && !i.IsCloud);
+        var order = p.LoadOrder.Select(l => l.PackageId).ToList();
+        dialogs.ProfileDialogAnswers.Enqueue((copyName, false));
+        await p.DuplicateCommand.ExecuteAsync(null);
+        p.Selected = p.Items.First(i => i.Name == copyName);
+        p.SelectedEntry = p.LoadOrder[0];
+        p.MoveBottomCommand.Execute(null);
+        await p.SaveCommand.ExecuteAsync(null);
+        p.Selected = p.Items.First(i => i.Name == profileName && !i.IsCloud);
+        dialogs.ProfilePicks.Enqueue([copyName]);
+        await p.CopyLoadOrderCommand.ExecuteAsync(null);
+        var copy = p.Items.First(i => i.Name == copyName);
+        bool copied = Dispatch.Core.Profiles.ProfileRepository.ReadLoadOrder(copy.Profile).TopFirst.Select(e => e.PackageId).SequenceEqual(order);
+        step($"copy load order {profileName} → {copyName}: {copied}; message: {p.Message}");
+
+        var tidy = new Dispatch.Core.Safety.BackupService(Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dispatch", "backups"));
+        tidy.BackupWholeFolder(copy.Profile, Dispatch.Core.Safety.BackupReason.Manual, move: true);
+        await vm.RefreshCommand.ExecuteAsync(null);
+        Directory.Delete(dir, recursive: true);
+
+        return installed && dupes && filter && notes && searchable && uninstalled && copied;
     }
 
     /// <summary>

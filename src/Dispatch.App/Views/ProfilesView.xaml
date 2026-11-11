@@ -24,6 +24,7 @@
                 <Button Content="{x:Static res:Strings.Duplicate}" Command="{Binding DuplicateCommand}" Margin="0,0,6,6" />
                 <Button Content="{x:Static res:Strings.Rename}" Command="{Binding RenameCommand}" Margin="0,0,6,6" />
                 <Button Content="{x:Static res:Strings.DeleteProfile}" Command="{Binding DeleteProfileCommand}" Margin="0,0,6,6" />
+                <Button Content="{x:Static res:Strings.CopyLoadOrder}" Command="{Binding CopyLoadOrderCommand}" Margin="0,0,6,6" />
             </WrapPanel>
             <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}">
                 <ListBox.ItemTemplate>
@@ -83,6 +84,7 @@
                 <ListBox x:Name="LoadOrderList" ItemsSource="{Binding LoadOrder}" SelectedItem="{Binding SelectedEntry}"
                          HorizontalContentAlignment="Stretch"
                          SelectionMode="Extended" b:MultiSelect.SelectedItems="{Binding SelectedEntries}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          dd:DragDrop.IsDragSource="{Binding CanEdit}" dd:DragDrop.IsDropTarget="{Binding CanEdit}"
                          dd:DragDrop.DropHandler="{Binding DropHandler}">
                     <ListBox.InputBindings>

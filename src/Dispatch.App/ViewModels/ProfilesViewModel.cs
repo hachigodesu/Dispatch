@@ -74,13 +74,15 @@ public sealed partial class ProfilesViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanSave))]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand), nameof(DiscardCommand), nameof(DuplicateCommand), nameof(RenameCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand), nameof(DiscardCommand), nameof(DuplicateCommand), nameof(RenameCommand),
+                                nameof(CopyLoadOrderCommand))]
     private bool _isDirty;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanSave))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand), nameof(RestoreBackupCommand), nameof(DuplicateCommand),
-                                nameof(RenameCommand), nameof(RestoreFolderCommand), nameof(DeleteProfileCommand))]
+                                nameof(RenameCommand), nameof(RestoreFolderCommand), nameof(DeleteProfileCommand),
+                                nameof(CopyLoadOrderCommand))]
     private bool _isGameRunning;
 
     [ObservableProperty]
@@ -89,7 +91,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DuplicateCommand), nameof(RenameCommand), nameof(RestoreFolderCommand),
-                                nameof(DeleteProfileCommand), nameof(RecycleFullBackupCommand))]
+                                nameof(DeleteProfileCommand), nameof(RecycleFullBackupCommand), nameof(CopyLoadOrderCommand))]
     private bool _isWorking;
 
     [ObservableProperty]
@@ -164,6 +166,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
         DuplicateCommand.NotifyCanExecuteChanged();
         RenameCommand.NotifyCanExecuteChanged();
         DeleteProfileCommand.NotifyCanExecuteChanged();
+        CopyLoadOrderCommand.NotifyCanExecuteChanged();
         if (_selectingProgrammatically || newValue == _shown)
         {
             return;

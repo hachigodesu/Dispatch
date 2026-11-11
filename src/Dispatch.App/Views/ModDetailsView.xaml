@@ -22,6 +22,16 @@
                     <TextBlock Text="{Binding CompatLabel}" Style="{StaticResource BadgeText}" />
                 </Border>
                 <TextBlock Text="{Binding Compatibility.Detail}" TextWrapping="Wrap" Margin="0,6,0,4" />
+                <Border Background="#22B25E00" BorderBrush="#B25E00" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,4,0,4"
+                        Visibility="{Binding IsDuplicate, Converter={StaticResource VisibleWhen}}">
+                    <TextBlock Text="{Binding DuplicateText}" TextWrapping="Wrap" />
+                </Border>
+
+                <TextBlock Text="{x:Static res:Strings.TagsLabel}" Style="{StaticResource Muted}" Margin="0,10,0,2" />
+                <TextBox Text="{Binding TagsText, UpdateSourceTrigger=PropertyChanged, Delay=600}" ToolTip="{x:Static res:Strings.TagsHint}" />
+                <TextBlock Text="{x:Static res:Strings.NoteLabel}" Style="{StaticResource Muted}" Margin="0,6,0,2" />
+                <TextBox Text="{Binding NoteText, UpdateSourceTrigger=PropertyChanged, Delay=600}" AcceptsReturn="True"
+                         TextWrapping="Wrap" MinHeight="48" MaxHeight="120" VerticalScrollBarVisibility="Auto" />
 
                 <Grid Margin="0,6,0,0">
                     <Grid.ColumnDefinitions>

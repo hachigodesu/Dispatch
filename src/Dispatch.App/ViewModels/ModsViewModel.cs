@@ -1,10 +1,13 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Dispatch.App.Resources;
 using Dispatch.App.Services;
 using Dispatch.Core.Mods;
+using Dispatch.Core.Safety;
+using Serilog;
 
 namespace Dispatch.App.ViewModels;
 
@@ -15,13 +18,32 @@ namespace Dispatch.App.ViewModels;
 public sealed partial class ModsViewModel : ObservableObject
 {
     private readonly ProfilesViewModel _profiles;
+    private readonly IDialogs _dialogs;
+    private readonly Func<ModInstaller> _installer;
+    private readonly ModNotesStore _notes;
+    private readonly Func<Task> _refresh;
     private List<ModItemViewModel> _all = [];
+    private string? _modDir;
 
-    public ModsViewModel(ProfilesViewModel profiles)
+    public ModsViewModel(ProfilesViewModel profiles, IDialogs dialogs, Func<ModInstaller> installer, ModNotesStore notes, Func<Task> refresh)
     {
         _profiles = profiles;
+        _dialogs = dialogs;
+        _installer = installer;
+        _notes = notes;
+        _refresh = refresh;
         SelectedMods.CollectionChanged += (_, _) => OnSelectionChanged();
+        ShowOptions = [Strings.ShowAll, Strings.ShowDuplicates, Strings.ShowUnused, Strings.ShowProblems];
+        _show = Strings.ShowAll;
     }
+
+    /// <summary>"All mods", "Duplicates and older copies", "Not used in any profile", "Incompatible or missing DLC".</summary>
+    public IReadOnlyList<string> ShowOptions { get; }
+
+    [ObservableProperty]
+    private string _show;
+
+    partial void OnShowChanged(string value) => ApplyFilter();
 
     public ObservableCollection<ModItemViewModel> Items { get; } = [];
 
@@ -55,6 +77,7 @@ public sealed partial class ModsViewModel : ObservableObject
     private string _message = "";
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand), nameof(UninstallCommand))]
     private bool _isWorking;
 
     public string SelectionLabel => SelectedMods.Count > 1
@@ -82,6 +105,8 @@ public sealed partial class ModsViewModel : ObservableObject
             }
         }
 
+        _modDir = snapshot.Environment.ModDir;
+        var duplicates = ModDuplicates.Find(snapshot.Scan.Mods);
         var keepIds = SelectedMods.Select(m => m.PackageId).ToHashSet(StringComparer.Ordinal);
         var byId = new Dictionary<string, ModItemViewModel>(StringComparer.Ordinal);
         _all = [];
@@ -90,7 +115,8 @@ public sealed partial class ModsViewModel : ObservableObject
             var vm = new ModItemViewModel(mod, snapshot.Compatibility.GetValueOrDefault(mod.PackageId)
                                                ?? CompatibilityChecker.Evaluate(mod, snapshot.Environment.Version, snapshot.Environment.OwnedDlc, snapshot.GameLog),
                                           snapshot.NamesFromProfiles.GetValueOrDefault(mod.PackageId),
-                                          usedIn.GetValueOrDefault(mod.PackageId) ?? []);
+                                          usedIn.GetValueOrDefault(mod.PackageId) ?? [],
+                                          _notes.Get(mod.PackageId), SaveNote, duplicates.GetValueOrDefault(mod));
             _all.Add(vm);
             byId.TryAdd(mod.PackageId, vm);
         }
@@ -115,6 +141,7 @@ public sealed partial class ModsViewModel : ObservableObject
 
         TypeFilter = TypeOptions.Contains(keepType) ? keepType : Strings.AllTypes;
         ApplyFilter();
+        InstallCommand.NotifyCanExecuteChanged(); // the mod folder is known now
 
         // Keep the selection across refreshes (e.g. after "Add to profile").
         SelectedMods.Clear();
@@ -138,7 +165,7 @@ public sealed partial class ModsViewModel : ObservableObject
         string type = TypeFilter;
         var keep = Selected;
         Items.Clear();
-        foreach (var m in _all.Where(m => m.Matches(f) && MatchesType(m, type)))
+        foreach (var m in _all.Where(m => m.Matches(f) && MatchesType(m, type) && MatchesShow(m)))
         {
             Items.Add(m);
         }
@@ -146,8 +173,31 @@ public sealed partial class ModsViewModel : ObservableObject
         Selected = keep is not null && Items.Contains(keep) ? keep : null;
     }
 
+    private bool MatchesShow(ModItemViewModel m) =>
+        Show == Strings.ShowDuplicates ? m.IsDuplicate
+        : Show == Strings.ShowUnused ? m.UsedIn.Count == 0
+        : Show != Strings.ShowProblems || m.CompatStatus is CompatStatus.VersionMismatch or CompatStatus.MissingDlc or CompatStatus.Unreadable;
+
+    private void SaveNote(ModItemViewModel mod)
+    {
+        try
+        {
+            _notes.Set(mod.PackageId, mod.Note);
+        }
+        catch (IOException ex)
+        {
+            Log.Warning(ex, "Saving the note for {Mod} failed", mod.PackageId);
+        }
+    }
+
     private static bool MatchesType(ModItemViewModel m, string type) =>
         type == Strings.AllTypes || (type == Strings.NoType ? m.TypeLabels.Count == 0 : m.TypeLabels.Contains(type));
+
+    public void OnGameRunningChanged()
+    {
+        InstallCommand.NotifyCanExecuteChanged();
+        OnSelectionChanged();
+    }
 
     /// <summary>Called after profiles reload, so the right-click menu lists the current profiles.</summary>
     public void RefreshTargets() => OnSelectionChanged();
@@ -172,6 +222,132 @@ public sealed partial class ModsViewModel : ObservableObject
         OnPropertyChanged(nameof(HasRemoveTargets));
         AddToProfileCommand.NotifyCanExecuteChanged();
         RemoveFromProfileCommand.NotifyCanExecuteChanged();
+        UninstallCommand.NotifyCanExecuteChanged();
+    }
+
+    // ---- install / uninstall ---------------------------------------------------------------------
+
+    private bool CanInstall() => !IsWorking && !_profiles.IsGameRunning && _modDir is not null;
+
+    [RelayCommand(CanExecute = nameof(CanInstall))]
+    private async Task InstallAsync()
+    {
+        var files = _dialogs.PickOpenFiles(Strings.ModFileFilter);
+        if (files.Count > 0)
+        {
+            await InstallFilesAsync(files);
+        }
+    }
+
+    /// <summary>Installs dropped or picked files (only .scs/.zip; each is checked by its content first).</summary>
+    public async Task InstallFilesAsync(IReadOnlyList<string> files)
+    {
+        if (!CanInstall())
+        {
+            return;
+        }
+
+        IsWorking = true;
+        try
+        {
+            var results = _installer().Install(_modDir!, files, name =>
+                _dialogs.Confirm(Strings.ReplaceTitle, string.Format(CultureInfo.CurrentCulture, Strings.ReplaceQuestion, name)));
+            foreach (var r in results)
+            {
+                Log.Information("Install {Source}: {Outcome} ({Message})", r.Source, r.Outcome, r.Message);
+            }
+
+            string summary = string.Format(CultureInfo.CurrentCulture, Strings.InstallSummary,
+                results.Count(r => r.Outcome == InstallOutcome.Installed), results.Count(r => r.Outcome == InstallOutcome.Replaced),
+                results.Count(r => r.Outcome == InstallOutcome.Skipped), results.Count(r => r.Outcome == InstallOutcome.Failed));
+            var notes = results.Where(r => r.Outcome is not InstallOutcome.Installed || r.Message != "Installed.")
+                               .Select(r => $"• {Path.GetFileName(r.Source)}: {r.Message}").ToList();
+            if (notes.Count > 0)
+            {
+                _dialogs.ShowInfo(summary + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, notes));
+            }
+
+            await _refresh();
+            Message = summary;
+        }
+        catch (Exception ex) when (ex is GameRunningException or IOException or UnauthorizedAccessException)
+        {
+            _dialogs.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsWorking = false;
+        }
+    }
+
+    private bool CanUninstall() => !IsWorking && !_profiles.IsGameRunning && CurrentSelection().Count > 0;
+
+    /// <summary>Sends the selected local mods to the Recycle Bin; optionally removes them from the profiles that use them.</summary>
+    [RelayCommand(CanExecute = nameof(CanUninstall))]
+    private async Task UninstallAsync()
+    {
+        var selection = CurrentSelection();
+        var workshop = selection.Where(m => m.Mod.Source == ModSource.Workshop).ToList();
+        var local = selection.Where(m => m.Mod.Source == ModSource.Local).ToList();
+        if (workshop.Count > 0)
+        {
+            _dialogs.ShowInfo(string.Format(CultureInfo.CurrentCulture, Strings.UninstallWorkshopNote,
+                                            string.Join(", ", workshop.Select(m => m.DisplayName))));
+        }
+
+        if (local.Count == 0 ||
+            !_dialogs.Confirm(Strings.UninstallTitle, string.Format(CultureInfo.CurrentCulture, Strings.UninstallQuestion, local.Count,
+                                                                    string.Join(Environment.NewLine, local.Select(m => "• " + m.DisplayName)))))
+        {
+            return;
+        }
+
+        var ids = local.Select(m => m.PackageId).ToHashSet(StringComparer.Ordinal);
+        var usedBy = _profiles.EditableProfiles.Where(p => p.LoadOrder!.TopFirst.Any(e => ids.Contains(e.PackageId))).ToList();
+        bool removeFromProfiles = false;
+        if (usedBy.Count > 0)
+        {
+            var answer = _dialogs.AskYesNoCancel(Strings.UninstallTitle, string.Format(CultureInfo.CurrentCulture,
+                Strings.UninstallActiveQuestion, string.Join(", ", usedBy.Select(p => p.Name))));
+            if (answer is null)
+            {
+                return;
+            }
+
+            removeFromProfiles = answer.Value;
+        }
+
+        IsWorking = true;
+        try
+        {
+            if (removeFromProfiles)
+            {
+                foreach (var profile in usedBy)
+                {
+                    await _profiles.RemoveModsAsync(local, profile);
+                }
+            }
+
+            var installer = _installer();
+            foreach (var m in local)
+            {
+                installer.Uninstall(m.Mod);
+                Log.Information("Uninstalled {Mod} ({Path}) to the Recycle Bin", m.PackageId, m.Mod.Path);
+            }
+
+            SelectedMods.Clear();
+            await _refresh();
+            Message = string.Format(CultureInfo.CurrentCulture, Strings.UninstalledStatus, local.Count);
+        }
+        catch (Exception ex) when (ex is GameRunningException or InvalidOperationException or IOException or UnauthorizedAccessException
+                                       or OperationCanceledException)
+        {
+            _dialogs.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsWorking = false;
+        }
     }
 
     /// <summary>The selected mods in list order, or the focused one when nothing is multi-selected.</summary>

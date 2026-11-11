@@ -319,4 +319,64 @@ public static class Strings
     public static string MultiSelectHint => Get(nameof(MultiSelectHint));
 
     public static string NoEditableProfiles => Get(nameof(NoEditableProfiles));
+
+    public static string InstallMods => Get(nameof(InstallMods));
+
+    public static string UninstallMods => Get(nameof(UninstallMods));
+
+    public static string DropHint => Get(nameof(DropHint));
+
+    public static string ModFileFilter => Get(nameof(ModFileFilter));
+
+    public static string ReplaceTitle => Get(nameof(ReplaceTitle));
+
+    public static string ReplaceQuestion => Get(nameof(ReplaceQuestion));
+
+    public static string InstallSummary => Get(nameof(InstallSummary));
+
+    public static string UninstallTitle => Get(nameof(UninstallTitle));
+
+    public static string UninstallQuestion => Get(nameof(UninstallQuestion));
+
+    public static string UninstallActiveQuestion => Get(nameof(UninstallActiveQuestion));
+
+    public static string UninstallWorkshopNote => Get(nameof(UninstallWorkshopNote));
+
+    public static string UninstalledStatus => Get(nameof(UninstalledStatus));
+
+    public static string ShowAll => Get(nameof(ShowAll));
+
+    public static string ShowDuplicates => Get(nameof(ShowDuplicates));
+
+    public static string ShowUnused => Get(nameof(ShowUnused));
+
+    public static string ShowProblems => Get(nameof(ShowProblems));
+
+    public static string DuplicateBadge => Get(nameof(DuplicateBadge));
+
+    public static string OlderBadge => Get(nameof(OlderBadge));
+
+    public static string DuplicateSameId => Get(nameof(DuplicateSameId));
+
+    public static string DuplicateSameName => Get(nameof(DuplicateSameName));
+
+    public static string DuplicateOlder => Get(nameof(DuplicateOlder));
+
+    public static string TagsLabel => Get(nameof(TagsLabel));
+
+    public static string TagsHint => Get(nameof(TagsHint));
+
+    public static string NoteLabel => Get(nameof(NoteLabel));
+
+    public static string CopyLoadOrder => Get(nameof(CopyLoadOrder));
+
+    public static string CopyLoadOrderTitle => Get(nameof(CopyLoadOrderTitle));
+
+    public static string CopyLoadOrderPrompt => Get(nameof(CopyLoadOrderPrompt));
+
+    public static string CopiedStatus => Get(nameof(CopiedStatus));
+
+    public static string LaunchGame => Get(nameof(LaunchGame));
+
+    public static string LaunchFailed => Get(nameof(LaunchFailed));
 }

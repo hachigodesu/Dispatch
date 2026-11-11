@@ -10,11 +10,21 @@ namespace Dispatch.App.ViewModels;
 /// <summary>One installed mod, shaped for display. Wraps the immutable Core <see cref="ModInfo"/>.</summary>
 public sealed partial class ModItemViewModel : ObservableObject
 {
-    public ModItemViewModel(ModInfo mod, Compatibility compatibility, string? nameFromProfiles, IReadOnlyList<string> usedIn)
+    private readonly Action<ModItemViewModel>? _saveNote;
+    private bool _loadingNote;
+
+    public ModItemViewModel(ModInfo mod, Compatibility compatibility, string? nameFromProfiles, IReadOnlyList<string> usedIn,
+                            ModNote? note = null, Action<ModItemViewModel>? saveNote = null, DuplicateInfo? duplicate = null)
     {
         Mod = mod;
         Compatibility = compatibility;
         UsedIn = usedIn;
+        Duplicate = duplicate;
+        _saveNote = saveNote;
+        _loadingNote = true;
+        TagsText = string.Join(", ", note?.Tags ?? []);
+        NoteText = note?.Note ?? "";
+        _loadingNote = false;
 
         // Prefer the manifest's name for local mods; for Workshop and unreadable mods the name the game stored in a
         // profile is better (the game uses the Workshop title, which isn't on disk).
@@ -129,7 +139,63 @@ public sealed partial class ModItemViewModel : ObservableObject
         filter.Length == 0 ||
         DisplayName.Contains(filter, StringComparison.CurrentCultureIgnoreCase) ||
         PackageId.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
-        Author.Contains(filter, StringComparison.CurrentCultureIgnoreCase);
+        Author.Contains(filter, StringComparison.CurrentCultureIgnoreCase) ||
+        TagsText.Contains(filter, StringComparison.CurrentCultureIgnoreCase) ||
+        NoteText.Contains(filter, StringComparison.CurrentCultureIgnoreCase);
+
+    // ---- your tags and notes (saved as you type) -------------------------------------------------
+
+    [ObservableProperty]
+    private string _tagsText = "";
+
+    [ObservableProperty]
+    private string _noteText = "";
+
+    public ModNote Note => new(ModNote.ParseTags(TagsText), NoteText.Trim());
+
+    partial void OnTagsTextChanged(string value)
+    {
+        if (!_loadingNote)
+        {
+            _saveNote?.Invoke(this);
+        }
+    }
+
+    partial void OnNoteTextChanged(string value)
+    {
+        if (!_loadingNote)
+        {
+            _saveNote?.Invoke(this);
+        }
+    }
+
+    // ---- duplicates --------------------------------------------------------------------------------
+
+    public DuplicateInfo? Duplicate { get; }
+
+    public bool IsDuplicate => Duplicate is not null;
+
+    public string DuplicateBadge => Duplicate is null ? "" : Duplicate.IsOlder ? Strings.OlderBadge : Strings.DuplicateBadge;
+
+    public string DuplicateText
+    {
+        get
+        {
+            if (Duplicate is null)
+            {
+                return "";
+            }
+
+            string others = string.Join(", ", Duplicate.Others.Select(o =>
+                $"{System.IO.Path.GetFileName(o.Path)}{(o.Manifest?.PackageVersion is { } v ? " (" + v + ")" : "")}"));
+            string text = Duplicate.Kind == DuplicateKind.SameId
+                ? Strings.DuplicateSameId + " " + string.Format(CultureInfo.CurrentCulture, Strings.DuplicateSameName, others)
+                : string.Format(CultureInfo.CurrentCulture, Strings.DuplicateSameName, others);
+            return Duplicate.IsOlder
+                ? text + " " + string.Format(CultureInfo.CurrentCulture, Strings.DuplicateOlder, System.IO.Path.GetFileName(Duplicate.Newest.Path))
+                : text;
+        }
+    }
 }
 
 public sealed class ProfileItemViewModel(ProfileInfo profile, LoadOrderRead? loadOrder, string? error)

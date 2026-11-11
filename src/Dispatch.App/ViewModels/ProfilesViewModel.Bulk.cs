@@ -69,6 +69,53 @@ public sealed partial class ProfilesViewModel
         }
     }
 
+    // ---- copy load order to other profiles (v1) -----------------------------------------------
+
+    private bool CanCopyLoadOrder() =>
+        Selected?.LoadOrder is not null && !IsDirty && !IsGameRunning && !IsWorking && EditableProfiles.Any(p => p != Selected);
+
+    /// <summary>Replaces other profiles' load orders with this one (each target backed up first).</summary>
+    [RelayCommand(CanExecute = nameof(CanCopyLoadOrder))]
+    private async Task CopyLoadOrderAsync()
+    {
+        var source = Selected!;
+        var order = source.LoadOrder!.TopFirst;
+        var targets = _dialogs.PickProfiles(Strings.CopyLoadOrderTitle,
+            string.Format(CultureInfo.CurrentCulture, Strings.CopyLoadOrderPrompt, source.Name, order.Count),
+            EditableProfiles.Where(p => p.Profile.MainDir != source.Profile.MainDir).ToList());
+        if (targets.Count == 0)
+        {
+            return;
+        }
+
+        IsWorking = true;
+        int done = 0;
+        try
+        {
+            foreach (var target in targets)
+            {
+                var current = ProfileRepository.ReadLoadOrder(target.Profile); // fresh: the game may have saved
+                var backup = LoadOrderService.Save(_writer(), target.Profile, current, order);
+                Log.Information("Copied load order of {Source} to {Target} ({Count} mods), backup {Backup}",
+                                source.Profile.FolderName, target.Profile.FolderName, order.Count, backup.Id);
+                done++;
+            }
+        }
+        catch (Exception ex) when (ex is GameRunningException or ConcurrentChangeException or InvalidOperationException
+                                       or InvalidDataException or IOException or UnauthorizedAccessException)
+        {
+            _dialogs.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsWorking = false;
+        }
+
+        _keepSelection = source.Profile.MainDir;
+        await _refresh();
+        Message = string.Format(CultureInfo.CurrentCulture, Strings.CopiedStatus, source.Name, done);
+    }
+
     // ---- add / remove from the Mods tab --------------------------------------------------------
 
     /// <summary>

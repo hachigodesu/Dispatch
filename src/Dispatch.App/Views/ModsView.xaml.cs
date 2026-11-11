@@ -20,6 +20,25 @@ public partial class ModsView : UserControl
         Fill(RemoveMenu, vm.RemoveTargets, vm.RemoveFromProfileCommand);
     }
 
+    /// <summary>Shows a "copy" cursor only when files are dragged in.</summary>
+    private void OnFileDragOver(object sender, System.Windows.DragEventArgs e)
+    {
+        e.Effects = e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop)
+            ? System.Windows.DragDropEffects.Copy
+            : System.Windows.DragDropEffects.None;
+        e.Handled = true;
+    }
+
+    /// <summary>Dropping .scs/.zip files onto the list installs them (each is checked first).</summary>
+    private async void OnFileDrop(object sender, System.Windows.DragEventArgs e)
+    {
+        if (DataContext is ModsViewModel vm && e.Data.GetData(System.Windows.DataFormats.FileDrop) is string[] files)
+        {
+            e.Handled = true;
+            await vm.InstallFilesAsync(files);
+        }
+    }
+
     private static void Fill(MenuItem menu, IEnumerable<ProfileItemViewModel> targets, System.Windows.Input.ICommand command)
     {
         menu.Items.Clear();

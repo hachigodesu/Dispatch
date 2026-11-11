@@ -1,6 +1,6 @@
 # Manual test checklist (MVP)
 
-Automated coverage: 149 unit tests (`dotnet test`) plus the end-to-end self-test, which drives the real view models on
+Automated coverage: 178 unit tests (`dotnet test`) plus the end-to-end self-test, which drives the real view models on
 the throwaway profile `DispatchTest`:
 
 ```
@@ -64,8 +64,24 @@ and close the game unless a step says otherwise.
   import → **Apply** → an info box lists the missing mod; the rest is applied as unsaved changes; **Discard** undoes it.
 - [ ] **Delete** a preset → it asks first.
 
+## v1
+- [ ] **Launch game** (top right) starts ETS2 through Steam. With unsaved changes it asks first. While the game runs the
+  button is disabled.
+- [ ] **Copy load order to…** on DispatchTest → pick another test profile → its load order now matches; a backup was taken
+  (its Backups panel).
+- [ ] Mods tab → **Install mods…** → pick an `.scs`/`.zip` → it appears in the list. **Drag** a mod file from Explorer onto the
+  list → it's installed. Install the same file again → it asks whether to replace it (the old one goes to the Recycle Bin).
+- [ ] Try to install a `.txt` renamed to `.scs` → reported as "protected or unknown format" but installed; a real `.txt` is skipped.
+- [ ] Select a mod active in a test profile → **Uninstall…** → it asks whether to remove it from that profile as well → the
+  file is in the Recycle Bin.
+- [ ] Select a Workshop item → Uninstall says to unsubscribe in Steam and leaves it alone.
+- [ ] **Show → Duplicates and older copies**: lists mods installed twice; the older one has an orange "Older copy" badge and
+  the details panel names the other copy.
+- [ ] **Your tags** / **Your note** in the details panel: type something, restart Dispatch → it's still there; searching a
+  tag finds the mod.
+
 ## Release
-- [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-0.4.0-setup.exe`.
+- [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-0.5.0-setup.exe`.
 - [ ] Install: no admin prompt, Start-menu entry, the app starts. Uninstall: asks about deleting data; **No** keeps
   `%LOCALAPPDATA%\Dispatch\backups`.
 - [ ] Windows SmartScreen warns on first run (the build is unsigned, as decided).

@@ -26,6 +26,14 @@ public interface IDialogs
     string? PickOpenFile(string filter);
 
     string? PickSaveFile(string filter, string defaultName);
+
+    IReadOnlyList<string> PickOpenFiles(string filter);
+
+    /// <summary>Yes = true, No = false, Cancel = null.</summary>
+    bool? AskYesNoCancel(string title, string message);
+
+    IReadOnlyList<ViewModels.ProfileItemViewModel> PickProfiles(string title, string prompt,
+                                                                 IReadOnlyList<ViewModels.ProfileItemViewModel> profiles);
 }
 
 public sealed class Dialogs : IDialogs
@@ -69,5 +77,26 @@ public sealed class Dialogs : IDialogs
     {
         var d = new Microsoft.Win32.SaveFileDialog { Filter = filter, FileName = defaultName, OverwritePrompt = true };
         return d.ShowDialog(Application.Current.MainWindow) == true ? d.FileName : null;
+    }
+
+    public IReadOnlyList<string> PickOpenFiles(string filter)
+    {
+        var d = new Microsoft.Win32.OpenFileDialog { Filter = filter, CheckFileExists = true, Multiselect = true };
+        return d.ShowDialog(Application.Current.MainWindow) == true ? d.FileNames : [];
+    }
+
+    public bool? AskYesNoCancel(string title, string message) =>
+        MessageBox.Show(Application.Current.MainWindow, message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Question) switch
+        {
+            MessageBoxResult.Yes => true,
+            MessageBoxResult.No => false,
+            _ => null,
+        };
+
+    public IReadOnlyList<ViewModels.ProfileItemViewModel> PickProfiles(string title, string prompt,
+                                                                        IReadOnlyList<ViewModels.ProfileItemViewModel> profiles)
+    {
+        var d = new Views.PickProfilesDialog(title, prompt, profiles) { Owner = Application.Current.MainWindow };
+        return d.ShowDialog() == true ? d.Picked : [];
     }
 }

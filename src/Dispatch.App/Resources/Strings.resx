@@ -166,4 +166,38 @@ You can still get it back from the Recycle Bin until you empty it.</value></data
   <data name="NoType" xml:space="preserve"><value>(no type)</value></data>
   <data name="MultiSelectHint" xml:space="preserve"><value>Ctrl+click or Shift+click to select several. Right-click for more.</value></data>
   <data name="NoEditableProfiles" xml:space="preserve"><value>No local profiles</value></data>
+  <data name="InstallMods" xml:space="preserve"><value>Install mods…</value></data>
+  <data name="UninstallMods" xml:space="preserve"><value>Uninstall…</value></data>
+  <data name="DropHint" xml:space="preserve"><value>Drop .scs or .zip files here to install them.</value></data>
+  <data name="ModFileFilter" xml:space="preserve"><value>Mod files (*.scs;*.zip)|*.scs;*.zip</value></data>
+  <data name="ReplaceTitle" xml:space="preserve"><value>Mod already installed</value></data>
+  <data name="ReplaceQuestion" xml:space="preserve"><value>"{0}" is already installed. Replace it? The installed version goes to the Recycle Bin.</value></data>
+  <data name="InstallSummary" xml:space="preserve"><value>Installed {0}, replaced {1}, skipped {2}, failed {3}.</value></data>
+  <data name="UninstallTitle" xml:space="preserve"><value>Uninstall mods</value></data>
+  <data name="UninstallQuestion" xml:space="preserve"><value>Move {0} mod(s) to the Recycle Bin?
+
+{1}</value></data>
+  <data name="UninstallActiveQuestion" xml:space="preserve"><value>Some of these mods are active in profiles: {0}.
+
+Also remove them from those profiles? (Yes = remove them, No = leave the entries; the game will show them as missing.)</value></data>
+  <data name="UninstallWorkshopNote" xml:space="preserve"><value>Workshop items can't be uninstalled here; unsubscribe in Steam. Skipped: {0}</value></data>
+  <data name="UninstalledStatus" xml:space="preserve"><value>Moved {0} mod(s) to the Recycle Bin.</value></data>
+  <data name="ShowAll" xml:space="preserve"><value>All mods</value></data>
+  <data name="ShowDuplicates" xml:space="preserve"><value>Duplicates and older copies</value></data>
+  <data name="ShowUnused" xml:space="preserve"><value>Not used in any profile</value></data>
+  <data name="ShowProblems" xml:space="preserve"><value>Incompatible or missing DLC</value></data>
+  <data name="DuplicateBadge" xml:space="preserve"><value>Duplicate</value></data>
+  <data name="OlderBadge" xml:space="preserve"><value>Older copy</value></data>
+  <data name="DuplicateSameId" xml:space="preserve"><value>Installed more than once under the same name: the game can only use one.</value></data>
+  <data name="DuplicateSameName" xml:space="preserve"><value>Another copy of this mod is installed: {0}.</value></data>
+  <data name="DuplicateOlder" xml:space="preserve"><value>This copy is older than "{0}".</value></data>
+  <data name="TagsLabel" xml:space="preserve"><value>Your tags</value></data>
+  <data name="TagsHint" xml:space="preserve"><value>Comma-separated, e.g. map, needs ProMods</value></data>
+  <data name="NoteLabel" xml:space="preserve"><value>Your note</value></data>
+  <data name="CopyLoadOrder" xml:space="preserve"><value>Copy load order to…</value></data>
+  <data name="CopyLoadOrderTitle" xml:space="preserve"><value>Copy load order</value></data>
+  <data name="CopyLoadOrderPrompt" xml:space="preserve"><value>Replace the load order of these profiles with the one from "{0}" ({1} mods)? Each profile is backed up first.</value></data>
+  <data name="CopiedStatus" xml:space="preserve"><value>Copied the load order of "{0}" to {1} profile(s).</value></data>
+  <data name="LaunchGame" xml:space="preserve"><value>Launch game</value></data>
+  <data name="LaunchFailed" xml:space="preserve"><value>Couldn't start the game through Steam: {0}</value></data>
 </root>
