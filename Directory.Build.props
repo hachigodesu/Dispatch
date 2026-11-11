@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <!-- Analyzer rules relaxed for spike-stage code; revisit in M1 -->
+    <NoWarn>$(NoWarn);CA1062;CA1303;CA1305;CA1307;CA1309;CA1310;CA1716;CA1720;CA1724;CA1812;CA1819;CA1848;CA1860;CA2000</NoWarn>
+    <Authors>Dispatch contributors</Authors>
+    <Product>Dispatch</Product>
+  </PropertyGroup>
+</Project>

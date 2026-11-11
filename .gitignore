@@ -1,0 +1,19 @@
+# Build output
+bin/
+obj/
+artifacts/
+publish/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Spike output may contain decoded personal profile data — never commit it
+spike-output/
+
+# OS
+Thumbs.db
+desktop.ini
