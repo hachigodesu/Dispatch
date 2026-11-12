@@ -135,6 +135,49 @@ internal sealed class HashFsPackage : IModPackage
 
     public void Dispose() => _stream.Dispose();
 
+    /// <summary>Hashes of all non-directory entries (including textures, whose data Dispatch doesn't read).</summary>
+    public IEnumerable<ulong> FileHashes() =>
+        _entries.Where(kv => kv.Value.Any(e => !e.IsDirectory)).Select(kv => kv.Key);
+
+    /// <summary>Walks the directory listings from the root. Archives without listings give few or no names.</summary>
+    public IEnumerable<string> FilePaths()
+    {
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var stack = new Stack<string>();
+        stack.Push("");
+        while (stack.Count > 0)
+        {
+            string dir = stack.Pop();
+            if (!seen.Add(dir) || seen.Count > 200_000)
+            {
+                continue;
+            }
+
+            IReadOnlyList<string>? names;
+            try
+            {
+                names = ListDirectory(dir);
+            }
+            catch (InvalidDataException)
+            {
+                continue;
+            }
+
+            foreach (var name in names ?? [])
+            {
+                string full = dir.Length == 0 ? name.TrimEnd('/') : dir + "/" + name.TrimEnd('/');
+                if (name.EndsWith('/'))
+                {
+                    stack.Push(full);
+                }
+                else
+                {
+                    yield return full;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Looks a path up by hash. How a non-zero salt applies is unconfirmed (every real archive seen so far has
     /// salt 0), so a salted miss falls back to the unsalted hash.

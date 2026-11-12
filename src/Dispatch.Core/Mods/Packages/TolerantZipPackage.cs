@@ -40,6 +40,10 @@ internal sealed class TolerantZipPackage : IModPackage
 
     public IEnumerable<string> FileNames => _files.Keys;
 
+    public IEnumerable<string> FilePaths() => _files.Keys;
+
+    public IEnumerable<ulong> FileHashes() => _files.Keys.Select(ModPackage.PathHash);
+
     public static TolerantZipPackage Open(string path)
     {
         var fs = ModPackage.OpenShared(path);

@@ -20,7 +20,7 @@ public sealed partial class ModsViewModel : ObservableObject
     private readonly ProfilesViewModel _profiles;
     private readonly IDialogs _dialogs;
     private readonly Func<ModInstaller> _installer;
-    private readonly ModNotesStore _notes;
+    private ModNotesStore _notes;
     private readonly Func<Task> _refresh;
     private List<ModItemViewModel> _all = [];
     private string? _modDir;
@@ -33,9 +33,12 @@ public sealed partial class ModsViewModel : ObservableObject
         _notes = notes;
         _refresh = refresh;
         SelectedMods.CollectionChanged += (_, _) => OnSelectionChanged();
-        ShowOptions = [Strings.ShowAll, Strings.ShowDuplicates, Strings.ShowUnused, Strings.ShowProblems];
+        ShowOptions = [Strings.ShowAll, Strings.ShowDuplicates, Strings.ShowUnused, Strings.ShowProblems, Strings.ShowGameWarnings];
         _show = Strings.ShowAll;
     }
+
+    /// <summary>Switches to another game's notes (takes effect on the next Load).</summary>
+    public void UseNotes(ModNotesStore notes) => _notes = notes;
 
     /// <summary>"All mods", "Duplicates and older copies", "Not used in any profile", "Incompatible or missing DLC".</summary>
     public IReadOnlyList<string> ShowOptions { get; }
@@ -116,7 +119,8 @@ public sealed partial class ModsViewModel : ObservableObject
                                                ?? CompatibilityChecker.Evaluate(mod, snapshot.Environment.Version, snapshot.Environment.OwnedDlc, snapshot.GameLog),
                                           snapshot.NamesFromProfiles.GetValueOrDefault(mod.PackageId),
                                           usedIn.GetValueOrDefault(mod.PackageId) ?? [],
-                                          _notes.Get(mod.PackageId), SaveNote, duplicates.GetValueOrDefault(mod));
+                                          _notes.Get(mod.PackageId), SaveNote, duplicates.GetValueOrDefault(mod),
+                                          snapshot.GameLog?.MessagesFor(mod.PackageId) ?? [], snapshot.GameLog?.LastWriteUtc);
             _all.Add(vm);
             byId.TryAdd(mod.PackageId, vm);
         }
@@ -176,6 +180,7 @@ public sealed partial class ModsViewModel : ObservableObject
     private bool MatchesShow(ModItemViewModel m) =>
         Show == Strings.ShowDuplicates ? m.IsDuplicate
         : Show == Strings.ShowUnused ? m.UsedIn.Count == 0
+        : Show == Strings.ShowGameWarnings ? m.HasGameMessages
         : Show != Strings.ShowProblems || m.CompatStatus is CompatStatus.VersionMismatch or CompatStatus.MissingDlc or CompatStatus.Unreadable;
 
     private void SaveNote(ModItemViewModel mod)

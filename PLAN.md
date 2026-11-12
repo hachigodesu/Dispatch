@@ -439,11 +439,58 @@ runs, uninstall keeps data).
 - Duplicate and outdated detection: the same mod in several files or versions, or both locally and on the Workshop.
 - Direct Steam Cloud editing, if S6 allows it.
 
-### Later
-- Conflict detection: build a set of CityHash64 path hashes per mod (works for ZIP and HashFS, even without names), intersect the sets, and hint which mod wins (highest in the load order). Names are shown where available.
-- ATS support (second `GameDefinition`).
-- Show the game's own `game.log.txt` mod warnings in the UI.
-- Auto-update (Velopack) and more languages.
+### Later (v2)
+
+**Conflict detection: done (2026-11-12, not released yet).** Each mod's game files become a sorted set of path hashes
+(`ModPackage.PathHash` = CityHash64 of the lower-case path, which equals the stored HashFS entry hash), so ZIP, folder and
+HashFS mods compare even when an archive hides its names. Root-level files (manifest, icon, description, readme) are
+mod metadata and are ignored; protected (opaque) mods can't be checked and are counted as such. `ConflictAnalyzer` walks
+the load order top-first: the first mod with a file wins, and every later mod with the same file loses it to that one.
+In the Profiles tab a **Conflicts (n)** side panel lists "#a X replaces files of #b Y · n shared files", with example
+file names for the selected pair; rows get a purple "n conflicts" badge with a tooltip. The check re-runs 0.4 s after each
+change to the (unsaved) order, off the UI thread; file sets are cached by path/size/date. Measured on the largest real
+profile: 54 mods, 213 pairs, 1.8 s for the first check; later checks reuse the cached file sets. Self-test: two generated mods that
+share one file are installed, the higher one wins, reversing flips it, then everything is discarded and uninstalled.
+
+**Game log warnings: done (2026-11-12).** `GameLog.Parse` ties each `[mods]` / `Ignored unknown attribute` warning to
+the mod the game mounted on the line before (`[zipfs]|[hashfs] <file>: Created`), and only while those lines follow
+each other, so world-loading noise (dangling pointers etc.) isn't pinned on the last-mounted mod. On real data: messages
+for 148 installed mods, none for anything else. Shown as "The game says" in the mod details (in English, as the game
+writes them), plus a "The game reported problems" filter in the Mods tab.
+
+**ATS: done (2026-11-12).** A game switcher in the header appears when both games are found (install folder, or a
+Documents folder with `profiles`). The choice is remembered (`settings.json` `game`). Everything follows the selected
+game: detection, process guard, Steam launch ID, Workshop/cloud app ID, manual paths (separate per game), presets
+(`"game": "ats"`; the other game's presets are refused). ATS data lives in `%LOCALAPPDATA%\Dispatch\ats\` (cache,
+backups, notes, presets); ETS2 keeps the folders it always had, so nothing moves for existing users. Checked read-only
+against the real ATS install (1.61.3.18, 48 DLC, one profile); the self-test switches to ATS and back without saving
+the choice.
+
+**Updates: done (2026-11-12), active once the repository is public.** Instead of Velopack (which deletes its data folder
+on uninstall), `UpdateChecker` asks GitHub's release API for the newest non-draft release, at most once a day at start
+(Settings → Updates, on by default, plus "Check now"). The request carries only a generic user agent with the version.
+A banner offers Install update / What's new / Skip this version / Later. Installed copies (with `unins000.exe`) download
+the setup, check its size and SHA-256 against GitHub's asset digest or the checksum line in the release notes (no
+checksum → refused), only from `https://github.com/hachigodesu/Dispatch/releases/download/`, then run
+`setup.exe /SILENT /RELAUNCH=1` and close; the installer starts Dispatch again (`[Run]` entry with `Check: Relaunch`).
+Portable copies open the release page. While the repository is private GitHub answers 404: the automatic check only logs
+it (and waits a day), "Check now" says no public releases were found. Smoke-tested: plain silent install doesn't start
+the app, `/RELAUNCH=1` does, uninstall keeps the data.
+
+**Languages: done (2026-11-12).** German, Spanish, French, Polish, Portuguese (Brazil) and Russian, in
+`Strings.<lang>.resx` (satellite assemblies, bundled into the single-file exe). Settings → Language ("Same as Windows" by
+default; restart to apply). All app text, including mod types, backup reasons and compatibility explanations
+(`CompatReason` from Core), is translated; detailed Core messages (lint notes, detection problems, error texts) and the
+game's own log lines stay English, which the app says. `RepoConsistencyTests` checks every translation has exactly the
+English keys, the same `{0}` placeholders and the same file-filter `|` structure. The installer is translated too (Inno
+Setup's own language files plus its one custom question). Translations were written by Claude; a native speaker's
+review would help.
+
+- ~~Conflict detection.~~ Done (see above).
+- ~~ATS support (second `GameDefinition`).~~ Done.
+- ~~Show the game's own `game.log.txt` mod warnings in the UI.~~ Done.
+- ~~Auto-update and more languages.~~ Done (update check + verified installer instead of Velopack).
+- Direct Steam Cloud editing: still needs spike S6 (not started).
 
 ---
 

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AppTitle" xml:space="preserve"><value>Dispatch</value></data>
+  <data name="AppSubtitle" xml:space="preserve"><value>Menedżer modów do Euro Truck Simulator 2 i American Truck Simulator</value></data>
+  <data name="TabProfiles" xml:space="preserve"><value>Profile</value></data>
+  <data name="TabMods" xml:space="preserve"><value>Mody</value></data>
+  <data name="TabSettings" xml:space="preserve"><value>Ustawienia</value></data>
+  <data name="Refresh" xml:space="preserve"><value>Odśwież</value></data>
+  <data name="GameRunning" xml:space="preserve"><value>{0} jest uruchomiona. Zamknij grę, zanim wprowadzisz zmiany.</value></data>
+  <data name="ReadOnlyNotice" xml:space="preserve"><value>Dispatch tworzy kopię zapasową profilu przed każdą zmianą i nigdy nie zapisuje niczego, gdy gra działa.</value></data>
+  <data name="Scanning" xml:space="preserve"><value>Wczytywanie modów…</value></data>
+  <data name="Ready" xml:space="preserve"><value>Gotowe</value></data>
+  <data name="NoProfileSelected" xml:space="preserve"><value>Wybierz profil, aby zobaczyć jego mody.</value></data>
+  <data name="LoadOrderHint" xml:space="preserve"><value>Góra listy = najwyższy priorytet, tak jak w menedżerze modów w grze.</value></data>
+  <data name="CloudReadOnly" xml:space="preserve"><value>Profil Steam Cloud: w Dispatch tylko do odczytu. Aby go edytować, wyłącz w grze opcję „Użyj Steam Cloud” dla tego profilu.</value></data>
+  <data name="NotInstalled" xml:space="preserve"><value>Niezainstalowany</value></data>
+  <data name="ActiveMods" xml:space="preserve"><value>Aktywne mody</value></data>
+  <data name="Saves" xml:space="preserve"><value>zapisów</value></data>
+  <data name="SearchMods" xml:space="preserve"><value>Szukaj modów</value></data>
+  <data name="ModDetailsNone" xml:space="preserve"><value>Wybierz mod, aby zobaczyć szczegóły.</value></data>
+  <data name="Author" xml:space="preserve"><value>Autor</value></data>
+  <data name="Version" xml:space="preserve"><value>Wersja</value></data>
+  <data name="Categories" xml:space="preserve"><value>Kategorie</value></data>
+  <data name="Format" xml:space="preserve"><value>Format</value></data>
+  <data name="Location" xml:space="preserve"><value>Lokalizacja</value></data>
+  <data name="Size" xml:space="preserve"><value>Rozmiar</value></data>
+  <data name="CompatibleVersions" xml:space="preserve"><value>Zgodne wersje</value></data>
+  <data name="DlcDependencies" xml:space="preserve"><value>Wymagane DLC</value></data>
+  <data name="Issues" xml:space="preserve"><value>Uwagi</value></data>
+  <data name="Description" xml:space="preserve"><value>Opis</value></data>
+  <data name="Compatibility" xml:space="preserve"><value>Zgodność</value></data>
+  <data name="UsedIn" xml:space="preserve"><value>Aktywny w profilach</value></data>
+  <data name="SettingsDetected" xml:space="preserve"><value>Co Dispatch znalazł dla {0}</value></data>
+  <data name="UserDataFolder" xml:space="preserve"><value>Folder użytkownika gry</value></data>
+  <data name="InstallFolder" xml:space="preserve"><value>Folder instalacji gry</value></data>
+  <data name="GameVersion" xml:space="preserve"><value>Wersja gry</value></data>
+  <data name="SteamLibraries" xml:space="preserve"><value>Biblioteki Steam</value></data>
+  <data name="SteamAccounts" xml:space="preserve"><value>Konta Steam</value></data>
+  <data name="OwnedDlc" xml:space="preserve"><value>Zainstalowane DLC</value></data>
+  <data name="Overrides" xml:space="preserve"><value>Ręczne ścieżki dla {0}</value></data>
+  <data name="OverridesHint" xml:space="preserve"><value>Zostaw pole puste, aby folder został wykryty automatycznie.</value></data>
+  <data name="Browse" xml:space="preserve"><value>Przeglądaj…</value></data>
+  <data name="SaveAndRedetect" xml:space="preserve"><value>Zapisz i wykryj ponownie</value></data>
+  <data name="OpenDataFolder" xml:space="preserve"><value>Otwórz folder danych Dispatch</value></data>
+  <data name="OpenLogFolder" xml:space="preserve"><value>Otwórz folder dzienników</value></data>
+  <data name="Problems" xml:space="preserve"><value>Problemy</value></data>
+  <data name="ProblemsBanner" xml:space="preserve"><value>Dispatch nie znalazł wszystkiego. Zobacz Ustawienia.</value></data>
+  <data name="NoProblems" xml:space="preserve"><value>Nie znaleziono problemów.</value></data>
+  <data name="CompatOk" xml:space="preserve"><value>Zgodny</value></data>
+  <data name="CompatNoInfo" xml:space="preserve"><value>Brak informacji o wersji</value></data>
+  <data name="CompatMismatch" xml:space="preserve"><value>Inna wersja gry</value></data>
+  <data name="CompatMissingDlc" xml:space="preserve"><value>Brak DLC</value></data>
+  <data name="CompatUnreadable" xml:space="preserve"><value>Nieczytelny</value></data>
+  <data name="SourceLocal" xml:space="preserve"><value>Lokalny</value></data>
+  <data name="SourceWorkshop" xml:space="preserve"><value>Warsztat</value></data>
+  <data name="KindLocal" xml:space="preserve"><value>Lokalny</value></data>
+  <data name="KindCloud" xml:space="preserve"><value>Steam Cloud</value></data>
+  <data name="ModsSummary" xml:space="preserve"><value>Mody: {0} · lokalne: {1} · Warsztat: {2}</value></data>
+  <data name="ProfilesSummary" xml:space="preserve"><value>Profile: {0}</value></data>
+  <data name="StatusScanned" xml:space="preserve"><value>Wczytano mody: {0} w {1:F1} s (z pamięci podręcznej: {2})</value></data>
+  <data name="MoveUp" xml:space="preserve"><value>W górę</value></data>
+  <data name="MoveDown" xml:space="preserve"><value>W dół</value></data>
+  <data name="MoveTop" xml:space="preserve"><value>Na samą górę</value></data>
+  <data name="MoveBottom" xml:space="preserve"><value>Na sam dół</value></data>
+  <data name="Remove" xml:space="preserve"><value>Usuń</value></data>
+  <data name="Save" xml:space="preserve"><value>Zapisz</value></data>
+  <data name="Discard" xml:space="preserve"><value>Odrzuć zmiany</value></data>
+  <data name="UnsavedChanges" xml:space="preserve"><value>Niezapisane zmiany</value></data>
+  <data name="EditHint" xml:space="preserve"><value>Przeciągnij, aby zmienić kolejność, albo użyj przycisków (Alt+↑/↓). Mody dodasz w panelu „Dodaj mody”.</value></data>
+  <data name="SaveBlockedGameRunning" xml:space="preserve"><value>Zamknij grę, aby zapisać.</value></data>
+  <data name="PanelDetails" xml:space="preserve"><value>Szczegóły</value></data>
+  <data name="PanelAdd" xml:space="preserve"><value>Dodaj</value></data>
+  <data name="PanelBackups" xml:space="preserve"><value>Kopie</value></data>
+  <data name="AddSelected" xml:space="preserve"><value>Dodaj na górę</value></data>
+  <data name="AddHint" xml:space="preserve"><value>Mody, które nie są aktywne w tym profilu. Nowe mody trafiają na górę, tak jak w grze.</value></data>
+  <data name="FilterAvailable" xml:space="preserve"><value>Filtr</value></data>
+  <data name="BackupsHint" xml:space="preserve"><value>Dispatch tworzy kopię profilu przed każdą zmianą. Przywracanie najpierw też zapisuje kopię obecnego stanu.</value></data>
+  <data name="RestoreBackup" xml:space="preserve"><value>Przywróć wybraną kopię</value></data>
+  <data name="OpenBackupFolder" xml:space="preserve"><value>Otwórz folder kopii</value></data>
+  <data name="NoBackups" xml:space="preserve"><value>Brak kopii.</value></data>
+  <data name="SavedStatus" xml:space="preserve"><value>Zapisano {0}. Kopia: {1}</value></data>
+  <data name="ConfirmRestoreTitle" xml:space="preserve"><value>Przywróć kopię</value></data>
+  <data name="ConfirmRestore" xml:space="preserve"><value>Przywrócić kopię z {0}?
+
+Obecne pliki profilu zostaną najpierw zapisane w kopii, więc możesz to cofnąć.</value></data>
+  <data name="RestoredStatus" xml:space="preserve"><value>Przywrócono kopię z {0}.</value></data>
+  <data name="AskSaveTitle" xml:space="preserve"><value>Niezapisane zmiany</value></data>
+  <data name="AskSave" xml:space="preserve"><value>Najpierw zapisać zmiany w „{0}”?</value></data>
+  <data name="ErrorTitle" xml:space="preserve"><value>Dispatch</value></data>
+  <data name="Duplicate" xml:space="preserve"><value>Duplikuj…</value></data>
+  <data name="Rename" xml:space="preserve"><value>Zmień nazwę…</value></data>
+  <data name="DuplicateTitle" xml:space="preserve"><value>Duplikuj profil</value></data>
+  <data name="RenameTitle" xml:space="preserve"><value>Zmień nazwę profilu</value></data>
+  <data name="DuplicateIntro" xml:space="preserve"><value>Tworzy kopię „{0}” pod nową nazwą. Oryginał pozostaje bez zmian.</value></data>
+  <data name="RenameIntro" xml:space="preserve"><value>Nadaj „{0}” nową nazwę. Oryginalny folder zostanie przeniesiony do kopii Dispatch, więc zmianę nazwy można cofnąć.</value></data>
+  <data name="NewName" xml:space="preserve"><value>Nowa nazwa</value></data>
+  <data name="CopyWhat" xml:space="preserve"><value>Co skopiować</value></data>
+  <data name="CopyEverything" xml:space="preserve"><value>Wszystko (zapisy, ustawienia, mody)</value></data>
+  <data name="CopyFresh" xml:space="preserve"><value>Nowy start: ustawienia i mody, bez zapisów</value></data>
+  <data name="KeepWotLink" xml:space="preserve"><value>Zachowaj połączenie z World of Trucks</value></data>
+  <data name="Destination" xml:space="preserve"><value>Dokąd trafi kopia</value></data>
+  <data name="DestinationLocal" xml:space="preserve"><value>Profil lokalny</value></data>
+  <data name="DestinationCloud" xml:space="preserve"><value>Steam Cloud (przez grę)</value></data>
+  <data name="DestinationCloudHint" xml:space="preserve"><value>Dispatch tworzy kopię lokalną. Aby przenieść ją do Steam Cloud, wybierz ją w grze, edytuj profil i zaznacz „Użyj Steam Cloud”; gra ją wtedy przeniesie.</value></data>
+  <data name="Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Anuluj</value></data>
+  <data name="Working" xml:space="preserve"><value>Trwa praca…</value></data>
+  <data name="DuplicatedStatus" xml:space="preserve"><value>Utworzono „{0}”.</value></data>
+  <data name="DuplicatedCloudStatus" xml:space="preserve"><value>Utworzono „{0}” jako profil lokalny. W grze edytuj go i zaznacz „Użyj Steam Cloud”, aby przenieść go do Steam Cloud.</value></data>
+  <data name="RenamedStatus" xml:space="preserve"><value>Zmieniono nazwę na „{0}”. Oryginał jest w kopiach Dispatch (Ustawienia → Usunięte i przemianowane profile).</value></data>
+  <data name="FullBackupsHeader" xml:space="preserve"><value>Usunięte i przemianowane profile</value></data>
+  <data name="FullBackupsHint" xml:space="preserve"><value>Gdy zmieniasz nazwę profilu, Dispatch przechowuje tu oryginalny folder. Przywrócenie odtwarza go pod starą nazwą (tylko jeśli jest wolna).</value></data>
+  <data name="RestoreFolder" xml:space="preserve"><value>Przywróć profil</value></data>
+  <data name="ConfirmRestoreFolder" xml:space="preserve"><value>Przywrócić „{0}” w stanie z {1}?</value></data>
+  <data name="RestoredFolderStatus" xml:space="preserve"><value>„{0}” został przywrócony.</value></data>
+  <data name="PanelPresets" xml:space="preserve"><value>Szablony</value></data>
+  <data name="PresetsHint" xml:space="preserve"><value>Zapisz kolejność ładowania, aby użyć jej w innych profilach lub udostępnić jako plik.</value></data>
+  <data name="SavePreset" xml:space="preserve"><value>Zapisz obecną kolejność ładowania…</value></data>
+  <data name="ApplyPreset" xml:space="preserve"><value>Zastosuj do tego profilu</value></data>
+  <data name="ImportPreset" xml:space="preserve"><value>Importuj…</value></data>
+  <data name="ExportPreset" xml:space="preserve"><value>Eksportuj…</value></data>
+  <data name="DeletePreset" xml:space="preserve"><value>Usuń</value></data>
+  <data name="NoPresets" xml:space="preserve"><value>Brak szablonów.</value></data>
+  <data name="PresetNameTitle" xml:space="preserve"><value>Zapisz szablon</value></data>
+  <data name="PresetNamePrompt" xml:space="preserve"><value>Nazwa szablonu:</value></data>
+  <data name="PresetSavedStatus" xml:space="preserve"><value>Zapisano szablon „{0}”.</value></data>
+  <data name="PresetAppliedStatus" xml:space="preserve"><value>Zastosowano „{0}”: mody: {1}. Sprawdź listę, a potem kliknij Zapisz.</value></data>
+  <data name="PresetMissingTitle" xml:space="preserve"><value>Niektóre mody nie są zainstalowane</value></data>
+  <data name="PresetMissing" xml:space="preserve"><value>Mody z szablonu, które nie są zainstalowane i zostały pominięte ({0}):
+
+{1}</value></data>
+  <data name="PresetRenamedNote" xml:space="preserve"><value>Mody dopasowane po nazwie pliku (ich ID jest inne na tym komputerze): {0}.</value></data>
+  <data name="ConfirmDeletePreset" xml:space="preserve"><value>Usunąć szablon „{0}”? Tej operacji nie można cofnąć.</value></data>
+  <data name="PresetImportedStatus" xml:space="preserve"><value>Zaimportowano „{0}”.</value></data>
+  <data name="PresetExportedStatus" xml:space="preserve"><value>Wyeksportowano do {0}.</value></data>
+  <data name="PresetFileFilter" xml:space="preserve"><value>Szablony Dispatch (*.dispatch-preset.json)|*.dispatch-preset.json|Pliki JSON (*.json)|*.json</value></data>
+  <data name="AboutHeader" xml:space="preserve"><value>O programie</value></data>
+  <data name="AboutVersion" xml:space="preserve"><value>Dispatch {0}</value></data>
+  <data name="AboutLicence" xml:space="preserve"><value>Domena publiczna (The Unlicense). Biblioteki zewnętrzne zachowują własne licencje (zob. THIRD-PARTY-NOTICES.md).</value></data>
+  <data name="AboutDisclaimer" xml:space="preserve"><value>Dispatch nie jest powiązany z SCS Software ani przez nią wspierany. Euro Truck Simulator 2 i American Truck Simulator są znakami towarowymi SCS Software.</value></data>
+  <data name="AboutSafety" xml:space="preserve"><value>Dispatch tworzy kopie plików profilu przed każdą zmianą, nigdy nie zapisuje niczego, gdy gra działa, i nigdy nie zmienia zawartości Warsztatu ani własnych kopii zapasowych gry.</value></data>
+  <data name="DeleteProfile" xml:space="preserve"><value>Usuń…</value></data>
+  <data name="ConfirmDeleteProfileTitle" xml:space="preserve"><value>Usuń profil</value></data>
+  <data name="ConfirmDeleteProfile" xml:space="preserve"><value>Usunąć profil „{0}” (mody: {1}, zapisy: {2})?
+
+Zostanie przeniesiony z gry do kopii Dispatch, więc możesz go później przywrócić w Ustawienia → Usunięte i przemianowane profile.</value></data>
+  <data name="DeletedStatus" xml:space="preserve"><value>Usunięto „{0}”. Możesz go przywrócić w Ustawienia → Usunięte i przemianowane profile.</value></data>
+  <data name="RecycleBackup" xml:space="preserve"><value>Przenieś do kosza</value></data>
+  <data name="ConfirmRecycleTitle" xml:space="preserve"><value>Przenieś kopię do kosza</value></data>
+  <data name="ConfirmRecycle" xml:space="preserve"><value>Przenieść kopię „{0}” z {1} ({2}) do kosza?
+
+Dopóki nie opróżnisz kosza, możesz ją stamtąd odzyskać.</value></data>
+  <data name="AddToProfile" xml:space="preserve"><value>Dodaj do profilu</value></data>
+  <data name="RemoveFromProfile" xml:space="preserve"><value>Usuń z profilu</value></data>
+  <data name="AddedToProfileStatus" xml:space="preserve"><value>Dodano mody ({0}) do „{1}” (na górę). Najpierw utworzono kopię.</value></data>
+  <data name="AddedToUnsavedStatus" xml:space="preserve"><value>Dodano mody ({0}) do „{1}” w karcie Profile. Niezapisane: kliknij tam Zapisz.</value></data>
+  <data name="RemovedFromProfileStatus" xml:space="preserve"><value>Usunięto mody ({0}) z „{1}”. Najpierw utworzono kopię.</value></data>
+  <data name="RemovedFromUnsavedStatus" xml:space="preserve"><value>Usunięto mody ({0}) z „{1}” w karcie Profile. Niezapisane: kliknij tam Zapisz.</value></data>
+  <data name="NothingToAdd" xml:space="preserve"><value>Wszystkie wybrane mody są już aktywne w „{0}”.</value></data>
+  <data name="SelectedCount" xml:space="preserve"><value>Zaznaczono: {0}</value></data>
+  <data name="AllTypes" xml:space="preserve"><value>Wszystkie typy</value></data>
+  <data name="NoType" xml:space="preserve"><value>(bez typu)</value></data>
+  <data name="MultiSelectHint" xml:space="preserve"><value>Ctrl+klik lub Shift+klik, aby zaznaczyć kilka. Prawy przycisk myszy, aby zobaczyć więcej.</value></data>
+  <data name="NoEditableProfiles" xml:space="preserve"><value>Brak profili lokalnych</value></data>
+  <data name="InstallMods" xml:space="preserve"><value>Zainstaluj mody…</value></data>
+  <data name="UninstallMods" xml:space="preserve"><value>Odinstaluj…</value></data>
+  <data name="DropHint" xml:space="preserve"><value>Upuść tutaj pliki .scs lub .zip, aby je zainstalować.</value></data>
+  <data name="ModFileFilter" xml:space="preserve"><value>Pliki modów (*.scs;*.zip)|*.scs;*.zip</value></data>
+  <data name="ReplaceTitle" xml:space="preserve"><value>Mod już zainstalowany</value></data>
+  <data name="ReplaceQuestion" xml:space="preserve"><value>„{0}” jest już zainstalowany. Zastąpić go? Zainstalowana wersja trafi do kosza.</value></data>
+  <data name="InstallSummary" xml:space="preserve"><value>Zainstalowano: {0}, zastąpiono: {1}, pominięto: {2}, błędy: {3}.</value></data>
+  <data name="UninstallTitle" xml:space="preserve"><value>Odinstaluj mody</value></data>
+  <data name="UninstallQuestion" xml:space="preserve"><value>Przenieść mody ({0}) do kosza?
+
+{1}</value></data>
+  <data name="UninstallActiveQuestion" xml:space="preserve"><value>Niektóre z tych modów są aktywne w profilach: {0}.
+
+Usunąć je też z tych profili? (Tak = usuń, Nie = zostaw wpisy; gra pokaże je jako brakujące.)</value></data>
+  <data name="UninstallWorkshopNote" xml:space="preserve"><value>Elementów z Warsztatu nie można tu odinstalować; anuluj subskrypcję w Steam. Pominięto: {0}</value></data>
+  <data name="UninstalledStatus" xml:space="preserve"><value>Przeniesiono mody ({0}) do kosza.</value></data>
+  <data name="ShowAll" xml:space="preserve"><value>Wszystkie mody</value></data>
+  <data name="ShowDuplicates" xml:space="preserve"><value>Duplikaty i starsze kopie</value></data>
+  <data name="ShowUnused" xml:space="preserve"><value>Nieużywane w żadnym profilu</value></data>
+  <data name="ShowProblems" xml:space="preserve"><value>Niezgodne lub brak DLC</value></data>
+  <data name="DuplicateBadge" xml:space="preserve"><value>Duplikat</value></data>
+  <data name="OlderBadge" xml:space="preserve"><value>Starsza kopia</value></data>
+  <data name="DuplicateSameId" xml:space="preserve"><value>Zainstalowany więcej niż raz pod tą samą nazwą: gra może użyć tylko jednego.</value></data>
+  <data name="DuplicateSameName" xml:space="preserve"><value>Zainstalowana jest inna kopia tego modu: {0}.</value></data>
+  <data name="DuplicateOlder" xml:space="preserve"><value>Ta kopia jest starsza niż „{0}”.</value></data>
+  <data name="TagsLabel" xml:space="preserve"><value>Twoje tagi</value></data>
+  <data name="TagsHint" xml:space="preserve"><value>Oddzielone przecinkami, np. mapa, wymaga ProMods</value></data>
+  <data name="NoteLabel" xml:space="preserve"><value>Twoja notatka</value></data>
+  <data name="CopyLoadOrder" xml:space="preserve"><value>Kopiuj kolejność ładowania do…</value></data>
+  <data name="CopyLoadOrderTitle" xml:space="preserve"><value>Kopiuj kolejność ładowania</value></data>
+  <data name="CopyLoadOrderPrompt" xml:space="preserve"><value>Zastąpić kolejność ładowania tych profili kolejnością z „{0}” (mody: {1})? Przed zmianą każdy profil zostanie skopiowany.</value></data>
+  <data name="CopiedStatus" xml:space="preserve"><value>Skopiowano kolejność ładowania z „{0}” do profili: {1}.</value></data>
+  <data name="LaunchGame" xml:space="preserve"><value>Uruchom grę</value></data>
+  <data name="LaunchFailed" xml:space="preserve"><value>Nie udało się uruchomić gry przez Steam: {0}</value></data>
+  <data name="PanelConflicts" xml:space="preserve"><value>Konflikty</value></data>
+  <data name="PanelConflictsCount" xml:space="preserve"><value>Konflikty ({0})</value></data>
+  <data name="ConflictsHint" xml:space="preserve"><value>Gdy dwa aktywne mody zawierają ten sam plik, gra używa tego, który jest wyżej na liście. Często jest to zamierzone (poprawki i dodatki zgodności umieszcza się nad modem, który zmieniają), ale zła kolejność może zniweczyć działanie modu. Sprawdzanie powtarza się po każdej zmianie.</value></data>
+  <data name="ConflictsChecking" xml:space="preserve"><value>Szukanie konfliktów…</value></data>
+  <data name="ConflictsNone" xml:space="preserve"><value>Żaden aktywny mod nie zastępuje plików innego.</value></data>
+  <data name="ConflictsSummary" xml:space="preserve"><value>Pary modów ze wspólnymi plikami: {0} (zaangażowane mody: {1}).</value></data>
+  <data name="ConflictsSummaryOne" xml:space="preserve"><value>1 para modów ma wspólne pliki.</value></data>
+  <data name="ConflictsNotChecked" xml:space="preserve"><value>Chronionych modów nie można sprawdzić: {0}.</value></data>
+  <data name="ConflictsFailed" xml:space="preserve"><value>Sprawdzanie konfliktów nie powiodło się. Szczegóły są w dzienniku.</value></data>
+  <data name="ConflictsOnlySelected" xml:space="preserve"><value>Tylko zaznaczony mod</value></data>
+  <data name="ConflictPair" xml:space="preserve"><value>#{0} {1}  zastępuje pliki  #{2} {3}</value></data>
+  <data name="ConflictFiles" xml:space="preserve"><value>Wspólne pliki: {0:N0}</value></data>
+  <data name="ConflictOneFile" xml:space="preserve"><value>1 wspólny plik</value></data>
+  <data name="ConflictBadge" xml:space="preserve"><value>Konflikty: {0}</value></data>
+  <data name="ConflictBadgeOne" xml:space="preserve"><value>1 konflikt</value></data>
+  <data name="ConflictWins" xml:space="preserve"><value>Zastępuje pliki modów niżej na liście: {0}.</value></data>
+  <data name="ConflictLosses" xml:space="preserve"><value>Mody wyżej na liście, które zastępują część jego plików: {0}.</value></data>
+  <data name="ConflictNamesHidden" xml:space="preserve"><value>To archiwum ukrywa nazwy plików, więc nie można pokazać przykładów.</value></data>
+  <data name="ConflictMoreFiles" xml:space="preserve"><value>…i jeszcze {0:N0}</value></data>
+  <data name="ConflictExamplesHint" xml:space="preserve"><value>Wybierz parę, aby zobaczyć przykładowe pliki.</value></data>
+  <data name="NoConflictsToShow" xml:space="preserve"><value>Nic do pokazania.</value></data>
+  <data name="Loading" xml:space="preserve"><value>Wczytywanie…</value></data>
+  <data name="ShowGameWarnings" xml:space="preserve"><value>Problemy zgłoszone przez grę</value></data>
+  <data name="GameSays" xml:space="preserve"><value>Gra zgłasza</value></data>
+  <data name="GameSaysHeader" xml:space="preserve"><value>Z dziennika ostatniego uruchomienia gry ({0}). Gra zapisuje te komunikaty po angielsku.</value></data>
+  <data name="GameSaysHeaderNoDate" xml:space="preserve"><value>Z dziennika ostatniego uruchomienia gry. Gra zapisuje te komunikaty po angielsku.</value></data>
+  <data name="GameLabel" xml:space="preserve"><value>Gra</value></data>
+  <data name="UpdatesHeader" xml:space="preserve"><value>Aktualizacje</value></data>
+  <data name="UpdateAutoCheck" xml:space="preserve"><value>Sprawdzaj nową wersję przy uruchomieniu Dispatch (pyta GitHub najwyżej raz dziennie; nie są wysyłane żadne informacje o tobie ani twoich modach)</value></data>
+  <data name="UpdateCheckNow" xml:space="preserve"><value>Sprawdź teraz</value></data>
+  <data name="UpdateChecking" xml:space="preserve"><value>Sprawdzanie aktualizacji…</value></data>
+  <data name="UpdateNone" xml:space="preserve"><value>Dispatch {0} to najnowsza wersja.</value></data>
+  <data name="UpdateAvailable" xml:space="preserve"><value>Dostępny jest Dispatch {0} (masz {1}).</value></data>
+  <data name="UpdateCheckFailed" xml:space="preserve"><value>Nie udało się sprawdzić aktualizacji: {0}</value></data>
+  <data name="UpdateNoReleases" xml:space="preserve"><value>nie znaleziono publicznych wydań.</value></data>
+  <data name="UpdateInstall" xml:space="preserve"><value>Zainstaluj aktualizację</value></data>
+  <data name="UpdateDownload" xml:space="preserve"><value>Otwórz stronę pobierania</value></data>
+  <data name="UpdateReleaseNotes" xml:space="preserve"><value>Co nowego</value></data>
+  <data name="UpdateSkip" xml:space="preserve"><value>Pomiń tę wersję</value></data>
+  <data name="UpdateLater" xml:space="preserve"><value>Później</value></data>
+  <data name="UpdateConfirm" xml:space="preserve"><value>Pobrać i zainstalować Dispatch {0} ({1})?
+
+Przed uruchomieniem instalator jest sprawdzany sumą kontrolną SHA-256 wydania. Dispatch zamknie się na czas instalacji i uruchomi ponownie. Twoje ustawienia, kopie i notatki zostaną zachowane.</value></data>
+  <data name="UpdateDownloading" xml:space="preserve"><value>Pobieranie aktualizacji…</value></data>
+  <data name="UpdateFailed" xml:space="preserve"><value>Nie udało się zainstalować aktualizacji: {0}</value></data>
+  <data name="Type_truck" xml:space="preserve"><value>Ciężarówka</value></data>
+  <data name="Type_trailer" xml:space="preserve"><value>Naczepa</value></data>
+  <data name="Type_interior" xml:space="preserve"><value>Wnętrze</value></data>
+  <data name="Type_tuning_parts" xml:space="preserve"><value>Części tuningowe</value></data>
+  <data name="Type_ai_traffic" xml:space="preserve"><value>Ruch AI</value></data>
+  <data name="Type_sound" xml:space="preserve"><value>Dźwięk</value></data>
+  <data name="Type_paint_job" xml:space="preserve"><value>Malowanie</value></data>
+  <data name="Type_cargo_pack" xml:space="preserve"><value>Pakiet ładunków</value></data>
+  <data name="Type_map" xml:space="preserve"><value>Mapa</value></data>
+  <data name="Type_ui" xml:space="preserve"><value>Interfejs</value></data>
+  <data name="Type_weather_setup" xml:space="preserve"><value>Pogoda</value></data>
+  <data name="Type_physics" xml:space="preserve"><value>Fizyka</value></data>
+  <data name="Type_graphics" xml:space="preserve"><value>Grafika</value></data>
+  <data name="Type_models" xml:space="preserve"><value>Modele</value></data>
+  <data name="Type_movers" xml:space="preserve"><value>Pojazdy</value></data>
+  <data name="Type_walkers" xml:space="preserve"><value>Piesi</value></data>
+  <data name="Type_prefabs" xml:space="preserve"><value>Prefaby</value></data>
+  <data name="Type_other" xml:space="preserve"><value>Inne</value></data>
+  <data name="FormatFolder" xml:space="preserve"><value>Folder</value></data>
+  <data name="FormatUnknown" xml:space="preserve"><value>Nieznany / chroniony</value></data>
+  <data name="FormatSubPackage" xml:space="preserve"><value>{0} ({1} w versions.sii)</value></data>
+  <data name="ProfileSummaryLine" xml:space="preserve"><value>mody: {0} · zapisy: {1} · {2}</value></data>
+  <data name="PresetSummaryLine" xml:space="preserve"><value>mody: {0} · {1}</value></data>
+  <data name="PresetMadeWith" xml:space="preserve"><value>utworzono w {0}</value></data>
+  <data name="BackupReasonLoadOrderSave" xml:space="preserve"><value>Przed zapisaniem kolejności ładowania</value></data>
+  <data name="BackupReasonPreRestore" xml:space="preserve"><value>Przed przywróceniem kopii</value></data>
+  <data name="BackupReasonRename" xml:space="preserve"><value>Cały profil, przed zmianą nazwy</value></data>
+  <data name="BackupReasonDuplicate" xml:space="preserve"><value>Przed duplikowaniem</value></data>
+  <data name="BackupReasonPresetApply" xml:space="preserve"><value>Przed zastosowaniem szablonu</value></data>
+  <data name="BackupReasonDelete" xml:space="preserve"><value>Cały profil, usunięty</value></data>
+  <data name="BackupReasonManual" xml:space="preserve"><value>Ręczna</value></data>
+  <data name="BackupFilesLine" xml:space="preserve"><value>pliki: {0} · {1}</value></data>
+  <data name="VersionFrom" xml:space="preserve"><value>{0} (z: {1})</value></data>
+  <data name="SignedIn" xml:space="preserve"><value>(zalogowany)</value></data>
+  <data name="CrashMessage" xml:space="preserve"><value>Coś poszło nie tak:
+
+{0}
+
+Szczegóły są w folderze dzienników.</value></data>
+  <data name="LanguageHeader" xml:space="preserve"><value>Język</value></data>
+  <data name="LanguageSystem" xml:space="preserve"><value>Jak w systemie Windows</value></data>
+  <data name="LanguageRestartHint" xml:space="preserve"><value>Uruchom ponownie Dispatch, aby użyć nowego języka.</value></data>
+  <data name="LanguageRestart" xml:space="preserve"><value>Uruchom ponownie teraz</value></data>
+  <data name="LanguageNote" xml:space="preserve"><value>Niektóre szczegółowe komunikaty (o plikach modów, wykrywaniu i błędach) są nadal po angielsku.</value></data>
+  <data name="CompatDetailGameSaysIncompatible" xml:space="preserve"><value>Dispatch nie może odczytać tej paczki, ale gra przy ostatnim uruchomieniu zgłosiła ją jako niezgodną.</value></data>
+  <data name="CompatDetailNoManifest" xml:space="preserve"><value>Ten mod nie ma pliku manifest.sii, więc nie podaje zgodnych wersji.</value></data>
+  <data name="CompatDetailUnreadable" xml:space="preserve"><value>Dispatch nie może odczytać tej paczki (chroniona lub nieznany format).</value></data>
+  <data name="CompatDetailMissingDlc" xml:space="preserve"><value>Wymaga DLC, których nie masz: {0}.</value></data>
+  <data name="CompatDetailUnknownGameVersion" xml:space="preserve"><value>Wersja gry jest nieznana, więc nie można sprawdzić zgodności.</value></data>
+  <data name="CompatDetailWorkshop" xml:space="preserve"><value>Element Warsztatu: gra sama wybiera pasującą wersję.</value></data>
+  <data name="CompatDetailNoVersions" xml:space="preserve"><value>Mod nie podaje, które wersje gry obsługuje.</value></data>
+  <data name="CompatDetailMatches" xml:space="preserve"><value>Przygotowany dla {0}.</value></data>
+  <data name="CompatDetailMismatch" xml:space="preserve"><value>Przygotowany dla {0}; masz {1}.</value></data>
+  <data name="CompatNoteLogSaysIncompatible" xml:space="preserve"><value>Uwaga: dziennik gry się nie zgadza i zgłosił go jako niezgodny.</value></data>
+  <data name="CompatNoteLogSaysCompatible" xml:space="preserve"><value>Uwaga: dziennik gry nie zgłosił go jako niezgodnego.</value></data>
+</root>

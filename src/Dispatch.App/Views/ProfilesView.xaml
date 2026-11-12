@@ -14,7 +14,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
             <ColumnDefinition Width="*" MinWidth="360" />
-            <ColumnDefinition Width="360" />
+            <ColumnDefinition Width="390" />
         </Grid.ColumnDefinitions>
 
         <!-- Left: profiles -->
@@ -110,6 +110,11 @@
                                                TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Border Style="{StaticResource Badge}" Background="#6B4FA0" Margin="0,0,6,0"
+                                            ToolTip="{Binding ConflictTooltip}"
+                                            Visibility="{Binding HasConflicts, Converter={StaticResource VisibleWhen}}">
+                                        <TextBlock Text="{Binding ConflictBadge}" Style="{StaticResource BadgeText}" />
+                                    </Border>
                                     <Border Style="{StaticResource Badge}" Background="#33808080" Margin="0,0,6,0"
                                             Visibility="{Binding Mod.HasType, Converter={StaticResource VisibleWhen}}">
                                         <TextBlock Text="{Binding Mod.TypeLabel}" FontSize="11" />
@@ -170,6 +175,42 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="{Binding ConflictsHeader}">
+                <DockPanel Margin="0,8,0,0">
+                    <TextBlock DockPanel.Dock="Top" Text="{x:Static res:Strings.ConflictsHint}" Style="{StaticResource Muted}" Margin="0,0,0,6" />
+                    <TextBlock DockPanel.Dock="Top" Text="{x:Static res:Strings.ConflictsChecking}" Style="{StaticResource Muted}" FontStyle="Italic"
+                               Visibility="{Binding IsCheckingConflicts, Converter={StaticResource VisibleWhen}}" />
+                    <TextBlock DockPanel.Dock="Top" Text="{Binding ConflictSummary}" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <CheckBox DockPanel.Dock="Top" Content="{x:Static res:Strings.ConflictsOnlySelected}" IsChecked="{Binding ConflictsOnlySelected}"
+                              Margin="0,0,0,6" />
+                    <Border DockPanel.Dock="Bottom" BorderBrush="#40808080" BorderThickness="1" CornerRadius="4" Padding="8,6" Margin="0,6,0,0"
+                            MaxHeight="130">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <Grid>
+                                <TextBlock Text="{x:Static res:Strings.ConflictExamplesHint}" Style="{StaticResource Muted}"
+                                           Visibility="{Binding SelectedConflict, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
+                                <TextBlock Text="{Binding SelectedConflict.Examples}" FontFamily="Consolas" FontSize="11" />
+                            </Grid>
+                        </ScrollViewer>
+                    </Border>
+                    <Grid>
+                        <TextBlock Text="{x:Static res:Strings.NoConflictsToShow}" Style="{StaticResource Muted}"
+                                   Visibility="{Binding Conflicts.Count, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
+                        <ListBox ItemsSource="{Binding Conflicts}" SelectedItem="{Binding SelectedConflict}" HorizontalContentAlignment="Stretch"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="vm:ConflictItemViewModel">
+                                    <StackPanel Margin="0,2">
+                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding FilesLabel}" Style="{StaticResource Muted}" FontSize="11" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
                 </DockPanel>
             </TabItem>
             <TabItem Header="{x:Static res:Strings.PanelPresets}">

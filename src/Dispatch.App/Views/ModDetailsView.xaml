@@ -21,7 +21,7 @@
                 <Border Style="{StaticResource Badge}" Background="{Binding CompatStatus, Converter={StaticResource CompatToBrush}}">
                     <TextBlock Text="{Binding CompatLabel}" Style="{StaticResource BadgeText}" />
                 </Border>
-                <TextBlock Text="{Binding Compatibility.Detail}" TextWrapping="Wrap" Margin="0,6,0,4" />
+                <TextBlock Text="{Binding CompatDetail}" TextWrapping="Wrap" Margin="0,6,0,4" />
                 <Border Background="#22B25E00" BorderBrush="#B25E00" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,4,0,4"
                         Visibility="{Binding IsDuplicate, Converter={StaticResource VisibleWhen}}">
                     <TextBlock Text="{Binding DuplicateText}" TextWrapping="Wrap" />
@@ -72,6 +72,19 @@
                 <TextBlock Text="{x:Static res:Strings.Issues}" Style="{StaticResource SectionHeader}" Margin="0,14,0,4"
                            Visibility="{Binding HasIssues, Converter={StaticResource VisibleWhen}}" />
                 <ItemsControl ItemsSource="{Binding Issues}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Margin="0,2"
+                                       Foreground="{Binding Severity, Converter={StaticResource SeverityToBrush}}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="{x:Static res:Strings.GameSays}" Style="{StaticResource SectionHeader}" Margin="0,14,0,0"
+                           Visibility="{Binding HasGameMessages, Converter={StaticResource VisibleWhen}}" />
+                <TextBlock Text="{Binding GameMessagesHeader}" Style="{StaticResource Muted}" FontSize="11" Margin="0,0,0,4"
+                           Visibility="{Binding HasGameMessages, Converter={StaticResource VisibleWhen}}" />
+                <ItemsControl ItemsSource="{Binding GameMessages}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Margin="0,2"

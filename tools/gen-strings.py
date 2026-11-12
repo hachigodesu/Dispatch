@@ -24,6 +24,9 @@ lines = [
     "    public static System.Globalization.CultureInfo? Culture { get; set; }",
     "",
     "    private static string Get(string name) => Manager.GetString(name, Culture) ?? name;",
+    "",
+    "    /// <summary>Looks a string up by a key built at run time (e.g. Type_map). Returns the key if it's missing.</summary>",
+    "    public static string ByName(string name) => Get(name);",
 ]
 for n in names:
     lines += ["", f"    public static string {n} => Get(nameof({n}));"]

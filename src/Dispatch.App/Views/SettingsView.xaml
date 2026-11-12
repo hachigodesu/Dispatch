@@ -10,10 +10,10 @@
     <!-- DataContext: MainViewModel (needs both Settings and the Problems list). -->
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="12" MaxWidth="900" HorizontalAlignment="Left">
-            <TextBlock Text="{x:Static res:Strings.SettingsDetected}" Style="{StaticResource SectionHeader}" />
+            <TextBlock Text="{Binding Settings.DetectedHeader}" Style="{StaticResource SectionHeader}" />
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="Auto" MinWidth="170" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -49,11 +49,11 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <TextBlock Text="{x:Static res:Strings.Overrides}" Style="{StaticResource SectionHeader}" Margin="0,20,0,4" />
+            <TextBlock Text="{Binding Settings.OverridesHeader}" Style="{StaticResource SectionHeader}" Margin="0,20,0,4" />
             <TextBlock Text="{x:Static res:Strings.OverridesHint}" Style="{StaticResource Muted}" Margin="0,0,0,8" />
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="Auto" MinWidth="170" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
@@ -93,6 +93,26 @@
             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                 <Button Content="{x:Static res:Strings.RestoreFolder}" Command="{Binding Profiles.RestoreFolderCommand}" />
                 <Button Content="{x:Static res:Strings.RecycleBackup}" Command="{Binding Profiles.RecycleFullBackupCommand}" Margin="8,0,0,0" />
+            </StackPanel>
+
+            <TextBlock Text="{x:Static res:Strings.LanguageHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
+            <StackPanel Orientation="Horizontal">
+                <ComboBox ItemsSource="{Binding Settings.Languages}" SelectedItem="{Binding Settings.SelectedLanguage}"
+                          DisplayMemberPath="Name" MinWidth="220" />
+                <TextBlock Text="{x:Static res:Strings.LanguageRestartHint}" VerticalAlignment="Center" Margin="12,0,8,0"
+                           Visibility="{Binding Settings.RestartNeeded, Converter={StaticResource VisibleWhen}}" />
+                <Button Content="{x:Static res:Strings.LanguageRestart}" Command="{Binding RestartCommand}"
+                        Visibility="{Binding Settings.RestartNeeded, Converter={StaticResource VisibleWhen}}" />
+            </StackPanel>
+            <TextBlock Text="{x:Static res:Strings.LanguageNote}" Style="{StaticResource Muted}" FontSize="11" Margin="0,6,0,0" />
+
+            <TextBlock Text="{x:Static res:Strings.UpdatesHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
+            <CheckBox IsChecked="{Binding Updates.AutoCheck}">
+                <TextBlock Text="{x:Static res:Strings.UpdateAutoCheck}" TextWrapping="Wrap" />
+            </CheckBox>
+            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <Button Content="{x:Static res:Strings.UpdateCheckNow}" Command="{Binding Updates.CheckNowCommand}" />
+                <TextBlock Text="{Binding Updates.Status}" VerticalAlignment="Center" Margin="12,0,0,0" TextWrapping="Wrap" />
             </StackPanel>
 
             <TextBlock Text="{x:Static res:Strings.AboutHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />

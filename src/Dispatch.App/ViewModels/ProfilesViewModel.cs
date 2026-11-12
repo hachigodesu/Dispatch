@@ -205,6 +205,14 @@ public sealed partial class ProfilesViewModel : ObservableObject
         Message = "";
         RefreshAvailable();
         RefreshBackups();
+        if (profile?.LoadOrder is null)
+        {
+            ClearConflicts();
+        }
+        else
+        {
+            ScheduleConflictCheck(delayMs: 0);
+        }
     }
 
     partial void OnSelectedEntryChanged(LoadOrderItemViewModel? value)
@@ -212,6 +220,10 @@ public sealed partial class ProfilesViewModel : ObservableObject
         value?.Mod?.EnsureDescriptionLoaded();
         OnPropertyChanged(nameof(SelectedEntryMod));
         NotifyMoveCommands();
+        if (ConflictsOnlySelected)
+        {
+            RefreshConflictList();
+        }
     }
 
     partial void OnSelectedAvailableChanged(ModItemViewModel? value) => value?.EnsureDescriptionLoaded();
@@ -225,6 +237,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
         {
             IsDirty = true;
             RefreshAvailable();
+            ScheduleConflictCheck();
         }
     }
 
@@ -641,16 +654,17 @@ public sealed class BackupItemViewModel(Backup backup)
 
     public string ReasonLabel => Backup.Reason switch
     {
-        BackupReason.LoadOrderSave => "Before saving the load order",
-        BackupReason.PreRestore => "Before restoring a backup",
-        BackupReason.Rename => "Whole profile, before renaming",
-        BackupReason.Duplicate => "Before duplicating",
-        BackupReason.PresetApply => "Before applying a preset",
-        BackupReason.Delete => "Whole profile, deleted",
-        _ => "Manual",
+        BackupReason.LoadOrderSave => Strings.BackupReasonLoadOrderSave,
+        BackupReason.PreRestore => Strings.BackupReasonPreRestore,
+        BackupReason.Rename => Strings.BackupReasonRename,
+        BackupReason.Duplicate => Strings.BackupReasonDuplicate,
+        BackupReason.PresetApply => Strings.BackupReasonPresetApply,
+        BackupReason.Delete => Strings.BackupReasonDelete,
+        _ => Strings.BackupReasonManual,
     };
 
     public string FilesLabel => Backup.IsFullProfile
-        ? $"{Backup.Files.Count} files · {Backup.SizeBytes / 1048576.0:F1} MB"
+        ? string.Format(CultureInfo.CurrentCulture, Strings.BackupFilesLine, Backup.Files.Count,
+                        (Backup.SizeBytes / 1048576.0).ToString("F1", CultureInfo.CurrentCulture) + " MB")
         : string.Join(", ", Backup.Files);
 }

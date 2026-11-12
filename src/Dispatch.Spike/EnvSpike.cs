@@ -37,6 +37,18 @@ internal static class EnvSpike
         Console.WriteLine($"  issues: {first.Mods.Sum(m => m.Issues.Count)} " +
                           $"({first.Mods.SelectMany(m => m.Issues).Count(i => i.Severity == IssueSeverity.Warning)} warnings)");
 
+        if (log is not null)
+        {
+            var installed = first.Mods.Select(m => m.PackageId).ToHashSet();
+            var withMessages = log.ModMessages.Where(kv => installed.Contains(kv.Key)).ToList();
+            Console.WriteLine($"  game.log: messages for {withMessages.Count} installed mods " +
+                              $"({log.ModMessages.Count - withMessages.Count} keys not matching an installed mod)");
+            foreach (var g in withMessages.SelectMany(kv => kv.Value).GroupBy(m => System.Text.RegularExpressions.Regex.Replace(m.Message, "'[^']*'|for .*|= .*", "…")).OrderByDescending(g => g.Count()))
+            {
+                Console.WriteLine($"    {g.Count(),4}  {g.Key}");
+            }
+        }
+
         var byId = first.Mods.ToDictionary(m => m.PackageId);
         foreach (var p in ProfileRepository.List(env))
         {

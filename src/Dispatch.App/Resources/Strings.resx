@@ -5,12 +5,12 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="AppTitle" xml:space="preserve"><value>Dispatch</value></data>
-  <data name="AppSubtitle" xml:space="preserve"><value>A mod manager for Euro Truck Simulator 2</value></data>
+  <data name="AppSubtitle" xml:space="preserve"><value>A mod manager for Euro Truck Simulator 2 and American Truck Simulator</value></data>
   <data name="TabProfiles" xml:space="preserve"><value>Profiles</value></data>
   <data name="TabMods" xml:space="preserve"><value>Mods</value></data>
   <data name="TabSettings" xml:space="preserve"><value>Settings</value></data>
   <data name="Refresh" xml:space="preserve"><value>Refresh</value></data>
-  <data name="GameRunning" xml:space="preserve"><value>Euro Truck Simulator 2 is running. Close the game before making changes.</value></data>
+  <data name="GameRunning" xml:space="preserve"><value>{0} is running. Close the game before making changes.</value></data>
   <data name="ReadOnlyNotice" xml:space="preserve"><value>Dispatch backs up a profile before every change and never writes while the game is running.</value></data>
   <data name="Scanning" xml:space="preserve"><value>Scanning mods…</value></data>
   <data name="Ready" xml:space="preserve"><value>Ready</value></data>
@@ -34,14 +34,14 @@
   <data name="Description" xml:space="preserve"><value>Description</value></data>
   <data name="Compatibility" xml:space="preserve"><value>Compatibility</value></data>
   <data name="UsedIn" xml:space="preserve"><value>Active in profiles</value></data>
-  <data name="SettingsDetected" xml:space="preserve"><value>What Dispatch found</value></data>
+  <data name="SettingsDetected" xml:space="preserve"><value>What Dispatch found for {0}</value></data>
   <data name="UserDataFolder" xml:space="preserve"><value>Game user folder</value></data>
   <data name="InstallFolder" xml:space="preserve"><value>Game install folder</value></data>
   <data name="GameVersion" xml:space="preserve"><value>Game version</value></data>
   <data name="SteamLibraries" xml:space="preserve"><value>Steam libraries</value></data>
   <data name="SteamAccounts" xml:space="preserve"><value>Steam accounts</value></data>
   <data name="OwnedDlc" xml:space="preserve"><value>DLC installed</value></data>
-  <data name="Overrides" xml:space="preserve"><value>Manual paths</value></data>
+  <data name="Overrides" xml:space="preserve"><value>Manual paths for {0}</value></data>
   <data name="OverridesHint" xml:space="preserve"><value>Leave a box empty to detect the folder automatically.</value></data>
   <data name="Browse" xml:space="preserve"><value>Browse…</value></data>
   <data name="SaveAndRedetect" xml:space="preserve"><value>Save and detect again</value></data>
@@ -141,7 +141,7 @@ The profile's current files are backed up first, so you can undo this.</value></
   <data name="AboutHeader" xml:space="preserve"><value>About</value></data>
   <data name="AboutVersion" xml:space="preserve"><value>Dispatch {0}</value></data>
   <data name="AboutLicence" xml:space="preserve"><value>Public domain (The Unlicense). Third-party libraries keep their own licences (see THIRD-PARTY-NOTICES.md).</value></data>
-  <data name="AboutDisclaimer" xml:space="preserve"><value>Dispatch is not affiliated with or endorsed by SCS Software. Euro Truck Simulator 2 is a trademark of SCS Software.</value></data>
+  <data name="AboutDisclaimer" xml:space="preserve"><value>Dispatch is not affiliated with or endorsed by SCS Software. Euro Truck Simulator 2 and American Truck Simulator are trademarks of SCS Software.</value></data>
   <data name="AboutSafety" xml:space="preserve"><value>Dispatch backs up profile files before every change, never writes while the game is running, and never modifies Workshop content or the game's own backups.</value></data>
   <data name="DeleteProfile" xml:space="preserve"><value>Delete…</value></data>
   <data name="ConfirmDeleteProfileTitle" xml:space="preserve"><value>Delete profile</value></data>
@@ -200,4 +200,104 @@ Also remove them from those profiles? (Yes = remove them, No = leave the entries
   <data name="CopiedStatus" xml:space="preserve"><value>Copied the load order of "{0}" to {1} profile(s).</value></data>
   <data name="LaunchGame" xml:space="preserve"><value>Launch game</value></data>
   <data name="LaunchFailed" xml:space="preserve"><value>Couldn't start the game through Steam: {0}</value></data>
+  <data name="PanelConflicts" xml:space="preserve"><value>Conflicts</value></data>
+  <data name="PanelConflictsCount" xml:space="preserve"><value>Conflicts ({0})</value></data>
+  <data name="ConflictsHint" xml:space="preserve"><value>When two active mods contain the same file, the game uses the one higher in the list. That's often intended (patches and compatibility add-ons go above the mod they change), but a wrong order can undo a mod. Mods are re-checked after every change.</value></data>
+  <data name="ConflictsChecking" xml:space="preserve"><value>Checking for conflicts…</value></data>
+  <data name="ConflictsNone" xml:space="preserve"><value>No active mods replace each other's files.</value></data>
+  <data name="ConflictsSummary" xml:space="preserve"><value>{0} pairs of mods share files ({1} mods involved).</value></data>
+  <data name="ConflictsSummaryOne" xml:space="preserve"><value>1 pair of mods shares files.</value></data>
+  <data name="ConflictsNotChecked" xml:space="preserve"><value>{0} protected mods can't be checked.</value></data>
+  <data name="ConflictsFailed" xml:space="preserve"><value>The conflict check failed. Details are in the log.</value></data>
+  <data name="ConflictsOnlySelected" xml:space="preserve"><value>Only the selected mod</value></data>
+  <data name="ConflictPair" xml:space="preserve"><value>#{0} {1}  replaces files of  #{2} {3}</value></data>
+  <data name="ConflictFiles" xml:space="preserve"><value>{0:N0} shared files</value></data>
+  <data name="ConflictOneFile" xml:space="preserve"><value>1 shared file</value></data>
+  <data name="ConflictBadge" xml:space="preserve"><value>{0} conflicts</value></data>
+  <data name="ConflictBadgeOne" xml:space="preserve"><value>1 conflict</value></data>
+  <data name="ConflictWins" xml:space="preserve"><value>Replaces files of {0} mods lower in the list.</value></data>
+  <data name="ConflictLosses" xml:space="preserve"><value>{0} mods higher in the list replace some of its files.</value></data>
+  <data name="ConflictNamesHidden" xml:space="preserve"><value>This archive hides its file names, so examples can't be shown.</value></data>
+  <data name="ConflictMoreFiles" xml:space="preserve"><value>…and {0:N0} more</value></data>
+  <data name="ConflictExamplesHint" xml:space="preserve"><value>Select a pair to see example files.</value></data>
+  <data name="NoConflictsToShow" xml:space="preserve"><value>Nothing to show.</value></data>
+  <data name="Loading" xml:space="preserve"><value>Loading…</value></data>
+  <data name="ShowGameWarnings" xml:space="preserve"><value>The game reported problems</value></data>
+  <data name="GameSays" xml:space="preserve"><value>The game says</value></data>
+  <data name="GameSaysHeader" xml:space="preserve"><value>From the game's log of its last start ({0}). The game writes these in English.</value></data>
+  <data name="GameSaysHeaderNoDate" xml:space="preserve"><value>From the game's log of its last start. The game writes these in English.</value></data>
+  <data name="GameLabel" xml:space="preserve"><value>Game</value></data>
+  <data name="UpdatesHeader" xml:space="preserve"><value>Updates</value></data>
+  <data name="UpdateAutoCheck" xml:space="preserve"><value>Check for a new version when Dispatch starts (asks GitHub at most once a day; nothing about you or your mods is sent)</value></data>
+  <data name="UpdateCheckNow" xml:space="preserve"><value>Check now</value></data>
+  <data name="UpdateChecking" xml:space="preserve"><value>Checking for updates…</value></data>
+  <data name="UpdateNone" xml:space="preserve"><value>Dispatch {0} is the newest version.</value></data>
+  <data name="UpdateAvailable" xml:space="preserve"><value>Dispatch {0} is available (you have {1}).</value></data>
+  <data name="UpdateCheckFailed" xml:space="preserve"><value>Couldn't check for updates: {0}</value></data>
+  <data name="UpdateNoReleases" xml:space="preserve"><value>no public releases were found.</value></data>
+  <data name="UpdateInstall" xml:space="preserve"><value>Install update</value></data>
+  <data name="UpdateDownload" xml:space="preserve"><value>Open download page</value></data>
+  <data name="UpdateReleaseNotes" xml:space="preserve"><value>What's new</value></data>
+  <data name="UpdateSkip" xml:space="preserve"><value>Skip this version</value></data>
+  <data name="UpdateLater" xml:space="preserve"><value>Later</value></data>
+  <data name="UpdateConfirm" xml:space="preserve"><value>Download and install Dispatch {0} ({1})?
+
+The installer is checked against the release's SHA-256 checksum before it runs. Dispatch closes while it installs and starts again afterwards. Your settings, backups and notes are kept.</value></data>
+  <data name="UpdateDownloading" xml:space="preserve"><value>Downloading the update…</value></data>
+  <data name="UpdateFailed" xml:space="preserve"><value>The update couldn't be installed: {0}</value></data>
+  <data name="Type_truck" xml:space="preserve"><value>Truck</value></data>
+  <data name="Type_trailer" xml:space="preserve"><value>Trailer</value></data>
+  <data name="Type_interior" xml:space="preserve"><value>Interior</value></data>
+  <data name="Type_tuning_parts" xml:space="preserve"><value>Tuning parts</value></data>
+  <data name="Type_ai_traffic" xml:space="preserve"><value>AI traffic</value></data>
+  <data name="Type_sound" xml:space="preserve"><value>Sound</value></data>
+  <data name="Type_paint_job" xml:space="preserve"><value>Paint job</value></data>
+  <data name="Type_cargo_pack" xml:space="preserve"><value>Cargo pack</value></data>
+  <data name="Type_map" xml:space="preserve"><value>Map</value></data>
+  <data name="Type_ui" xml:space="preserve"><value>UI</value></data>
+  <data name="Type_weather_setup" xml:space="preserve"><value>Weather</value></data>
+  <data name="Type_physics" xml:space="preserve"><value>Physics</value></data>
+  <data name="Type_graphics" xml:space="preserve"><value>Graphics</value></data>
+  <data name="Type_models" xml:space="preserve"><value>Models</value></data>
+  <data name="Type_movers" xml:space="preserve"><value>Movers</value></data>
+  <data name="Type_walkers" xml:space="preserve"><value>Walkers</value></data>
+  <data name="Type_prefabs" xml:space="preserve"><value>Prefabs</value></data>
+  <data name="Type_other" xml:space="preserve"><value>Other</value></data>
+  <data name="FormatFolder" xml:space="preserve"><value>Folder</value></data>
+  <data name="FormatUnknown" xml:space="preserve"><value>Unknown / protected</value></data>
+  <data name="FormatSubPackage" xml:space="preserve"><value>{0} ({1} in versions.sii)</value></data>
+  <data name="ProfileSummaryLine" xml:space="preserve"><value>{0} mods · {1} saves · {2}</value></data>
+  <data name="PresetSummaryLine" xml:space="preserve"><value>{0} mods · {1}</value></data>
+  <data name="PresetMadeWith" xml:space="preserve"><value>made with {0}</value></data>
+  <data name="BackupReasonLoadOrderSave" xml:space="preserve"><value>Before saving the load order</value></data>
+  <data name="BackupReasonPreRestore" xml:space="preserve"><value>Before restoring a backup</value></data>
+  <data name="BackupReasonRename" xml:space="preserve"><value>Whole profile, before renaming</value></data>
+  <data name="BackupReasonDuplicate" xml:space="preserve"><value>Before duplicating</value></data>
+  <data name="BackupReasonPresetApply" xml:space="preserve"><value>Before applying a preset</value></data>
+  <data name="BackupReasonDelete" xml:space="preserve"><value>Whole profile, deleted</value></data>
+  <data name="BackupReasonManual" xml:space="preserve"><value>Manual</value></data>
+  <data name="BackupFilesLine" xml:space="preserve"><value>{0} files · {1}</value></data>
+  <data name="VersionFrom" xml:space="preserve"><value>{0} (from {1})</value></data>
+  <data name="SignedIn" xml:space="preserve"><value>(signed in)</value></data>
+  <data name="CrashMessage" xml:space="preserve"><value>Something went wrong:
+
+{0}
+
+Details are in the log folder.</value></data>
+  <data name="LanguageHeader" xml:space="preserve"><value>Language</value></data>
+  <data name="LanguageSystem" xml:space="preserve"><value>Same as Windows</value></data>
+  <data name="LanguageRestartHint" xml:space="preserve"><value>Restart Dispatch to use the new language.</value></data>
+  <data name="LanguageRestart" xml:space="preserve"><value>Restart now</value></data>
+  <data name="LanguageNote" xml:space="preserve"><value>Some detailed messages (about mod files, detection and errors) are still in English.</value></data>
+  <data name="CompatDetailGameSaysIncompatible" xml:space="preserve"><value>Dispatch can't read this package, but the game reported it as incompatible at its last start.</value></data>
+  <data name="CompatDetailNoManifest" xml:space="preserve"><value>This mod has no manifest.sii, so it declares no compatible versions.</value></data>
+  <data name="CompatDetailUnreadable" xml:space="preserve"><value>Dispatch can't read this package (protected or unknown format).</value></data>
+  <data name="CompatDetailMissingDlc" xml:space="preserve"><value>Requires DLC you don't have: {0}.</value></data>
+  <data name="CompatDetailUnknownGameVersion" xml:space="preserve"><value>The game version is unknown, so compatibility can't be checked.</value></data>
+  <data name="CompatDetailWorkshop" xml:space="preserve"><value>Workshop item: the game picks the matching version automatically.</value></data>
+  <data name="CompatDetailNoVersions" xml:space="preserve"><value>The mod doesn't declare which game versions it supports.</value></data>
+  <data name="CompatDetailMatches" xml:space="preserve"><value>Made for {0}.</value></data>
+  <data name="CompatDetailMismatch" xml:space="preserve"><value>Made for {0}; you have {1}.</value></data>
+  <data name="CompatNoteLogSaysIncompatible" xml:space="preserve"><value>Note: the game's log disagrees and reported it as incompatible.</value></data>
+  <data name="CompatNoteLogSaysCompatible" xml:space="preserve"><value>Note: the game's log didn't report it as incompatible.</value></data>
 </root>

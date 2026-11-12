@@ -238,3 +238,48 @@ public class DetectionTests
     public void Parses_version_strings(string text, string expected) =>
         GameVersion.TryParse(text)!.ToString().ShouldBe(expected);
 }
+
+public class AtsDetectionTests
+{
+    [Fact]
+    public void Ats_is_found_beside_ets2_with_its_own_folders_and_accounts()
+    {
+        using var pc = new FakePc();
+        string userData = pc.Dir(@"Documents\American Truck Simulator");
+        pc.Dir(@"Documents\American Truck Simulator\profiles");
+        pc.Dir(@"Documents\American Truck Simulator\mod");
+        pc.File(@"Steam\steamapps\appmanifest_270880.acf", """
+            "AppState"
+            {
+            	"appid"		"270880"
+            	"installdir"		"American Truck Simulator"
+            	"buildid"		"1"
+            }
+            """);
+        string install = pc.Dir(@"Steam\steamapps\common\American Truck Simulator");
+        pc.File(@"Steam\steamapps\common\American Truck Simulator\bin\win_x64\amtrucks.exe", "not a real exe");
+        pc.File(@"Steam\steamapps\common\American Truck Simulator\dlc_arizona.scs", "");
+        pc.Dir(@"Steam\userdata\122\270880");
+
+        var env = GameDetector.Detect(pc.Platform(), GameDefinition.Ats);
+
+        env.Game.ShouldBe(GameDefinition.Ats);
+        env.UserDataDir.ShouldBe(userData);
+        env.InstallDir.ShouldBe(install);
+        env.OwnedDlc.ShouldBe(["dlc_arizona"]);
+        env.Accounts.Select(a => a.PersonaName).ShouldBe(["Bob"]); // only Bob has ATS data
+        env.Accounts[0].RemoteDir(270880).ShouldEndWith(@"userdata\122\270880\remote");
+
+        // ETS2 on the same PC is unaffected.
+        GameDetector.Detect(pc.Platform(), GameDefinition.Ets2).InstallDir.ShouldBe(pc.Install);
+    }
+
+    [Fact]
+    public void Game_keys_round_trip_and_unknown_means_ets2()
+    {
+        GameDefinition.FromKey("ats").ShouldBe(GameDefinition.Ats);
+        GameDefinition.FromKey("ETS2").ShouldBe(GameDefinition.Ets2);
+        GameDefinition.FromKey(null).ShouldBe(GameDefinition.Ets2);
+        GameDefinition.FromKey("farming").ShouldBe(GameDefinition.Ets2);
+    }
+}

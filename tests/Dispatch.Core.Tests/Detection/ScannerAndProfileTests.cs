@@ -116,7 +116,7 @@ public class CompatibilityTests
     [Fact]
     public void Unreadable_mod_uses_the_games_own_verdict()
     {
-        var log = new GameLogInfo(V162, new HashSet<string> { "m" }, DateTime.UtcNow);
+        var log = new GameLogInfo(V162, new HashSet<string> { "m" }, DateTime.UtcNow, new Dictionary<string, IReadOnlyList<ModIssue>>());
         CompatibilityChecker.Evaluate(Mod([], manifest: false) with { Format = PackageFormat.Opaque }, V162, Dlc, log)
             .Status.ShouldBe(CompatStatus.VersionMismatch);
         CompatibilityChecker.Evaluate(Mod([], manifest: false) with { Format = PackageFormat.Opaque }, V162, Dlc, null)
@@ -126,8 +126,24 @@ public class CompatibilityTests
     [Fact]
     public void Disagreement_with_the_game_log_is_noted()
     {
-        var log = new GameLogInfo(V162, new HashSet<string> { "m" }, DateTime.UtcNow);
+        var log = new GameLogInfo(V162, new HashSet<string> { "m" }, DateTime.UtcNow, new Dictionary<string, IReadOnlyList<ModIssue>>());
         CompatibilityChecker.Evaluate(Mod(["1.62.*"]), V162, Dlc, log).Detail.ShouldContain("log disagrees");
+        CompatibilityChecker.Evaluate(Mod(["1.62.*"]), V162, Dlc, log).LogNote.ShouldBe(LogNote.LogSaysIncompatible);
+    }
+
+    [Fact]
+    public void Each_verdict_carries_its_reason_for_translated_text()
+    {
+        var mismatch = CompatibilityChecker.Evaluate(Mod(["1.60.*", "1.61.*"]), V162, Dlc, null);
+        (mismatch.Reason, mismatch.Declared, mismatch.YourVersion, mismatch.LogNote)
+            .ShouldBe((CompatReason.Mismatch, "1.60.*, 1.61.*", "1.62", LogNote.None));
+        CompatibilityChecker.Evaluate(Mod(["1.62.*"]), V162, Dlc, null).Reason.ShouldBe(CompatReason.Matches);
+        CompatibilityChecker.Evaluate(Mod([]), V162, Dlc, null).Reason.ShouldBe(CompatReason.NoVersions);
+        CompatibilityChecker.Evaluate(Mod(["1.62.*"], ["dlc_iberia"]), V162, Dlc, null).Reason.ShouldBe(CompatReason.MissingDlc);
+        CompatibilityChecker.Evaluate(Mod(["1.62.*"]), null, Dlc, null).Reason.ShouldBe(CompatReason.UnknownGameVersion);
+        CompatibilityChecker.Evaluate(Mod(["1.40.*"], source: ModSource.Workshop), V162, Dlc, null).Reason.ShouldBe(CompatReason.Workshop);
+        CompatibilityChecker.Evaluate(Mod([], manifest: false) with { Format = PackageFormat.Opaque }, V162, Dlc, null)
+            .Reason.ShouldBe(CompatReason.Unreadable);
     }
 }
 

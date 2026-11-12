@@ -31,13 +31,26 @@ public partial class App : Application
 
         bool selfTest = e.Args.Length == 3 && e.Args[0] == "--selftest";
         var autoDialogs = new AutoYesDialogs();
-        var viewModel = new MainViewModel(platform, paths, AppSettings.Load(paths.SettingsFile), selfTest ? autoDialogs : new Dialogs());
+        var settings = AppSettings.Load(paths.SettingsFile);
+        // "--screenshot out.png tab profile game lang" can preview a language without saving it.
+        SettingsViewModel.ApplyLanguage(e.Args.Length >= 6 && e.Args[0] == "--screenshot" ? e.Args[5] : settings.Language);
+        if (selfTest)
+        {
+            settings.Game = Dispatch.Core.Games.GameDefinition.Ets2.Key; // the self-test profile is an ETS2 one (not saved)
+        }
+        else if (e.Args.Length >= 5 && e.Args[0] == "--screenshot")
+        {
+            settings.Game = e.Args[4]; // "--screenshot out.png tab profile ats": show that game (not saved)
+        }
+
+        var viewModel = new MainViewModel(platform, paths, settings, selfTest ? autoDialogs : new Dialogs());
         var window = new MainWindow { DataContext = viewModel };
         MainWindow = window;
         window.Show();
 
         // Development aid: "Dispatch.exe --screenshot out.png [tab] [profile]" renders the loaded window to a PNG
-        // and exits. tab: 0 Profiles, 1 Mods, 2 Settings. Lets the UI be checked without clicking through it.
+        // and exits. tab: 0 Profiles, 1 Mods, 2 Settings, 3 Duplicate dialog, 4 Profiles with the Conflicts panel, 5 end of Settings; an optional
+        // 5th argument picks the game (ets2/ats) for this run only. Lets the UI be checked without clicking through it.
         string? screenshot = e.Args.Length >= 2 && e.Args[0] == "--screenshot" ? e.Args[1] : null;
         await viewModel.RefreshCommand.ExecuteAsync(null);
         if (selfTest)
@@ -45,6 +58,11 @@ public partial class App : Application
             bool passed = await SelfTest.RunAsync(viewModel, autoDialogs, e.Args[1], e.Args[2]);
             Shutdown(passed ? 0 : 1);
             return;
+        }
+
+        if (screenshot is null)
+        {
+            _ = viewModel.Updates.CheckOnStartupAsync(); // background; never blocks or interrupts
         }
 
         if (screenshot is not null)
@@ -56,7 +74,8 @@ public partial class App : Application
                 viewModel.Profiles.SelectedEntry = viewModel.Profiles.LoadOrder.FirstOrDefault(l => l.IconFile is not null);
             }
 
-            viewModel.Mods.Selected = viewModel.Mods.Items.FirstOrDefault(m => m.HasIssues && m.IconFile is not null);
+            viewModel.Mods.Selected = viewModel.Mods.Items.FirstOrDefault(m => m.HasGameMessages && m.HasIssues && m.IconFile is not null)
+                                     ?? viewModel.Mods.Items.FirstOrDefault(m => m.HasIssues && m.IconFile is not null);
             foreach (var m in viewModel.Mods.Items.Where(m => m.HasType).Take(3))
             {
                 viewModel.Mods.SelectedMods.Add(m); // shows the multi-selection in screenshots
@@ -76,10 +95,23 @@ public partial class App : Application
                 Views.MainWindow.SaveScreenshot(dlg, screenshot);
                 dlg.Close();
             }
+            else if (tab == 4)
+            {
+                await viewModel.Profiles.ConflictCheck;
+                viewModel.Profiles.SelectedConflict = viewModel.Profiles.Conflicts.FirstOrDefault();
+                await Task.Delay(1500); // example file names
+                window.SaveScreenshot(screenshot, 0, sidePanel: 2);
+            }
             else
             {
                 window.SaveScreenshot(screenshot, tab);
             }
+
+            // Long translations can make the side panel's tab headers wrap onto a second row; report it.
+            var panel = window.ProfilesPage.SidePanel;
+            int rows = panel.Items.OfType<System.Windows.Controls.TabItem>()
+                            .Select(t => Math.Round(t.TranslatePoint(new Point(0, 0), panel).Y)).Distinct().Count();
+            Log.Information("Screenshot: side panel tab header rows {Rows} ({Culture})", rows, Dispatch.App.Resources.Strings.Culture?.Name ?? "default");
             Shutdown();
         }
     }
@@ -94,7 +126,7 @@ public partial class App : Application
     private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         Log.Fatal(e.Exception, "Unhandled exception");
-        MessageBox.Show($"Something went wrong:\n\n{e.Exception.Message}\n\nDetails are in the log folder.",
+        MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentCulture, Dispatch.App.Resources.Strings.CrashMessage, e.Exception.Message),
                         "Dispatch", MessageBoxButton.OK, MessageBoxImage.Error);
         e.Handled = true;
     }

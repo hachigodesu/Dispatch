@@ -80,8 +80,30 @@ and close the game unless a step says otherwise.
 - [ ] **Your tags** / **Your note** in the details panel: type something, restart Dispatch → it's still there; searching a
   tag finds the mod.
 
+## v2: conflicts
+- [ ] Profiles tab → select a profile with map mods (e.g. ProMods plus an add-on) → **Conflicts (n)** tab: "Checking for
+  conflicts…" shows briefly, then a list of "#a X replaces files of #b Y". The higher mod (smaller #) is always first.
+- [ ] Click a pair → example file names appear below (or a note that the archive hides its names).
+- [ ] Rows involved show a purple "n conflicts" badge; hovering it says how many mods it replaces / is replaced by.
+- [ ] Drag a mod that loses a conflict above the winner → within a second the pair flips. **Discard changes** → back as before.
+- [ ] Tick **Only the selected mod** → only pairs involving the selected row are listed.
+- [ ] In-game sanity check (optional, DispatchTest): put two mods that change the same thing in both orders; the one higher
+  in the list is the one you see in-game.
+
+## v2: game warnings, ATS, updates, languages
+- [ ] Mods tab → **Show → The game reported problems** lists mods the game complained about at its last start; the
+  details panel shows them under **The game says** (in English, with the log's date).
+- [ ] With ATS installed, the header shows a game switcher. Pick **American Truck Simulator** → its profiles and mods
+  appear, Settings shows ATS paths, **Launch game** starts ATS. Restart Dispatch → it opens on ATS again. Switch back.
+- [ ] With unsaved load-order changes, switching the game first asks about them (Cancel keeps you where you were).
+- [ ] Settings → **Updates → Check now**: while the repository is private it says no public releases were found. Once a
+  newer public release exists: the blue banner appears; **Install update** downloads, closes Dispatch, installs and
+  starts it again; settings and backups are still there.
+- [ ] Settings → **Language** → pick a language → **Restart now** → the whole UI is in that language. Check a few dialogs
+  (Duplicate, Delete, Uninstall) for cut-off text. Set it back to **Same as Windows**.
+
 ## Release
-- [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-0.5.0-setup.exe`.
+- [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-0.6.0-setup.exe`.
 - [ ] Install: no admin prompt, Start-menu entry, the app starts. Uninstall: asks about deleting data; **No** keeps
   `%LOCALAPPDATA%\Dispatch\backups`.
 - [ ] Windows SmartScreen warns on first run (the build is unsigned, as decided).

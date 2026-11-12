@@ -21,9 +21,17 @@ public partial class MainWindow : Window
     }
 
     /// <summary>Renders the window to a PNG (used by the --screenshot development option).</summary>
-    public void SaveScreenshot(string path, int tab)
+    public void SaveScreenshot(string path, int tab, int sidePanel = 0)
     {
-        Tabs.SelectedIndex = tab;
+        bool settingsEnd = tab == 5; // 5 = Settings, scrolled to the bottom (language, updates, about)
+        Tabs.SelectedIndex = settingsEnd ? 2 : tab;
+        ProfilesPage.SidePanel.SelectedIndex = sidePanel;
+        if (settingsEnd)
+        {
+            Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            (SettingsPage.Content as System.Windows.Controls.ScrollViewer)?.ScrollToEnd();
+        }
+
         SaveScreenshot(this, path);
     }
 

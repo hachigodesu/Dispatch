@@ -31,6 +31,15 @@ public interface IModPackage : IDisposable
     /// (HashFS archives may deliberately omit listings).
     /// </summary>
     IReadOnlyList<string>? ListDirectory(string path);
+
+    /// <summary>
+    /// Path hashes of every file (not directories), as the game identifies files: CityHash64 of the lower-case path.
+    /// Works even for archives that hide their file names. Used for conflict detection.
+    /// </summary>
+    IEnumerable<ulong> FileHashes();
+
+    /// <summary>File paths where the package stores names (for showing conflict details). May be incomplete for HashFS.</summary>
+    IEnumerable<string> FilePaths();
 }
 
 public static class ModPackage
@@ -92,6 +101,9 @@ public static class ModPackage
     }
 
     internal static string Normalize(string path) => path.Replace('\\', '/').Trim('/');
+
+    /// <summary>How a file path is identified across all package formats: CityHash64 of the normalised, lower-case path.</summary>
+    public static ulong PathHash(string path) => CityHash.Hash64(Normalize(path).ToLowerInvariant());
 }
 
 internal sealed class OpaquePackage(string path, string reason) : IModPackage
@@ -105,6 +117,10 @@ internal sealed class OpaquePackage(string path, string reason) : IModPackage
     public byte[]? TryReadFile(string path) => null;
 
     public IReadOnlyList<string>? ListDirectory(string path) => null;
+
+    public IEnumerable<ulong> FileHashes() => [];
+
+    public IEnumerable<string> FilePaths() => [];
 
     public void Dispose()
     {
@@ -144,6 +160,12 @@ internal sealed class FolderPackage(string root) : IModPackage
             .Select(n => n!)
             .ToList();
     }
+
+    public IEnumerable<string> FilePaths() =>
+        Directory.EnumerateFiles(Path, "*", SearchOption.AllDirectories)
+                 .Select(f => System.IO.Path.GetRelativePath(Path, f).Replace('\\', '/'));
+
+    public IEnumerable<ulong> FileHashes() => FilePaths().Select(ModPackage.PathHash);
 
     public void Dispose()
     {

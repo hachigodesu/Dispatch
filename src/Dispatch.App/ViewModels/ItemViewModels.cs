@@ -14,8 +14,13 @@ public sealed partial class ModItemViewModel : ObservableObject
     private bool _loadingNote;
 
     public ModItemViewModel(ModInfo mod, Compatibility compatibility, string? nameFromProfiles, IReadOnlyList<string> usedIn,
-                            ModNote? note = null, Action<ModItemViewModel>? saveNote = null, DuplicateInfo? duplicate = null)
+                            ModNote? note = null, Action<ModItemViewModel>? saveNote = null, DuplicateInfo? duplicate = null,
+                            IReadOnlyList<ModIssue>? gameMessages = null, DateTime? gameLogUtc = null)
     {
+        GameMessages = gameMessages ?? [];
+        GameMessagesHeader = gameLogUtc is { } when
+            ? string.Format(CultureInfo.CurrentCulture, Strings.GameSaysHeader, when.ToLocalTime().ToString("g", CultureInfo.CurrentCulture))
+            : Strings.GameSaysHeaderNoDate;
         Mod = mod;
         Compatibility = compatibility;
         UsedIn = usedIn;
@@ -51,13 +56,13 @@ public sealed partial class ModItemViewModel : ObservableObject
 
     public string Categories => string.Join(", ", Mod.Manifest?.Categories ?? []);
 
-    private static readonly Dictionary<string, string> TypeNames = new(StringComparer.Ordinal)
-    {
-        ["truck"] = "Truck", ["trailer"] = "Trailer", ["interior"] = "Interior", ["tuning_parts"] = "Tuning parts",
-        ["ai_traffic"] = "AI traffic", ["sound"] = "Sound", ["paint_job"] = "Paint job", ["cargo_pack"] = "Cargo pack",
-        ["map"] = "Map", ["ui"] = "UI", ["weather_setup"] = "Weather", ["physics"] = "Physics", ["graphics"] = "Graphics",
-        ["models"] = "Models", ["movers"] = "Movers", ["walkers"] = "Walkers", ["prefabs"] = "Prefabs", ["other"] = "Other",
-    };
+    /// <summary>The official categories, named in the UI language (resource keys "Type_&lt;category&gt;").</summary>
+    private static readonly Dictionary<string, string> TypeNames = new[]
+        {
+            "truck", "trailer", "interior", "tuning_parts", "ai_traffic", "sound", "paint_job", "cargo_pack", "map", "ui",
+            "weather_setup", "physics", "graphics", "models", "movers", "walkers", "prefabs", "other",
+        }
+        .ToDictionary(k => k, k => Strings.ByName("Type_" + k), StringComparer.Ordinal);
 
     /// <summary>
     /// The mod's types (manifest categories) as display names, e.g. ["Map"] or ["Sound", "Truck"]. Common author
@@ -89,16 +94,46 @@ public sealed partial class ModItemViewModel : ObservableObject
         _ => Strings.CompatUnreadable,
     };
 
+    /// <summary>The compatibility explanation in the UI language.</summary>
+    public string CompatDetail
+    {
+        get
+        {
+            var c = Compatibility;
+            string text = c.Reason switch
+            {
+                CompatReason.GameSaysIncompatible => Strings.CompatDetailGameSaysIncompatible,
+                CompatReason.NoManifest => Strings.CompatDetailNoManifest,
+                CompatReason.Unreadable => Strings.CompatDetailUnreadable,
+                CompatReason.MissingDlc => string.Format(CultureInfo.CurrentCulture, Strings.CompatDetailMissingDlc, string.Join(", ", c.MissingDlc)),
+                CompatReason.UnknownGameVersion => Strings.CompatDetailUnknownGameVersion,
+                CompatReason.Workshop => Strings.CompatDetailWorkshop,
+                CompatReason.NoVersions => Strings.CompatDetailNoVersions,
+                CompatReason.Matches => string.Format(CultureInfo.CurrentCulture, Strings.CompatDetailMatches, c.Declared),
+                CompatReason.Mismatch => string.Format(CultureInfo.CurrentCulture, Strings.CompatDetailMismatch, c.Declared, c.YourVersion),
+                _ => c.Detail,
+            };
+            return c.LogNote switch
+            {
+                LogNote.LogSaysIncompatible => text + " " + Strings.CompatNoteLogSaysIncompatible,
+                LogNote.LogSaysCompatible => text + " " + Strings.CompatNoteLogSaysCompatible,
+                _ => text,
+            };
+        }
+    }
+
     public string SourceLabel => Mod.Source == ModSource.Workshop ? Strings.SourceWorkshop : Strings.SourceLocal;
 
     public string FormatLabel => Mod.Format switch
     {
-        PackageFormat.Folder => "Folder",
+        PackageFormat.Folder => Strings.FormatFolder,
         PackageFormat.Zip => "ZIP",
         PackageFormat.HashFsV1 => "HashFS v1",
         PackageFormat.HashFsV2 => "HashFS v2",
-        _ => "Unknown / protected",
-    } + (Mod.SubPackage is { } sub ? $" · {sub} ({Mod.SubPackageCount} in versions.sii)" : "");
+        _ => Strings.FormatUnknown,
+    } + (Mod.SubPackage is { } sub
+        ? " · " + string.Format(CultureInfo.CurrentCulture, Strings.FormatSubPackage, sub, Mod.SubPackageCount)
+        : "");
 
     public string SizeLabel => Mod.SizeBytes switch
     {
@@ -115,6 +150,13 @@ public sealed partial class ModItemViewModel : ObservableObject
     public IReadOnlyList<ModIssue> Issues => Mod.Issues;
 
     public bool HasIssues => Mod.Issues.Count > 0;
+
+    /// <summary>What the game itself logged about this mod at its last start (game.log.txt).</summary>
+    public IReadOnlyList<ModIssue> GameMessages { get; }
+
+    public bool HasGameMessages => GameMessages.Count > 0;
+
+    public string GameMessagesHeader { get; }
 
     /// <summary>Loaded the first time the mod is selected (reading the package takes a moment).</summary>
     [ObservableProperty]
@@ -214,8 +256,8 @@ public sealed class ProfileItemViewModel(ProfileInfo profile, LoadOrderRead? loa
         ? $"{Strings.KindCloud} · {Profile.Owner?.PersonaName}"
         : Strings.KindLocal;
 
-    public string Summary =>
-        $"{LoadOrder?.TopFirst.Count ?? 0} mods · {Profile.SaveCount} {Strings.Saves} · {Profile.LastWriteUtc.ToLocalTime():g}";
+    public string Summary => string.Format(CultureInfo.CurrentCulture, Strings.ProfileSummaryLine, LoadOrder?.TopFirst.Count ?? 0,
+                                           Profile.SaveCount, Profile.LastWriteUtc.ToLocalTime().ToString("g", CultureInfo.CurrentCulture));
 }
 
 /// <summary>One row of a profile's load order. Position 1 = top of the in-game list = highest priority.</summary>
@@ -240,4 +282,36 @@ public sealed partial class LoadOrderItemViewModel(ActiveModEntry entry, ModItem
     public string StatusLabel => Mod?.CompatLabel ?? Strings.NotInstalled;
 
     public CompatStatus? CompatStatus => Mod?.CompatStatus;
+
+    // ---- conflicts (v2) ---------------------------------------------------------------------------
+
+    /// <summary>"3 conflicts" when this mod shares files with other active mods; empty otherwise.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasConflicts))]
+    private string _conflictBadge = "";
+
+    [ObservableProperty]
+    private string _conflictTooltip = "";
+
+    public bool HasConflicts => ConflictBadge.Length > 0;
+
+    /// <param name="wins">Mods lower in the list whose files this one replaces.</param>
+    /// <param name="losses">Mods higher in the list that replace some of this one's files.</param>
+    public void SetConflicts(int wins, int losses)
+    {
+        int total = wins + losses;
+        ConflictBadge = total == 0 ? "" : string.Format(CultureInfo.CurrentCulture, total == 1 ? Strings.ConflictBadgeOne : Strings.ConflictBadge, total);
+        var parts = new List<string>();
+        if (wins > 0)
+        {
+            parts.Add(string.Format(CultureInfo.CurrentCulture, Strings.ConflictWins, wins));
+        }
+
+        if (losses > 0)
+        {
+            parts.Add(string.Format(CultureInfo.CurrentCulture, Strings.ConflictLosses, losses));
+        }
+
+        ConflictTooltip = string.Join("\n", parts);
+    }
 }

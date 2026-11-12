@@ -28,11 +28,12 @@ public static class GameProcessGuard
     }
 
     /// <exception cref="InvalidOperationException">The game is running.</exception>
-    public static void ThrowIfRunning()
+    public static void ThrowIfRunning(Games.GameDefinition? game = null)
     {
-        if (IsRunning())
+        game ??= Games.GameDefinition.Ets2;
+        if (IsRunning([game.ProcessName]))
         {
-            throw new InvalidOperationException("Euro Truck Simulator 2 is running. Close the game before changing profiles.");
+            throw new InvalidOperationException($"{game.DisplayName} is running. Close the game before changing profiles.");
         }
     }
 }

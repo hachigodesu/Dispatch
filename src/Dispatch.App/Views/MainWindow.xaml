@@ -25,8 +25,13 @@
                 <TextBlock Text="{x:Static res:Strings.AppTitle}" FontSize="24" FontWeight="SemiBold" />
                 <TextBlock Text="{x:Static res:Strings.AppSubtitle}" Style="{StaticResource Muted}" />
             </StackPanel>
-            <TextBlock Grid.Column="1" Text="{Binding GameVersion}" VerticalAlignment="Center" Margin="0,0,16,0"
-                       Style="{StaticResource Muted}" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+                <!-- Game switcher: only shown when more than one supported game is installed. -->
+                <ComboBox ItemsSource="{Binding Games}" SelectedItem="{Binding SelectedGame}" DisplayMemberPath="DisplayName"
+                          MinWidth="200" Margin="0,0,12,0" ToolTip="{x:Static res:Strings.GameLabel}"
+                          Visibility="{Binding CanSwitchGame, Converter={StaticResource VisibleWhen}}" />
+                <TextBlock Text="{Binding GameVersion}" VerticalAlignment="Center" Style="{StaticResource Muted}" />
+            </StackPanel>
             <!-- The command disables the button while a refresh runs. -->
             <Button Grid.Column="2" Content="{x:Static res:Strings.LaunchGame}" Command="{Binding LaunchGameCommand}"
                     MinWidth="110" VerticalAlignment="Center" Margin="0,0,8,0" Style="{StaticResource AccentButtonStyle}" />
@@ -35,9 +40,25 @@
         </Grid>
 
         <!-- Banners -->
+        <Border DockPanel.Dock="Top" Background="#220078D4" BorderBrush="#0078D4" BorderThickness="0,1" Padding="20,6"
+                DataContext="{Binding Updates}" Visibility="{Binding HasUpdate, Converter={StaticResource VisibleWhen}}">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Content="{Binding InstallLabel}" Command="{Binding InstallCommand}" Style="{StaticResource AccentButtonStyle}" Margin="0,0,6,0" />
+                    <Button Content="{x:Static res:Strings.UpdateReleaseNotes}" Command="{Binding OpenReleasePageCommand}" Margin="0,0,6,0" />
+                    <Button Content="{x:Static res:Strings.UpdateSkip}" Command="{Binding SkipCommand}" Margin="0,0,6,0" />
+                    <Button Content="{x:Static res:Strings.UpdateLater}" Command="{Binding DismissCommand}" />
+                </StackPanel>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding BannerText}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <ProgressBar Value="{Binding Progress}" Height="4" Margin="0,4,12,0"
+                                 Visibility="{Binding IsBusy, Converter={StaticResource VisibleWhen}}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
         <Border DockPanel.Dock="Top" Background="#33E0A100" BorderBrush="#E0A100" BorderThickness="0,1"
                 Padding="20,8" Visibility="{Binding IsGameRunning, Converter={StaticResource VisibleWhen}}">
-            <TextBlock Text="{x:Static res:Strings.GameRunning}" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding GameRunningText}" FontWeight="SemiBold" />
         </Border>
         <Border DockPanel.Dock="Top" Background="#22C62828" BorderBrush="#C62828" BorderThickness="0,1"
                 Padding="20,8" Visibility="{Binding HasProblems, Converter={StaticResource VisibleWhen}}">
@@ -65,13 +86,13 @@
 
         <TabControl x:Name="Tabs" Margin="12,4,12,4">
             <TabItem Header="{x:Static res:Strings.TabProfiles}">
-                <v:ProfilesView DataContext="{Binding Profiles}" />
+                <v:ProfilesView x:Name="ProfilesPage" DataContext="{Binding Profiles}" />
             </TabItem>
             <TabItem Header="{x:Static res:Strings.TabMods}">
                 <v:ModsView DataContext="{Binding Mods}" />
             </TabItem>
             <TabItem Header="{x:Static res:Strings.TabSettings}">
-                <v:SettingsView />
+                <v:SettingsView x:Name="SettingsPage" />
             </TabItem>
         </TabControl>
     </DockPanel>

@@ -1,6 +1,6 @@
 # Builds a release: runs the tests, publishes a self-contained Dispatch.exe, then compiles the installer
-# if Inno Setup 6 is installed.   Usage:  powershell -ExecutionPolicy Bypass -File installer\build.ps1 [-Version 0.5.0]
-param([string]$Version = "0.5.0")
+# if Inno Setup 6 is installed.   Usage:  powershell -ExecutionPolicy Bypass -File installer\build.ps1 [-Version 0.6.0]
+param([string]$Version = "0.6.0")
 $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
 

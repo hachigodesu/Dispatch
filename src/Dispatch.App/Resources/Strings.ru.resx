@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AppTitle" xml:space="preserve"><value>Dispatch</value></data>
+  <data name="AppSubtitle" xml:space="preserve"><value>Менеджер модов для Euro Truck Simulator 2 и American Truck Simulator</value></data>
+  <data name="TabProfiles" xml:space="preserve"><value>Профили</value></data>
+  <data name="TabMods" xml:space="preserve"><value>Моды</value></data>
+  <data name="TabSettings" xml:space="preserve"><value>Настройки</value></data>
+  <data name="Refresh" xml:space="preserve"><value>Обновить</value></data>
+  <data name="GameRunning" xml:space="preserve"><value>{0} запущена. Закройте игру, прежде чем что-то менять.</value></data>
+  <data name="ReadOnlyNotice" xml:space="preserve"><value>Dispatch делает резервную копию профиля перед каждым изменением и никогда ничего не записывает, пока запущена игра.</value></data>
+  <data name="Scanning" xml:space="preserve"><value>Чтение модов…</value></data>
+  <data name="Ready" xml:space="preserve"><value>Готово</value></data>
+  <data name="NoProfileSelected" xml:space="preserve"><value>Выберите профиль, чтобы увидеть его моды.</value></data>
+  <data name="LoadOrderHint" xml:space="preserve"><value>Верх списка = высший приоритет, как в менеджере модов игры.</value></data>
+  <data name="CloudReadOnly" xml:space="preserve"><value>Профиль Steam Cloud: в Dispatch только для чтения. Чтобы изменить его, отключите для этого профиля «Использовать Steam Cloud» в игре.</value></data>
+  <data name="NotInstalled" xml:space="preserve"><value>Не установлен</value></data>
+  <data name="ActiveMods" xml:space="preserve"><value>Активные моды</value></data>
+  <data name="Saves" xml:space="preserve"><value>сохранений</value></data>
+  <data name="SearchMods" xml:space="preserve"><value>Поиск модов</value></data>
+  <data name="ModDetailsNone" xml:space="preserve"><value>Выберите мод, чтобы увидеть подробности.</value></data>
+  <data name="Author" xml:space="preserve"><value>Автор</value></data>
+  <data name="Version" xml:space="preserve"><value>Версия</value></data>
+  <data name="Categories" xml:space="preserve"><value>Категории</value></data>
+  <data name="Format" xml:space="preserve"><value>Формат</value></data>
+  <data name="Location" xml:space="preserve"><value>Расположение</value></data>
+  <data name="Size" xml:space="preserve"><value>Размер</value></data>
+  <data name="CompatibleVersions" xml:space="preserve"><value>Совместимые версии</value></data>
+  <data name="DlcDependencies" xml:space="preserve"><value>Требуются DLC</value></data>
+  <data name="Issues" xml:space="preserve"><value>Замечания</value></data>
+  <data name="Description" xml:space="preserve"><value>Описание</value></data>
+  <data name="Compatibility" xml:space="preserve"><value>Совместимость</value></data>
+  <data name="UsedIn" xml:space="preserve"><value>Активен в профилях</value></data>
+  <data name="SettingsDetected" xml:space="preserve"><value>Что Dispatch нашёл для {0}</value></data>
+  <data name="UserDataFolder" xml:space="preserve"><value>Папка пользователя игры</value></data>
+  <data name="InstallFolder" xml:space="preserve"><value>Папка установки игры</value></data>
+  <data name="GameVersion" xml:space="preserve"><value>Версия игры</value></data>
+  <data name="SteamLibraries" xml:space="preserve"><value>Библиотеки Steam</value></data>
+  <data name="SteamAccounts" xml:space="preserve"><value>Аккаунты Steam</value></data>
+  <data name="OwnedDlc" xml:space="preserve"><value>Установлено DLC</value></data>
+  <data name="Overrides" xml:space="preserve"><value>Пути вручную для {0}</value></data>
+  <data name="OverridesHint" xml:space="preserve"><value>Оставьте поле пустым, чтобы папка определилась автоматически.</value></data>
+  <data name="Browse" xml:space="preserve"><value>Обзор…</value></data>
+  <data name="SaveAndRedetect" xml:space="preserve"><value>Сохранить и определить заново</value></data>
+  <data name="OpenDataFolder" xml:space="preserve"><value>Открыть папку данных Dispatch</value></data>
+  <data name="OpenLogFolder" xml:space="preserve"><value>Открыть папку журналов</value></data>
+  <data name="Problems" xml:space="preserve"><value>Проблемы</value></data>
+  <data name="ProblemsBanner" xml:space="preserve"><value>Dispatch нашёл не всё. См. Настройки.</value></data>
+  <data name="NoProblems" xml:space="preserve"><value>Проблем не найдено.</value></data>
+  <data name="CompatOk" xml:space="preserve"><value>Совместим</value></data>
+  <data name="CompatNoInfo" xml:space="preserve"><value>Нет данных о версии</value></data>
+  <data name="CompatMismatch" xml:space="preserve"><value>Другая версия игры</value></data>
+  <data name="CompatMissingDlc" xml:space="preserve"><value>Нет DLC</value></data>
+  <data name="CompatUnreadable" xml:space="preserve"><value>Не читается</value></data>
+  <data name="SourceLocal" xml:space="preserve"><value>Локальный</value></data>
+  <data name="SourceWorkshop" xml:space="preserve"><value>Мастерская</value></data>
+  <data name="KindLocal" xml:space="preserve"><value>Локальный</value></data>
+  <data name="KindCloud" xml:space="preserve"><value>Steam Cloud</value></data>
+  <data name="ModsSummary" xml:space="preserve"><value>Модов: {0} · локальных: {1} · из Мастерской: {2}</value></data>
+  <data name="ProfilesSummary" xml:space="preserve"><value>Профилей: {0}</value></data>
+  <data name="StatusScanned" xml:space="preserve"><value>Прочитано модов: {0} за {1:F1} с (из кэша: {2})</value></data>
+  <data name="MoveUp" xml:space="preserve"><value>Вверх</value></data>
+  <data name="MoveDown" xml:space="preserve"><value>Вниз</value></data>
+  <data name="MoveTop" xml:space="preserve"><value>В самый верх</value></data>
+  <data name="MoveBottom" xml:space="preserve"><value>В самый низ</value></data>
+  <data name="Remove" xml:space="preserve"><value>Убрать</value></data>
+  <data name="Save" xml:space="preserve"><value>Сохранить</value></data>
+  <data name="Discard" xml:space="preserve"><value>Отменить изменения</value></data>
+  <data name="UnsavedChanges" xml:space="preserve"><value>Не сохранено</value></data>
+  <data name="EditHint" xml:space="preserve"><value>Перетаскивайте, чтобы изменить порядок, или используйте кнопки (Alt+↑/↓). Моды добавляются на панели «Добавить моды».</value></data>
+  <data name="SaveBlockedGameRunning" xml:space="preserve"><value>Закройте игру, чтобы сохранить.</value></data>
+  <data name="PanelDetails" xml:space="preserve"><value>Детали</value></data>
+  <data name="PanelAdd" xml:space="preserve"><value>Добавить</value></data>
+  <data name="PanelBackups" xml:space="preserve"><value>Копии</value></data>
+  <data name="AddSelected" xml:space="preserve"><value>Добавить наверх</value></data>
+  <data name="AddHint" xml:space="preserve"><value>Моды, которые не активны в этом профиле. Новые моды добавляются наверх, как в игре.</value></data>
+  <data name="FilterAvailable" xml:space="preserve"><value>Фильтр</value></data>
+  <data name="BackupsHint" xml:space="preserve"><value>Dispatch делает копию профиля перед каждым изменением. Перед восстановлением также сохраняется текущее состояние.</value></data>
+  <data name="RestoreBackup" xml:space="preserve"><value>Восстановить выбранную копию</value></data>
+  <data name="OpenBackupFolder" xml:space="preserve"><value>Открыть папку копий</value></data>
+  <data name="NoBackups" xml:space="preserve"><value>Копий пока нет.</value></data>
+  <data name="SavedStatus" xml:space="preserve"><value>{0} сохранён. Копия: {1}</value></data>
+  <data name="ConfirmRestoreTitle" xml:space="preserve"><value>Восстановить копию</value></data>
+  <data name="ConfirmRestore" xml:space="preserve"><value>Восстановить копию от {0}?
+
+Текущие файлы профиля сначала будут сохранены в копию, так что это можно отменить.</value></data>
+  <data name="RestoredStatus" xml:space="preserve"><value>Копия от {0} восстановлена.</value></data>
+  <data name="AskSaveTitle" xml:space="preserve"><value>Несохранённые изменения</value></data>
+  <data name="AskSave" xml:space="preserve"><value>Сначала сохранить изменения в «{0}»?</value></data>
+  <data name="ErrorTitle" xml:space="preserve"><value>Dispatch</value></data>
+  <data name="Duplicate" xml:space="preserve"><value>Копировать…</value></data>
+  <data name="Rename" xml:space="preserve"><value>Переименовать…</value></data>
+  <data name="DuplicateTitle" xml:space="preserve"><value>Копировать профиль</value></data>
+  <data name="RenameTitle" xml:space="preserve"><value>Переименовать профиль</value></data>
+  <data name="DuplicateIntro" xml:space="preserve"><value>Создаёт копию «{0}» под новым именем. Оригинал не меняется.</value></data>
+  <data name="RenameIntro" xml:space="preserve"><value>Задайте «{0}» новое имя. Исходная папка перемещается в копии Dispatch, поэтому переименование можно отменить.</value></data>
+  <data name="NewName" xml:space="preserve"><value>Новое имя</value></data>
+  <data name="CopyWhat" xml:space="preserve"><value>Что копировать</value></data>
+  <data name="CopyEverything" xml:space="preserve"><value>Всё (сохранения, настройки, моды)</value></data>
+  <data name="CopyFresh" xml:space="preserve"><value>С нуля: настройки и моды, без сохранений</value></data>
+  <data name="KeepWotLink" xml:space="preserve"><value>Сохранить привязку к World of Trucks</value></data>
+  <data name="Destination" xml:space="preserve"><value>Куда поместить копию</value></data>
+  <data name="DestinationLocal" xml:space="preserve"><value>Локальный профиль</value></data>
+  <data name="DestinationCloud" xml:space="preserve"><value>Steam Cloud (через игру)</value></data>
+  <data name="DestinationCloudHint" xml:space="preserve"><value>Dispatch создаёт локальную копию. Чтобы перенести её в Steam Cloud, выберите её в игре, измените профиль и отметьте «Использовать Steam Cloud» — игра перенесёт её сама.</value></data>
+  <data name="Ok" xml:space="preserve"><value>ОК</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Working" xml:space="preserve"><value>Выполняется…</value></data>
+  <data name="DuplicatedStatus" xml:space="preserve"><value>«{0}» создан.</value></data>
+  <data name="DuplicatedCloudStatus" xml:space="preserve"><value>«{0}» создан как локальный профиль. В игре измените его и отметьте «Использовать Steam Cloud», чтобы перенести в Steam Cloud.</value></data>
+  <data name="RenamedStatus" xml:space="preserve"><value>Переименован в «{0}». Оригинал лежит в копиях Dispatch (Настройки → Удалённые и переименованные профили).</value></data>
+  <data name="FullBackupsHeader" xml:space="preserve"><value>Удалённые и переименованные профили</value></data>
+  <data name="FullBackupsHint" xml:space="preserve"><value>Когда вы переименовываете профиль, Dispatch хранит здесь исходную папку. При восстановлении она возвращается под старым именем (только если оно свободно).</value></data>
+  <data name="RestoreFolder" xml:space="preserve"><value>Восстановить профиль</value></data>
+  <data name="ConfirmRestoreFolder" xml:space="preserve"><value>Вернуть «{0}» в состояние на {1}?</value></data>
+  <data name="RestoredFolderStatus" xml:space="preserve"><value>«{0}» снова на месте.</value></data>
+  <data name="PanelPresets" xml:space="preserve"><value>Наборы</value></data>
+  <data name="PresetsHint" xml:space="preserve"><value>Сохраните порядок загрузки, чтобы использовать его в других профилях или поделиться им в виде файла.</value></data>
+  <data name="SavePreset" xml:space="preserve"><value>Сохранить текущий порядок загрузки…</value></data>
+  <data name="ApplyPreset" xml:space="preserve"><value>Применить к этому профилю</value></data>
+  <data name="ImportPreset" xml:space="preserve"><value>Импорт…</value></data>
+  <data name="ExportPreset" xml:space="preserve"><value>Экспорт…</value></data>
+  <data name="DeletePreset" xml:space="preserve"><value>Удалить</value></data>
+  <data name="NoPresets" xml:space="preserve"><value>Наборов пока нет.</value></data>
+  <data name="PresetNameTitle" xml:space="preserve"><value>Сохранить набор</value></data>
+  <data name="PresetNamePrompt" xml:space="preserve"><value>Название набора:</value></data>
+  <data name="PresetSavedStatus" xml:space="preserve"><value>Набор «{0}» сохранён.</value></data>
+  <data name="PresetAppliedStatus" xml:space="preserve"><value>«{0}» применён: модов: {1}. Проверьте список и нажмите «Сохранить».</value></data>
+  <data name="PresetMissingTitle" xml:space="preserve"><value>Некоторые моды не установлены</value></data>
+  <data name="PresetMissing" xml:space="preserve"><value>Моды из набора, которые не установлены и были пропущены ({0}):
+
+{1}</value></data>
+  <data name="PresetRenamedNote" xml:space="preserve"><value>Модов найдено по имени файла (на этом ПК у них другой ID): {0}.</value></data>
+  <data name="ConfirmDeletePreset" xml:space="preserve"><value>Удалить набор «{0}»? Это нельзя отменить.</value></data>
+  <data name="PresetImportedStatus" xml:space="preserve"><value>«{0}» импортирован.</value></data>
+  <data name="PresetExportedStatus" xml:space="preserve"><value>Экспортировано в {0}.</value></data>
+  <data name="PresetFileFilter" xml:space="preserve"><value>Наборы Dispatch (*.dispatch-preset.json)|*.dispatch-preset.json|Файлы JSON (*.json)|*.json</value></data>
+  <data name="AboutHeader" xml:space="preserve"><value>О программе</value></data>
+  <data name="AboutVersion" xml:space="preserve"><value>Dispatch {0}</value></data>
+  <data name="AboutLicence" xml:space="preserve"><value>Общественное достояние (The Unlicense). Сторонние библиотеки распространяются по своим лицензиям (см. THIRD-PARTY-NOTICES.md).</value></data>
+  <data name="AboutDisclaimer" xml:space="preserve"><value>Dispatch не связан с SCS Software и не одобрен ею. Euro Truck Simulator 2 и American Truck Simulator — товарные знаки SCS Software.</value></data>
+  <data name="AboutSafety" xml:space="preserve"><value>Dispatch делает копии файлов профиля перед каждым изменением, никогда не записывает ничего при запущенной игре и никогда не изменяет содержимое Мастерской или собственные резервные копии игры.</value></data>
+  <data name="DeleteProfile" xml:space="preserve"><value>Удалить…</value></data>
+  <data name="ConfirmDeleteProfileTitle" xml:space="preserve"><value>Удалить профиль</value></data>
+  <data name="ConfirmDeleteProfile" xml:space="preserve"><value>Удалить профиль «{0}» (модов: {1}, сохранений: {2})?
+
+Он будет убран из игры в копии Dispatch, так что позже его можно восстановить в разделе Настройки → Удалённые и переименованные профили.</value></data>
+  <data name="DeletedStatus" xml:space="preserve"><value>«{0}» удалён. Его можно восстановить в разделе Настройки → Удалённые и переименованные профили.</value></data>
+  <data name="RecycleBackup" xml:space="preserve"><value>В корзину</value></data>
+  <data name="ConfirmRecycleTitle" xml:space="preserve"><value>Переместить копию в корзину</value></data>
+  <data name="ConfirmRecycle" xml:space="preserve"><value>Переместить копию «{0}» от {1} ({2}) в корзину?
+
+Пока корзина не очищена, копию можно оттуда вернуть.</value></data>
+  <data name="AddToProfile" xml:space="preserve"><value>Добавить в профиль</value></data>
+  <data name="RemoveFromProfile" xml:space="preserve"><value>Убрать из профиля</value></data>
+  <data name="AddedToProfileStatus" xml:space="preserve"><value>Добавлено модов в «{1}» (наверх): {0}. Перед этим сделана копия.</value></data>
+  <data name="AddedToUnsavedStatus" xml:space="preserve"><value>Добавлено модов в «{1}» на вкладке «Профили»: {0}. Не сохранено — нажмите там «Сохранить».</value></data>
+  <data name="RemovedFromProfileStatus" xml:space="preserve"><value>Убрано модов из «{1}»: {0}. Перед этим сделана копия.</value></data>
+  <data name="RemovedFromUnsavedStatus" xml:space="preserve"><value>Убрано модов из «{1}» на вкладке «Профили»: {0}. Не сохранено — нажмите там «Сохранить».</value></data>
+  <data name="NothingToAdd" xml:space="preserve"><value>Все выбранные моды уже активны в «{0}».</value></data>
+  <data name="SelectedCount" xml:space="preserve"><value>Выбрано: {0}</value></data>
+  <data name="AllTypes" xml:space="preserve"><value>Все типы</value></data>
+  <data name="NoType" xml:space="preserve"><value>(без типа)</value></data>
+  <data name="MultiSelectHint" xml:space="preserve"><value>Ctrl+щелчок или Shift+щелчок — выбрать несколько. Правый щелчок — другие действия.</value></data>
+  <data name="NoEditableProfiles" xml:space="preserve"><value>Нет локальных профилей</value></data>
+  <data name="InstallMods" xml:space="preserve"><value>Установить моды…</value></data>
+  <data name="UninstallMods" xml:space="preserve"><value>Удалить…</value></data>
+  <data name="DropHint" xml:space="preserve"><value>Перетащите сюда файлы .scs или .zip, чтобы установить их.</value></data>
+  <data name="ModFileFilter" xml:space="preserve"><value>Файлы модов (*.scs;*.zip)|*.scs;*.zip</value></data>
+  <data name="ReplaceTitle" xml:space="preserve"><value>Мод уже установлен</value></data>
+  <data name="ReplaceQuestion" xml:space="preserve"><value>«{0}» уже установлен. Заменить? Установленная версия отправится в корзину.</value></data>
+  <data name="InstallSummary" xml:space="preserve"><value>Установлено: {0}, заменено: {1}, пропущено: {2}, ошибок: {3}.</value></data>
+  <data name="UninstallTitle" xml:space="preserve"><value>Удалить моды</value></data>
+  <data name="UninstallQuestion" xml:space="preserve"><value>Переместить моды в корзину ({0})?
+
+{1}</value></data>
+  <data name="UninstallActiveQuestion" xml:space="preserve"><value>Некоторые из этих модов активны в профилях: {0}.
+
+Убрать их и из этих профилей? (Да — убрать, Нет — оставить записи; игра покажет их как отсутствующие.)</value></data>
+  <data name="UninstallWorkshopNote" xml:space="preserve"><value>Предметы из Мастерской здесь удалить нельзя — отпишитесь от них в Steam. Пропущено: {0}</value></data>
+  <data name="UninstalledStatus" xml:space="preserve"><value>Перемещено модов в корзину: {0}.</value></data>
+  <data name="ShowAll" xml:space="preserve"><value>Все моды</value></data>
+  <data name="ShowDuplicates" xml:space="preserve"><value>Дубликаты и старые копии</value></data>
+  <data name="ShowUnused" xml:space="preserve"><value>Не используются ни в одном профиле</value></data>
+  <data name="ShowProblems" xml:space="preserve"><value>Несовместимые или без DLC</value></data>
+  <data name="DuplicateBadge" xml:space="preserve"><value>Дубликат</value></data>
+  <data name="OlderBadge" xml:space="preserve"><value>Старая копия</value></data>
+  <data name="DuplicateSameId" xml:space="preserve"><value>Установлен несколько раз под одним именем: игра может использовать только один.</value></data>
+  <data name="DuplicateSameName" xml:space="preserve"><value>Установлена другая копия этого мода: {0}.</value></data>
+  <data name="DuplicateOlder" xml:space="preserve"><value>Эта копия старше, чем «{0}».</value></data>
+  <data name="TagsLabel" xml:space="preserve"><value>Ваши метки</value></data>
+  <data name="TagsHint" xml:space="preserve"><value>Через запятую, например: карта, нужен ProMods</value></data>
+  <data name="NoteLabel" xml:space="preserve"><value>Ваша заметка</value></data>
+  <data name="CopyLoadOrder" xml:space="preserve"><value>Копировать порядок загрузки в…</value></data>
+  <data name="CopyLoadOrderTitle" xml:space="preserve"><value>Копировать порядок загрузки</value></data>
+  <data name="CopyLoadOrderPrompt" xml:space="preserve"><value>Заменить порядок загрузки этих профилей порядком из «{0}» (модов: {1})? Перед этим для каждого профиля делается копия.</value></data>
+  <data name="CopiedStatus" xml:space="preserve"><value>Порядок загрузки «{0}» скопирован в профили: {1}.</value></data>
+  <data name="LaunchGame" xml:space="preserve"><value>Запустить игру</value></data>
+  <data name="LaunchFailed" xml:space="preserve"><value>Не удалось запустить игру через Steam: {0}</value></data>
+  <data name="PanelConflicts" xml:space="preserve"><value>Конфликты</value></data>
+  <data name="PanelConflictsCount" xml:space="preserve"><value>Конфликты ({0})</value></data>
+  <data name="ConflictsHint" xml:space="preserve"><value>Если два активных мода содержат один и тот же файл, игра использует тот, что выше в списке. Часто так и задумано (патчи и дополнения совместимости ставят выше мода, который они меняют), но неверный порядок может свести мод на нет. Проверка повторяется после каждого изменения.</value></data>
+  <data name="ConflictsChecking" xml:space="preserve"><value>Поиск конфликтов…</value></data>
+  <data name="ConflictsNone" xml:space="preserve"><value>Ни один активный мод не заменяет файлы другого.</value></data>
+  <data name="ConflictsSummary" xml:space="preserve"><value>Пар модов с общими файлами: {0} (затронуто модов: {1}).</value></data>
+  <data name="ConflictsSummaryOne" xml:space="preserve"><value>1 пара модов имеет общие файлы.</value></data>
+  <data name="ConflictsNotChecked" xml:space="preserve"><value>Защищённые моды, которые нельзя проверить: {0}.</value></data>
+  <data name="ConflictsFailed" xml:space="preserve"><value>Не удалось проверить конфликты. Подробности в журнале.</value></data>
+  <data name="ConflictsOnlySelected" xml:space="preserve"><value>Только выбранный мод</value></data>
+  <data name="ConflictPair" xml:space="preserve"><value>#{0} {1}  заменяет файлы  #{2} {3}</value></data>
+  <data name="ConflictFiles" xml:space="preserve"><value>Общих файлов: {0:N0}</value></data>
+  <data name="ConflictOneFile" xml:space="preserve"><value>1 общий файл</value></data>
+  <data name="ConflictBadge" xml:space="preserve"><value>Конфликтов: {0}</value></data>
+  <data name="ConflictBadgeOne" xml:space="preserve"><value>1 конфликт</value></data>
+  <data name="ConflictWins" xml:space="preserve"><value>Заменяет файлы модов ниже в списке: {0}.</value></data>
+  <data name="ConflictLosses" xml:space="preserve"><value>Модов выше в списке, заменяющих часть его файлов: {0}.</value></data>
+  <data name="ConflictNamesHidden" xml:space="preserve"><value>Этот архив скрывает имена файлов, поэтому примеры показать нельзя.</value></data>
+  <data name="ConflictMoreFiles" xml:space="preserve"><value>…и ещё {0:N0}</value></data>
+  <data name="ConflictExamplesHint" xml:space="preserve"><value>Выберите пару, чтобы увидеть примеры файлов.</value></data>
+  <data name="NoConflictsToShow" xml:space="preserve"><value>Показывать нечего.</value></data>
+  <data name="Loading" xml:space="preserve"><value>Загрузка…</value></data>
+  <data name="ShowGameWarnings" xml:space="preserve"><value>Проблемы, о которых сообщила игра</value></data>
+  <data name="GameSays" xml:space="preserve"><value>Сообщения игры</value></data>
+  <data name="GameSaysHeader" xml:space="preserve"><value>Из журнала последнего запуска игры ({0}). Игра пишет эти сообщения по-английски.</value></data>
+  <data name="GameSaysHeaderNoDate" xml:space="preserve"><value>Из журнала последнего запуска игры. Игра пишет эти сообщения по-английски.</value></data>
+  <data name="GameLabel" xml:space="preserve"><value>Игра</value></data>
+  <data name="UpdatesHeader" xml:space="preserve"><value>Обновления</value></data>
+  <data name="UpdateAutoCheck" xml:space="preserve"><value>Проверять наличие новой версии при запуске Dispatch (запрос к GitHub не чаще раза в день; никакие сведения о вас или ваших модах не отправляются)</value></data>
+  <data name="UpdateCheckNow" xml:space="preserve"><value>Проверить сейчас</value></data>
+  <data name="UpdateChecking" xml:space="preserve"><value>Проверка обновлений…</value></data>
+  <data name="UpdateNone" xml:space="preserve"><value>Dispatch {0} — последняя версия.</value></data>
+  <data name="UpdateAvailable" xml:space="preserve"><value>Доступен Dispatch {0} (у вас {1}).</value></data>
+  <data name="UpdateCheckFailed" xml:space="preserve"><value>Не удалось проверить обновления: {0}</value></data>
+  <data name="UpdateNoReleases" xml:space="preserve"><value>публичных выпусков не найдено.</value></data>
+  <data name="UpdateInstall" xml:space="preserve"><value>Установить обновление</value></data>
+  <data name="UpdateDownload" xml:space="preserve"><value>Открыть страницу загрузки</value></data>
+  <data name="UpdateReleaseNotes" xml:space="preserve"><value>Что нового</value></data>
+  <data name="UpdateSkip" xml:space="preserve"><value>Пропустить эту версию</value></data>
+  <data name="UpdateLater" xml:space="preserve"><value>Позже</value></data>
+  <data name="UpdateConfirm" xml:space="preserve"><value>Скачать и установить Dispatch {0} ({1})?
+
+Перед запуском установщик сверяется с контрольной суммой SHA-256 выпуска. На время установки Dispatch закроется, а потом запустится снова. Ваши настройки, копии и заметки сохранятся.</value></data>
+  <data name="UpdateDownloading" xml:space="preserve"><value>Загрузка обновления…</value></data>
+  <data name="UpdateFailed" xml:space="preserve"><value>Не удалось установить обновление: {0}</value></data>
+  <data name="Type_truck" xml:space="preserve"><value>Грузовик</value></data>
+  <data name="Type_trailer" xml:space="preserve"><value>Прицеп</value></data>
+  <data name="Type_interior" xml:space="preserve"><value>Салон</value></data>
+  <data name="Type_tuning_parts" xml:space="preserve"><value>Тюнинг</value></data>
+  <data name="Type_ai_traffic" xml:space="preserve"><value>Трафик ИИ</value></data>
+  <data name="Type_sound" xml:space="preserve"><value>Звук</value></data>
+  <data name="Type_paint_job" xml:space="preserve"><value>Окраска</value></data>
+  <data name="Type_cargo_pack" xml:space="preserve"><value>Пак грузов</value></data>
+  <data name="Type_map" xml:space="preserve"><value>Карта</value></data>
+  <data name="Type_ui" xml:space="preserve"><value>Интерфейс</value></data>
+  <data name="Type_weather_setup" xml:space="preserve"><value>Погода</value></data>
+  <data name="Type_physics" xml:space="preserve"><value>Физика</value></data>
+  <data name="Type_graphics" xml:space="preserve"><value>Графика</value></data>
+  <data name="Type_models" xml:space="preserve"><value>Модели</value></data>
+  <data name="Type_movers" xml:space="preserve"><value>Транспорт</value></data>
+  <data name="Type_walkers" xml:space="preserve"><value>Пешеходы</value></data>
+  <data name="Type_prefabs" xml:space="preserve"><value>Префабы</value></data>
+  <data name="Type_other" xml:space="preserve"><value>Другое</value></data>
+  <data name="FormatFolder" xml:space="preserve"><value>Папка</value></data>
+  <data name="FormatUnknown" xml:space="preserve"><value>Неизвестный / защищённый</value></data>
+  <data name="FormatSubPackage" xml:space="preserve"><value>{0} ({1} в versions.sii)</value></data>
+  <data name="ProfileSummaryLine" xml:space="preserve"><value>модов: {0} · сохранений: {1} · {2}</value></data>
+  <data name="PresetSummaryLine" xml:space="preserve"><value>модов: {0} · {1}</value></data>
+  <data name="PresetMadeWith" xml:space="preserve"><value>создан в {0}</value></data>
+  <data name="BackupReasonLoadOrderSave" xml:space="preserve"><value>Перед сохранением порядка загрузки</value></data>
+  <data name="BackupReasonPreRestore" xml:space="preserve"><value>Перед восстановлением копии</value></data>
+  <data name="BackupReasonRename" xml:space="preserve"><value>Весь профиль, перед переименованием</value></data>
+  <data name="BackupReasonDuplicate" xml:space="preserve"><value>Перед копированием</value></data>
+  <data name="BackupReasonPresetApply" xml:space="preserve"><value>Перед применением набора</value></data>
+  <data name="BackupReasonDelete" xml:space="preserve"><value>Весь профиль, удалён</value></data>
+  <data name="BackupReasonManual" xml:space="preserve"><value>Вручную</value></data>
+  <data name="BackupFilesLine" xml:space="preserve"><value>файлов: {0} · {1}</value></data>
+  <data name="VersionFrom" xml:space="preserve"><value>{0} (из {1})</value></data>
+  <data name="SignedIn" xml:space="preserve"><value>(вход выполнен)</value></data>
+  <data name="CrashMessage" xml:space="preserve"><value>Что-то пошло не так:
+
+{0}
+
+Подробности в папке журналов.</value></data>
+  <data name="LanguageHeader" xml:space="preserve"><value>Язык</value></data>
+  <data name="LanguageSystem" xml:space="preserve"><value>Как в Windows</value></data>
+  <data name="LanguageRestartHint" xml:space="preserve"><value>Перезапустите Dispatch, чтобы применить новый язык.</value></data>
+  <data name="LanguageRestart" xml:space="preserve"><value>Перезапустить</value></data>
+  <data name="LanguageNote" xml:space="preserve"><value>Некоторые подробные сообщения (о файлах модов, определении и ошибках) пока на английском.</value></data>
+  <data name="CompatDetailGameSaysIncompatible" xml:space="preserve"><value>Dispatch не может прочитать этот пакет, но при последнем запуске игра отметила его как несовместимый.</value></data>
+  <data name="CompatDetailNoManifest" xml:space="preserve"><value>У этого мода нет manifest.sii, поэтому совместимые версии не указаны.</value></data>
+  <data name="CompatDetailUnreadable" xml:space="preserve"><value>Dispatch не может прочитать этот пакет (защищён или неизвестный формат).</value></data>
+  <data name="CompatDetailMissingDlc" xml:space="preserve"><value>Требуются DLC, которых у вас нет: {0}.</value></data>
+  <data name="CompatDetailUnknownGameVersion" xml:space="preserve"><value>Версия игры неизвестна, поэтому совместимость проверить нельзя.</value></data>
+  <data name="CompatDetailWorkshop" xml:space="preserve"><value>Предмет из Мастерской: игра сама выбирает подходящую версию.</value></data>
+  <data name="CompatDetailNoVersions" xml:space="preserve"><value>Мод не указывает, какие версии игры он поддерживает.</value></data>
+  <data name="CompatDetailMatches" xml:space="preserve"><value>Сделан для {0}.</value></data>
+  <data name="CompatDetailMismatch" xml:space="preserve"><value>Сделан для {0}; у вас {1}.</value></data>
+  <data name="CompatNoteLogSaysIncompatible" xml:space="preserve"><value>Примечание: журнал игры не согласен и отметил его как несовместимый.</value></data>
+  <data name="CompatNoteLogSaysCompatible" xml:space="preserve"><value>Примечание: журнал игры не отмечал его как несовместимый.</value></data>
+</root>

@@ -38,8 +38,8 @@ public sealed record Preset(
     };
 
     public static Preset Create(string name, IEnumerable<ActiveModEntry> topFirst, IReadOnlyDictionary<string, ModInfo> installed,
-                                string? gameVersion, string? notes = null) =>
-        new(CurrentSchema, "Dispatch", "ets2", name, gameVersion, DateTime.UtcNow, notes,
+                                string? gameVersion, string? notes = null, Games.GameDefinition? game = null) =>
+        new(CurrentSchema, "Dispatch", (game ?? Games.GameDefinition.Ets2).Key, name, gameVersion, DateTime.UtcNow, notes,
             topFirst.Select(e =>
             {
                 installed.TryGetValue(e.PackageId, out var mod);
@@ -61,8 +61,10 @@ public sealed record Preset(
 
     /// <summary>Loads and validates a preset file. Unknown fields are ignored; newer schemas are refused.</summary>
     /// <exception cref="InvalidDataException">Not a valid Dispatch preset.</exception>
-    public static Preset Load(string path)
+    /// <param name="game">The game the preset must be for (default ETS2). Presets for the other game are refused.</param>
+    public static Preset Load(string path, Games.GameDefinition? game = null)
     {
+        game ??= Games.GameDefinition.Ets2;
         var info = new FileInfo(path);
         if (!info.Exists || info.Length > MaxFileBytes)
         {
@@ -89,9 +91,11 @@ public sealed record Preset(
             throw new InvalidDataException("This preset was made by a newer version of Dispatch. Update Dispatch to open it.");
         }
 
-        if (!string.Equals(preset.Game, "ets2", StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(preset.Game, game.Key, StringComparison.OrdinalIgnoreCase))
         {
-            throw new InvalidDataException($"This preset is for another game ({preset.Game}).");
+            string other = Games.GameDefinition.All.FirstOrDefault(g => string.Equals(g.Key, preset.Game, StringComparison.OrdinalIgnoreCase))
+                               ?.DisplayName ?? preset.Game;
+            throw new InvalidDataException($"This preset is for another game ({other}).");
         }
 
         if (preset.Mods.Any(m => string.IsNullOrWhiteSpace(m.PackageId) || m.PackageId.Contains('|', StringComparison.Ordinal) ||

@@ -12,6 +12,9 @@ public static class Strings
 
     private static string Get(string name) => Manager.GetString(name, Culture) ?? name;
 
+    /// <summary>Looks a string up by a key built at run time (e.g. Type_map). Returns the key if it's missing.</summary>
+    public static string ByName(string name) => Get(name);
+
     public static string AppTitle => Get(nameof(AppTitle));
 
     public static string AppSubtitle => Get(nameof(AppSubtitle));
@@ -379,4 +382,192 @@ public static class Strings
     public static string LaunchGame => Get(nameof(LaunchGame));
 
     public static string LaunchFailed => Get(nameof(LaunchFailed));
+
+    public static string PanelConflicts => Get(nameof(PanelConflicts));
+
+    public static string PanelConflictsCount => Get(nameof(PanelConflictsCount));
+
+    public static string ConflictsHint => Get(nameof(ConflictsHint));
+
+    public static string ConflictsChecking => Get(nameof(ConflictsChecking));
+
+    public static string ConflictsNone => Get(nameof(ConflictsNone));
+
+    public static string ConflictsSummary => Get(nameof(ConflictsSummary));
+
+    public static string ConflictsSummaryOne => Get(nameof(ConflictsSummaryOne));
+
+    public static string ConflictsNotChecked => Get(nameof(ConflictsNotChecked));
+
+    public static string ConflictsFailed => Get(nameof(ConflictsFailed));
+
+    public static string ConflictsOnlySelected => Get(nameof(ConflictsOnlySelected));
+
+    public static string ConflictPair => Get(nameof(ConflictPair));
+
+    public static string ConflictFiles => Get(nameof(ConflictFiles));
+
+    public static string ConflictOneFile => Get(nameof(ConflictOneFile));
+
+    public static string ConflictBadge => Get(nameof(ConflictBadge));
+
+    public static string ConflictBadgeOne => Get(nameof(ConflictBadgeOne));
+
+    public static string ConflictWins => Get(nameof(ConflictWins));
+
+    public static string ConflictLosses => Get(nameof(ConflictLosses));
+
+    public static string ConflictNamesHidden => Get(nameof(ConflictNamesHidden));
+
+    public static string ConflictMoreFiles => Get(nameof(ConflictMoreFiles));
+
+    public static string ConflictExamplesHint => Get(nameof(ConflictExamplesHint));
+
+    public static string NoConflictsToShow => Get(nameof(NoConflictsToShow));
+
+    public static string Loading => Get(nameof(Loading));
+
+    public static string ShowGameWarnings => Get(nameof(ShowGameWarnings));
+
+    public static string GameSays => Get(nameof(GameSays));
+
+    public static string GameSaysHeader => Get(nameof(GameSaysHeader));
+
+    public static string GameSaysHeaderNoDate => Get(nameof(GameSaysHeaderNoDate));
+
+    public static string GameLabel => Get(nameof(GameLabel));
+
+    public static string UpdatesHeader => Get(nameof(UpdatesHeader));
+
+    public static string UpdateAutoCheck => Get(nameof(UpdateAutoCheck));
+
+    public static string UpdateCheckNow => Get(nameof(UpdateCheckNow));
+
+    public static string UpdateChecking => Get(nameof(UpdateChecking));
+
+    public static string UpdateNone => Get(nameof(UpdateNone));
+
+    public static string UpdateAvailable => Get(nameof(UpdateAvailable));
+
+    public static string UpdateCheckFailed => Get(nameof(UpdateCheckFailed));
+
+    public static string UpdateNoReleases => Get(nameof(UpdateNoReleases));
+
+    public static string UpdateInstall => Get(nameof(UpdateInstall));
+
+    public static string UpdateDownload => Get(nameof(UpdateDownload));
+
+    public static string UpdateReleaseNotes => Get(nameof(UpdateReleaseNotes));
+
+    public static string UpdateSkip => Get(nameof(UpdateSkip));
+
+    public static string UpdateLater => Get(nameof(UpdateLater));
+
+    public static string UpdateConfirm => Get(nameof(UpdateConfirm));
+
+    public static string UpdateDownloading => Get(nameof(UpdateDownloading));
+
+    public static string UpdateFailed => Get(nameof(UpdateFailed));
+
+    public static string Type_truck => Get(nameof(Type_truck));
+
+    public static string Type_trailer => Get(nameof(Type_trailer));
+
+    public static string Type_interior => Get(nameof(Type_interior));
+
+    public static string Type_tuning_parts => Get(nameof(Type_tuning_parts));
+
+    public static string Type_ai_traffic => Get(nameof(Type_ai_traffic));
+
+    public static string Type_sound => Get(nameof(Type_sound));
+
+    public static string Type_paint_job => Get(nameof(Type_paint_job));
+
+    public static string Type_cargo_pack => Get(nameof(Type_cargo_pack));
+
+    public static string Type_map => Get(nameof(Type_map));
+
+    public static string Type_ui => Get(nameof(Type_ui));
+
+    public static string Type_weather_setup => Get(nameof(Type_weather_setup));
+
+    public static string Type_physics => Get(nameof(Type_physics));
+
+    public static string Type_graphics => Get(nameof(Type_graphics));
+
+    public static string Type_models => Get(nameof(Type_models));
+
+    public static string Type_movers => Get(nameof(Type_movers));
+
+    public static string Type_walkers => Get(nameof(Type_walkers));
+
+    public static string Type_prefabs => Get(nameof(Type_prefabs));
+
+    public static string Type_other => Get(nameof(Type_other));
+
+    public static string FormatFolder => Get(nameof(FormatFolder));
+
+    public static string FormatUnknown => Get(nameof(FormatUnknown));
+
+    public static string FormatSubPackage => Get(nameof(FormatSubPackage));
+
+    public static string ProfileSummaryLine => Get(nameof(ProfileSummaryLine));
+
+    public static string PresetSummaryLine => Get(nameof(PresetSummaryLine));
+
+    public static string PresetMadeWith => Get(nameof(PresetMadeWith));
+
+    public static string BackupReasonLoadOrderSave => Get(nameof(BackupReasonLoadOrderSave));
+
+    public static string BackupReasonPreRestore => Get(nameof(BackupReasonPreRestore));
+
+    public static string BackupReasonRename => Get(nameof(BackupReasonRename));
+
+    public static string BackupReasonDuplicate => Get(nameof(BackupReasonDuplicate));
+
+    public static string BackupReasonPresetApply => Get(nameof(BackupReasonPresetApply));
+
+    public static string BackupReasonDelete => Get(nameof(BackupReasonDelete));
+
+    public static string BackupReasonManual => Get(nameof(BackupReasonManual));
+
+    public static string BackupFilesLine => Get(nameof(BackupFilesLine));
+
+    public static string VersionFrom => Get(nameof(VersionFrom));
+
+    public static string SignedIn => Get(nameof(SignedIn));
+
+    public static string CrashMessage => Get(nameof(CrashMessage));
+
+    public static string LanguageHeader => Get(nameof(LanguageHeader));
+
+    public static string LanguageSystem => Get(nameof(LanguageSystem));
+
+    public static string LanguageRestartHint => Get(nameof(LanguageRestartHint));
+
+    public static string LanguageRestart => Get(nameof(LanguageRestart));
+
+    public static string LanguageNote => Get(nameof(LanguageNote));
+
+    public static string CompatDetailGameSaysIncompatible => Get(nameof(CompatDetailGameSaysIncompatible));
+
+    public static string CompatDetailNoManifest => Get(nameof(CompatDetailNoManifest));
+
+    public static string CompatDetailUnreadable => Get(nameof(CompatDetailUnreadable));
+
+    public static string CompatDetailMissingDlc => Get(nameof(CompatDetailMissingDlc));
+
+    public static string CompatDetailUnknownGameVersion => Get(nameof(CompatDetailUnknownGameVersion));
+
+    public static string CompatDetailWorkshop => Get(nameof(CompatDetailWorkshop));
+
+    public static string CompatDetailNoVersions => Get(nameof(CompatDetailNoVersions));
+
+    public static string CompatDetailMatches => Get(nameof(CompatDetailMatches));
+
+    public static string CompatDetailMismatch => Get(nameof(CompatDetailMismatch));
+
+    public static string CompatNoteLogSaysIncompatible => Get(nameof(CompatNoteLogSaysIncompatible));
+
+    public static string CompatNoteLogSaysCompatible => Get(nameof(CompatNoteLogSaysCompatible));
 }

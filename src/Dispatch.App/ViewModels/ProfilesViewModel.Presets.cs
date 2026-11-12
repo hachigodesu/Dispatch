@@ -15,6 +15,7 @@ public sealed partial class ProfilesViewModel
 {
     private string _presetsDir = "";
     private string? _gameVersion;
+    private Dispatch.Core.Games.GameDefinition _presetGame = Dispatch.Core.Games.GameDefinition.Ets2;
 
     public ObservableCollection<PresetItemViewModel> Presets { get; } = [];
 
@@ -22,9 +23,10 @@ public sealed partial class ProfilesViewModel
     [NotifyCanExecuteChangedFor(nameof(ApplyPresetCommand), nameof(ExportPresetCommand), nameof(DeletePresetCommand))]
     private PresetItemViewModel? _selectedPreset;
 
-    public void ConfigurePresets(string presetsDir, string? gameVersion)
+    public void ConfigurePresets(string presetsDir, string? gameVersion, Dispatch.Core.Games.GameDefinition game)
     {
         _presetsDir = presetsDir;
+        _presetGame = game;
         _gameVersion = gameVersion;
         RefreshPresets();
     }
@@ -42,7 +44,7 @@ public sealed partial class ProfilesViewModel
         {
             try
             {
-                Presets.Add(new PresetItemViewModel(Preset.Load(file), file));
+                Presets.Add(new PresetItemViewModel(Preset.Load(file, _presetGame), file));
             }
             catch (InvalidDataException ex)
             {
@@ -75,7 +77,7 @@ public sealed partial class ProfilesViewModel
         }
 
         var installed = _mods.Values.ToDictionary(m => m.PackageId, m => m.Mod, StringComparer.Ordinal);
-        var preset = Preset.Create(name.Trim(), LoadOrder.Select(l => l.Entry), installed, _gameVersion);
+        var preset = Preset.Create(name.Trim(), LoadOrder.Select(l => l.Entry), installed, _gameVersion, game: _presetGame);
         string path = UniquePresetPath(name);
         preset.Save(path);
         Log.Information("Saved preset {Name} ({Count} mods) to {Path}", preset.Name, preset.Mods.Count, path);
@@ -131,7 +133,7 @@ public sealed partial class ProfilesViewModel
 
         try
         {
-            var preset = Preset.Load(file); // validates before anything is copied
+            var preset = Preset.Load(file, _presetGame); // validates before anything is copied
             string path = UniquePresetPath(preset.Name);
             preset.Save(path);
             RefreshPresets();
@@ -209,5 +211,7 @@ public sealed class PresetItemViewModel(Preset preset, string path)
     public string Name => Preset.Name;
 
     public string Summary =>
-        $"{Preset.Mods.Count} mods · {Preset.CreatedUtc.ToLocalTime():g}" + (Preset.GameVersion is { } v ? $" · made with {v}" : "");
+        string.Format(CultureInfo.CurrentCulture, Strings.PresetSummaryLine, Preset.Mods.Count,
+                      Preset.CreatedUtc.ToLocalTime().ToString("g", CultureInfo.CurrentCulture)) +
+        (Preset.GameVersion is { } v ? " · " + string.Format(CultureInfo.CurrentCulture, Strings.PresetMadeWith, v) : "");
 }

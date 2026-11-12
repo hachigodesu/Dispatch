@@ -110,7 +110,8 @@ internal static class SelfTest
             bool m4 = Presets(vm, dialogs, profileName, resultFile, Step);
             bool bulk = await BulkAndDeleteAsync(vm, dialogs, profileName, Step);
             bool v1 = await V1Async(vm, dialogs, profileName, resultFile, Step);
-            m4 = m4 && bulk && v1;
+            bool v2 = await ConflictsAsync(vm, profileName, resultFile, Step) && await SwitchGameAsync(vm, profileName, Step);
+            m4 = m4 && bulk && v1 && v2;
             Step($"dialog errors: {(dialogs.Errors.Count == 0 ? "none" : string.Join(" / ", dialogs.Errors))}");
             ok = saved && restored && m3 && m4 && !vm.Mods.TypeOptions.Contains("Maps") && dialogs.Errors.Count == 0;
         }
@@ -122,6 +123,141 @@ internal static class SelfTest
         Step(ok ? "RESULT: PASS" : "RESULT: FAIL");
         await File.WriteAllTextAsync(resultFile, log.ToString());
         return ok;
+    }
+
+    /// <summary>
+    /// v2: switch to ATS (if installed) and back. Read-only: ATS profiles are only listed, and the saved game choice
+    /// isn't changed.
+    /// </summary>
+    private static async Task<bool> SwitchGameAsync(MainViewModel vm, string profileName, Action<string> step)
+    {
+        var ats = Dispatch.Core.Games.GameDefinition.Ats;
+        if (!vm.Games.Contains(ats))
+        {
+            step("v2 game switch: ATS not installed, skipped");
+            return true;
+        }
+
+        await vm.SwitchGameAsync(ats, remember: false);
+        string atsRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), ats.DocumentsFolderName);
+        bool atsShown = vm.Game == ats && vm.GameVersion.StartsWith("ATS", StringComparison.Ordinal) &&
+                        vm.Profiles.Items.All(p => p.IsCloud || p.Profile.MainDir.StartsWith(atsRoot, StringComparison.OrdinalIgnoreCase)) &&
+                        vm.Profiles.Items.All(p => p.Name != profileName || p.IsCloud);
+        step($"v2 switch to ATS: {atsShown} ({vm.GameVersion}, {vm.Profiles.Items.Count} profiles, {vm.Mods.ById.Count} mods)");
+
+        await vm.SwitchGameAsync(Dispatch.Core.Games.GameDefinition.Ets2, remember: false);
+        bool back = vm.Game == Dispatch.Core.Games.GameDefinition.Ets2 && vm.Profiles.Items.Any(p => p.Name == profileName);
+        step($"v2 switch back to ETS2: {back}");
+        return atsShown && back;
+    }
+
+    /// <summary>
+    /// v2: two generated mods that share a file are installed and added (unsaved) to the test profile. The higher one
+    /// must win, rows and the panel must agree, example names must resolve, and reordering re-checks. Then everything is
+    /// discarded and uninstalled; the profile file is never written.
+    /// </summary>
+    private static async Task<bool> ConflictsAsync(MainViewModel vm, string profileName, string resultFile, Action<string> step)
+    {
+        const string Shared = "def/dispatch_selftest/shared.sii";
+        string dir = Path.Combine(Path.GetDirectoryName(resultFile)!, "selftest-conflicts");
+        Directory.CreateDirectory(dir);
+        string MakeMod(string id, string unique)
+        {
+            string path = Path.Combine(dir, id + ".scs");
+            File.Delete(path);
+            using var zip = System.IO.Compression.ZipFile.Open(path, System.IO.Compression.ZipArchiveMode.Create);
+            foreach (var (name, text) in new[]
+                     {
+                         ("manifest.sii", $"SiiNunit\n{{\nmod_package : .package_name\n{{\n display_name: \"Dispatch Self-Test {id}\"\n category[]: \"other\"\n}}\n}}\n"),
+                         ("readme.txt", "root-level files are metadata, not conflicts"),
+                         (Shared, "SiiNunit { }"),
+                         (unique, "SiiNunit { }"),
+                     })
+            {
+                using var w = new StreamWriter(zip.CreateEntry(name).Open());
+                w.Write(text);
+            }
+
+            return path;
+        }
+
+        await vm.Mods.InstallFilesAsync([MakeMod("DispatchSelfTest_c1", "def/dispatch_selftest/one.sii"),
+                                         MakeMod("DispatchSelfTest_c2", "def/dispatch_selftest/two.sii")]);
+        var c1 = vm.Mods.ById.GetValueOrDefault("DispatchSelfTest_c1");
+        var c2 = vm.Mods.ById.GetValueOrDefault("DispatchSelfTest_c2");
+        if (c1 is null || c2 is null)
+        {
+            step("v2: test mods weren't installed");
+            return false;
+        }
+
+        var p = vm.Profiles;
+        p.Selected = p.Items.First(i => i.Name == profileName && !i.IsCloud);
+        string sii = p.Selected.Profile.ProfileSiiPath;
+        byte[] before = File.ReadAllBytes(sii);
+        p.InsertMany([c1, c2], 0); // c1 at the top, c2 right below it
+        await p.ConflictCheck;
+        var pair = p.LastConflictReport.Pairs.SingleOrDefault(c => c.LoserId == c2.PackageId);
+        bool found = pair is { WinnerId: "DispatchSelfTest_c1", FileCount: 1 };
+        p.SelectedConflict = p.Conflicts.FirstOrDefault(c => c.Conflict.LoserId == c2.PackageId);
+        for (int i = 0; i < 50 && p.SelectedConflict is { } sc && (sc.Examples.Length == 0 || sc.Examples == Resources.Strings.Loading); i++)
+        {
+            await Task.Delay(100);
+        }
+
+        bool names = p.SelectedConflict?.Examples == Shared;
+        bool badges = p.LoadOrder.First(l => l.PackageId == c1.PackageId).HasConflicts &&
+                      p.LoadOrder.First(l => l.PackageId == c2.PackageId).HasConflicts;
+        step($"v2 test mods sharing one file: found c1 over c2: {found}; row badges: {badges}; example: {p.SelectedConflict?.Examples}");
+
+        bool Consistent()
+        {
+            var pos = p.LoadOrder.ToDictionary(l => l.PackageId, l => l.Position);
+            var report = p.LastConflictReport;
+            bool higherWins = report.Pairs.All(c => pos[c.WinnerId] < pos[c.LoserId]);
+            var involved = report.Pairs.SelectMany(c => new[] { c.WinnerId, c.LoserId }).ToHashSet();
+            bool rows = p.LoadOrder.All(l => l.HasConflicts == involved.Contains(l.PackageId));
+            return higherWins && rows && p.Conflicts.Count == report.Pairs.Count && !p.IsCheckingConflicts;
+        }
+
+        bool first = Consistent();
+        step($"v2 conflicts: {p.LastConflictReport.Pairs.Count} pairs; {p.ConflictSummary}; consistent: {first}");
+
+        // Reverse the whole list. Who wins changes, but not which mods are involved or how many file copies are
+        // hidden in total (a file in k mods hides k-1 copies, whatever the order).
+        static (int Hidden, string Ids) Totals(Dispatch.Core.Mods.ConflictReport r) =>
+            (r.Pairs.Sum(c => c.FileCount),
+             string.Join(",", r.Pairs.SelectMany(c => new[] { c.WinnerId, c.LoserId }).Distinct().Order(StringComparer.Ordinal)));
+        var oldTotals = Totals(p.LastConflictReport);
+        for (int i = 1; i < p.LoadOrder.Count; i++)
+        {
+            p.LoadOrder.Move(i, 0);
+        }
+
+        await Task.Delay(50); // the check is debounced; wait for the one started by the last move
+        await p.ConflictCheck;
+        bool reversed = Consistent() && Totals(p.LastConflictReport) == oldTotals;
+        bool flippedTest = p.LastConflictReport.Pairs.Any(c => c is { WinnerId: "DispatchSelfTest_c2", LoserId: "DispatchSelfTest_c1" });
+        reversed = reversed && flippedTest;
+        step($"v2 reversed order: {p.LastConflictReport.Pairs.Count} pairs, {oldTotals.Hidden} hidden copies before and after, c2 now wins: {reversed}");
+
+        p.ConflictsOnlySelected = true;
+        p.SelectedEntry = p.LoadOrder.FirstOrDefault(l => l.HasConflicts) ?? p.LoadOrder[0];
+        bool filtered = p.Conflicts.All(c => c.Conflict.WinnerId == p.SelectedEntry.PackageId || c.Conflict.LoserId == p.SelectedEntry.PackageId);
+        p.ConflictsOnlySelected = false;
+        p.DiscardCommand.Execute(null);
+        await p.ConflictCheck;
+        bool untouched = File.ReadAllBytes(sii).AsSpan().SequenceEqual(before) && !p.IsDirty && Consistent();
+        step($"v2 filter by selected mod: {filtered}; discarded, profile untouched: {untouched}");
+
+        vm.Mods.SelectedMods.Clear();
+        vm.Mods.SelectedMods.Add(vm.Mods.ById[c1.PackageId]);
+        vm.Mods.SelectedMods.Add(vm.Mods.ById[c2.PackageId]);
+        await vm.Mods.UninstallCommand.ExecuteAsync(null);
+        bool gone = !vm.Mods.ById.ContainsKey(c1.PackageId) && !vm.Mods.ById.ContainsKey(c2.PackageId);
+        Directory.Delete(dir, recursive: true);
+        step($"v2 test mods uninstalled: {gone}");
+        return found && names && badges && first && reversed && filtered && untouched && gone;
     }
 
     /// <summary>

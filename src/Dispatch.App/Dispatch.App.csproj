@@ -5,8 +5,8 @@
     <AssemblyName>Dispatch</AssemblyName>
     <RootNamespace>Dispatch.App</RootNamespace>
     <Product>Dispatch</Product>
-    <Description>A mod manager for Euro Truck Simulator 2</Description>
-    <Version>0.5.0</Version>
+    <Description>A mod manager for Euro Truck Simulator 2 and American Truck Simulator</Description>
+    <Version>0.6.0</Version>
     <ApplicationIcon>Assets\dispatch.ico</ApplicationIcon>
     <!-- WPF0001: the Fluent theme (ThemeMode) is marked experimental. CA1001/CA1515/CA1822: noisy for view models. -->
     <NoWarn>$(NoWarn);WPF0001;CA1515;CA1822;CA1001;CA1863</NoWarn>
@@ -28,5 +28,6 @@
     <!-- UI strings live in Strings.resx so the app can be translated later (PLAN.md decision).
          Strings.Designer.cs is regenerated with tools/gen-strings.py; a unit test checks they match. -->
     <EmbeddedResource Update="Resources\Strings.resx" LogicalName="Dispatch.App.Resources.Strings.resources" />
+    <!-- Translations (Strings.de.resx, …) become satellite assemblies (de\Dispatch.resources.dll), bundled into the exe on publish. -->
   </ItemGroup>
 </Project>

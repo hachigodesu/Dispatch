@@ -17,17 +17,18 @@ public sealed record GameSnapshot(
     GameLogInfo? GameLog,
     IReadOnlyList<ProfileSnapshot> Profiles,
     IReadOnlyDictionary<string, Compatibility> Compatibility,
-    IReadOnlyDictionary<string, string> NamesFromProfiles)
+    IReadOnlyDictionary<string, string> NamesFromProfiles,
+    IReadOnlyList<Dispatch.Core.Games.GameDefinition> InstalledGames)
 {
     /// <summary>Reads the whole picture. Read-only: nothing on disk is modified (except Dispatch's own cache).</summary>
-    public static GameSnapshot Load(IPlatform platform, AppPaths paths, AppSettings settings,
+    public static GameSnapshot Load(IPlatform platform, AppPaths paths, AppSettings settings, Dispatch.Core.Games.GameDefinition game,
                                     IProgress<(int Done, int Total)>? progress, CancellationToken cancel)
     {
-        var env = GameDetector.Detect(platform, Dispatch.Core.Games.GameDefinition.Ets2, settings.ToOverrides());
+        var env = GameDetector.Detect(platform, game, settings.ToOverrides(game));
         Log.Information("Detected game {Version} ({Source}), user data {UserData}, install {Install}, {Problems} problem(s)",
                         env.Version, env.VersionSource, env.UserDataDir, env.InstallDir, env.Problems.Count);
 
-        var scan = new ModScanner(paths.Cache).Scan(env, progress, cancel);
+        var scan = new ModScanner(paths.ForGame(game).Cache).Scan(env, progress, cancel);
         Log.Information("Scanned {Count} mods in {Seconds:F1}s ({Cached} from cache)", scan.Mods.Count, scan.Elapsed.TotalSeconds, scan.FromCache);
 
         var log = env.UserDataDir is null ? null : Dispatch.Core.Detection.GameLog.Read(env.UserDataDir);
@@ -59,6 +60,19 @@ public sealed record GameSnapshot(
         {
             compat.TryAdd(m.PackageId, CompatibilityChecker.Evaluate(m, env.Version, env.OwnedDlc, log));
         }
-        return new GameSnapshot(env, scan, log, profiles, compat, names);
+        return new GameSnapshot(env, scan, log, profiles, compat, names, FindInstalledGames(platform, settings, env));
     }
+
+    /// <summary>The games that look installed (install folder or Documents folder found). The shown game is always listed.</summary>
+    private static List<Dispatch.Core.Games.GameDefinition> FindInstalledGames(IPlatform platform, AppSettings settings, GameEnvironment current) =>
+        Dispatch.Core.Games.GameDefinition.All.Where(g =>
+        {
+            if (g == current.Game)
+            {
+                return true;
+            }
+
+            var env = GameDetector.Detect(platform, g, settings.ToOverrides(g));
+            return env.InstallDir is not null || (env.UserDataDir is not null && Directory.Exists(Path.Combine(env.UserDataDir, "profiles")));
+        }).ToList();
 }

@@ -74,6 +74,18 @@ public class PresetTests
     }
 
     [Fact]
+    public void Ats_presets_are_marked_and_only_load_for_ats()
+    {
+        using var tmp = new TempDir();
+        var preset = Preset.Create("Coast to coast", TopFirst, Installed(), "1.57.0.1", game: Games.GameDefinition.Ats);
+        preset.Game.ShouldBe("ats");
+        preset.Save(tmp.File("ats.json"));
+        Preset.Load(tmp.File("ats.json"), Games.GameDefinition.Ats).Name.ShouldBe("Coast to coast");
+        Should.Throw<InvalidDataException>(() => Preset.Load(tmp.File("ats.json"))).Message
+              .ShouldContain("American Truck Simulator");
+    }
+
+    [Fact]
     public void Ignores_unknown_fields_from_later_minor_versions()
     {
         using var tmp = new TempDir();

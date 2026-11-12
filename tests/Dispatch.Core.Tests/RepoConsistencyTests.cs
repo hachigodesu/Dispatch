@@ -30,6 +30,38 @@ public partial class RepoConsistencyTests
             customMessage: "Strings.resx and Strings.Designer.cs differ: run  python -I tools/gen-strings.py");
     }
 
+    /// <summary>
+    /// Every translation has exactly the English keys, no empty texts, the same {0}-style placeholders (a missing or
+    /// extra one would crash string.Format at run time) and the same number of '|' (file dialog filters).
+    /// </summary>
+    [Fact]
+    public void Translations_match_english()
+    {
+        string resources = Path.Combine(RepoRoot(), "src", "Dispatch.App", "Resources");
+        static Dictionary<string, string> Load(string file) => XDocument.Load(file).Root!.Elements("data")
+            .ToDictionary(d => (string)d.Attribute("name")!, d => (string?)d.Element("value") ?? "");
+        static string Placeholders(string s) => string.Join(",", PlaceholderRegex().Matches(s).Select(m => m.Value).Order(StringComparer.Ordinal));
+
+        var english = Load(Path.Combine(resources, "Strings.resx"));
+        var files = Directory.GetFiles(resources, "Strings.*.resx");
+        files.Length.ShouldBeGreaterThanOrEqualTo(6);
+        foreach (string file in files)
+        {
+            string lang = Path.GetFileName(file);
+            var tr = Load(file);
+            tr.Keys.ShouldBe(english.Keys, ignoreOrder: true, customMessage: $"{lang}: keys differ from Strings.resx");
+            foreach (var (key, text) in english)
+            {
+                tr[key].Trim().ShouldNotBeEmpty($"{lang}: {key} is empty");
+                Placeholders(tr[key]).ShouldBe(Placeholders(text), $"{lang}: placeholders of {key} differ");
+                tr[key].Count(c => c == '|').ShouldBe(text.Count(c => c == '|'), $"{lang}: '|' count of {key} differs");
+            }
+        }
+    }
+
+    [GeneratedRegex(@"\{\d+(?::[^}]*)?\}")]
+    private static partial Regex PlaceholderRegex();
+
     [GeneratedRegex(@"public static string (\w+) => Get\(")]
     private static partial Regex PropertyRegex();
 }

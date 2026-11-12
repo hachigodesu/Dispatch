@@ -22,10 +22,30 @@ internal static partial class Program
             "mods" => ModsSpike.Run(OutDir()),
             "probe" => ProbeSpike.Run(args[1], args.Skip(2)),
             "env" => EnvSpike.Run(),
+            "conflicts" => ConflictSpike.Run(args[1]),
+            "update-check" => UpdateSpike(),
             "s3-read" or "s2-write" or "s2-check" or "s4-duplicate" or "restore" or "roundtrip" or "decode"
                 => InGameSpikes.Run(command, args[1..]),
             _ => Help(),
         };
+    }
+
+    /// <summary>Asks GitHub for the newest release, the way the app does (read-only, nothing is downloaded).</summary>
+    private static int UpdateSpike()
+    {
+        using var http = new HttpClient();
+        try
+        {
+            var update = new Dispatch.Core.Updates.UpdateChecker(http).CheckAsync(new Version(0, 5, 0), CancellationToken.None)
+                                                                     .GetAwaiter().GetResult();
+            Console.WriteLine(update is null ? "Up to date." : $"Newer: {update.Tag}, setup {update.Setup?.Name} sha256 {update.Setup?.Sha256 ?? "unknown"}");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"Check failed: {(int?)ex.StatusCode} {ex.Message}");
+        }
+
+        return 0;
     }
 
     private static int Help()
