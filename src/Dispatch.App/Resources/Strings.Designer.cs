@@ -570,4 +570,132 @@ public static class Strings
     public static string CompatNoteLogSaysIncompatible => Get(nameof(CompatNoteLogSaysIncompatible));
 
     public static string CompatNoteLogSaysCompatible => Get(nameof(CompatNoteLogSaysCompatible));
+
+    public static string VersionsHeader => Get(nameof(VersionsHeader));
+
+    public static string VersionsHint => Get(nameof(VersionsHint));
+
+    public static string VersionsLaunchNote => Get(nameof(VersionsLaunchNote));
+
+    public static string VersionsSteam => Get(nameof(VersionsSteam));
+
+    public static string VersionsSteamBranch => Get(nameof(VersionsSteamBranch));
+
+    public static string VersionsBranchHint => Get(nameof(VersionsBranchHint));
+
+    public static string VersionsCopy => Get(nameof(VersionsCopy));
+
+    public static string VersionsMissing => Get(nameof(VersionsMissing));
+
+    public static string VersionUnknown => Get(nameof(VersionUnknown));
+
+    public static string VersionsKeepCopy => Get(nameof(VersionsKeepCopy));
+
+    public static string VersionsAddCopy => Get(nameof(VersionsAddCopy));
+
+    public static string VersionsRemove => Get(nameof(VersionsRemove));
+
+    public static string VersionsOpenFolder => Get(nameof(VersionsOpenFolder));
+
+    public static string VersionsPickParent => Get(nameof(VersionsPickParent));
+
+    public static string VersionsPickCopy => Get(nameof(VersionsPickCopy));
+
+    public static string VersionsConfirmCopy => Get(nameof(VersionsConfirmCopy));
+
+    public static string VersionsCopying => Get(nameof(VersionsCopying));
+
+    public static string VersionsCopyDone => Get(nameof(VersionsCopyDone));
+
+    public static string VersionsCopyCancelled => Get(nameof(VersionsCopyCancelled));
+
+    public static string VersionsCopyFailed => Get(nameof(VersionsCopyFailed));
+
+    public static string VersionsExists => Get(nameof(VersionsExists));
+
+    public static string VersionsInsideInstall => Get(nameof(VersionsInsideInstall));
+
+    public static string VersionsNoSpace => Get(nameof(VersionsNoSpace));
+
+    public static string VersionsSteamBusy => Get(nameof(VersionsSteamBusy));
+
+    public static string VersionsCloseGame => Get(nameof(VersionsCloseGame));
+
+    public static string VersionsAlreadyKept => Get(nameof(VersionsAlreadyKept));
+
+    public static string VersionsNotAGame => Get(nameof(VersionsNotAGame));
+
+    public static string VersionsIsSteamInstall => Get(nameof(VersionsIsSteamInstall));
+
+    public static string VersionsAlreadyListed => Get(nameof(VersionsAlreadyListed));
+
+    public static string VersionsConfirmRemove => Get(nameof(VersionsConfirmRemove));
+
+    public static string VersionsNeedsSteam => Get(nameof(VersionsNeedsSteam));
+
+    public static string LaunchCopyFailed => Get(nameof(LaunchCopyFailed));
+
+    public static string LaunchVersion => Get(nameof(LaunchVersion));
+
+    public static string LaunchWith => Get(nameof(LaunchWith));
+
+    public static string LaunchAuto => Get(nameof(LaunchAuto));
+
+    public static string LaunchAutoAllMatch => Get(nameof(LaunchAutoAllMatch));
+
+    public static string LaunchAutoSome => Get(nameof(LaunchAutoSome));
+
+    public static string LaunchAutoNoInfo => Get(nameof(LaunchAutoNoInfo));
+
+    public static string LaunchOlderWarning => Get(nameof(LaunchOlderWarning));
+
+    public static string VersionsConfirmShare => Get(nameof(VersionsConfirmShare));
+
+    public static string VersionsFullCopyTip => Get(nameof(VersionsFullCopyTip));
+
+    public static string VersionsSpaceShared => Get(nameof(VersionsSpaceShared));
+
+    public static string VersionsSpaceFull => Get(nameof(VersionsSpaceFull));
+
+    public static string VersionsBroken => Get(nameof(VersionsBroken));
+
+    public static string VersionsBrokenLaunch => Get(nameof(VersionsBrokenLaunch));
+
+    public static string VersionsPacked => Get(nameof(VersionsPacked));
+
+    public static string VersionsPack => Get(nameof(VersionsPack));
+
+    public static string VersionsConfirmPack => Get(nameof(VersionsConfirmPack));
+
+    public static string VersionsConfirmRepack => Get(nameof(VersionsConfirmRepack));
+
+    public static string VersionsPackSameDrive => Get(nameof(VersionsPackSameDrive));
+
+    public static string VersionsPackNotYet => Get(nameof(VersionsPackNotYet));
+
+    public static string VersionsPackIndexing => Get(nameof(VersionsPackIndexing));
+
+    public static string VersionsPackPacking => Get(nameof(VersionsPackPacking));
+
+    public static string VersionsPackChecking => Get(nameof(VersionsPackChecking));
+
+    public static string VersionsPackDone => Get(nameof(VersionsPackDone));
+
+    public static string VersionsPackFailed => Get(nameof(VersionsPackFailed));
+
+    public static string VersionsPackCancelled => Get(nameof(VersionsPackCancelled));
+
+    public static string VersionsSpacePacked => Get(nameof(VersionsSpacePacked));
+
+    public static string VersionsSpacePackedStale => Get(nameof(VersionsSpacePackedStale));
+
+    public static string VersionsPackDamaged => Get(nameof(VersionsPackDamaged));
+
+    public static string VersionsPreparing => Get(nameof(VersionsPreparing));
+
+    public static string VersionsPrepareNoSpace => Get(nameof(VersionsPrepareNoSpace));
+
+    public static string VersionsPrepareFailed => Get(nameof(VersionsPrepareFailed));
+
+    public static string VersionsPackNote => Get(nameof(VersionsPackNote));
 }

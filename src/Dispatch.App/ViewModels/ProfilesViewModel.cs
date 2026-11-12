@@ -205,6 +205,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
         Message = "";
         RefreshAvailable();
         RefreshBackups();
+        RefreshLaunchChoices();
         if (profile?.LoadOrder is null)
         {
             ClearConflicts();
@@ -238,6 +239,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
             IsDirty = true;
             RefreshAvailable();
             ScheduleConflictCheck();
+            RefreshLaunchChoices();
         }
     }
 
@@ -526,6 +528,7 @@ public sealed partial class ProfilesViewModel
         await RunProfileOperation(() =>
         {
             var copy = ProfileCloner.Duplicate(_writer(), source, ProfilesRoot, options, names, folders);
+            CarryVersionChoice(source, copy, move: false);
             Log.Information("Duplicated {Source} to {Target} (saves: {Saves}, WoT link: {Wot})", source.FolderName, copy.FolderName,
                             options.IncludeSaves, options.KeepWorldOfTrucksLink);
             return (copy.MainDir, string.Format(CultureInfo.CurrentCulture,
@@ -549,6 +552,7 @@ public sealed partial class ProfilesViewModel
         await RunProfileOperation(() =>
         {
             var (renamed, original) = ProfileCloner.Rename(_writer(), _backups(), source, newName, names, folders);
+            CarryVersionChoice(source, renamed, move: true);
             Log.Information("Renamed {Source} to {Target}; original kept in backup {Backup}", source.FolderName, renamed.FolderName, original.Id);
             return (renamed.MainDir, string.Format(CultureInfo.CurrentCulture, Strings.RenamedStatus, renamed.Name), false);
         });

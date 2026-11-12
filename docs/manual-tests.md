@@ -102,8 +102,36 @@ and close the game unless a step says otherwise.
 - [ ] Settings → **Language** → pick a language → **Restart now** → the whole UI is in that language. Check a few dialogs
   (Duplicate, Delete, Uninstall) for cut-off text. Set it back to **Same as Windows**.
 
+## v2: game versions per profile
+- [ ] Settings → **Game versions** lists the Steam install with its version (and the beta branch, if Steam is on one).
+- [ ] Steam → ETS2 Properties → Game Versions & Betas → an older version (e.g. 1.60); wait for the download. In Dispatch
+  press Refresh: the Steam entry shows that version and the beta-branch hint.
+- [ ] **Keep a copy of the Steam version…** → choose a folder on the game's drive → the confirm dialog says files are
+  shared → it finishes in seconds → the copy shows "0 MB of its own, ~41 GB shared". The new folder `ETS2 <version>`
+  appears in the list. Choosing the same place again is refused (never overwrites).
+- [ ] (Optional) Keep a copy on another drive: the dialog says it's a full copy; progress bar; **Cancel** leaves no
+  folder behind.
+- [ ] Switch Steam back to the latest version (Betas → None) and let it update. Refresh: Steam entry = latest, copy = old
+  and **not** marked broken; its "of its own" size grew to roughly what the update changed. Free space on the drive
+  dropped by about that much.
+- [ ] Profiles → a profile whose mods are made for the old version: **Game version: Automatic: <old> · copy** with an
+  orange "older than the Steam version" note. A profile with up-to-date or no-version mods: Automatic picks Steam.
+- [ ] The header button reads **Launch <version>** for the selected profile. Launch the copy (Steam running): the game
+  starts, shows the old version in the main menu, owned DLC and Workshop mods work, the profile loads. Quit.
+- [ ] Launch with Steam closed: Dispatch starts Steam and asks you to click Launch again.
+- [ ] Pin a profile to a version, restart Dispatch: still pinned. Rename the profile: still pinned. Set it back to Automatic.
+- [ ] **Remove from list** on the copy: gone from the list, the folder is still on disk.
+- [ ] **Pack to save space…** on the old copy (after Steam has moved to the latest version; on the game's drive): the
+  dialog explains packing → three phases with progress (reading Steam, packing, checking; ~4 minutes) → the copy reads
+  "<version> · packed copy" with "~3.6 GB of its own". Its folder holds `dispatch-pack.bin`, `dispatch-pack.data`
+  and `base\`. The drive's free space grew by ~34 GB.
+- [ ] Launch a profile pinned to the packed copy: a blue banner "Preparing <version>: x of ~41 GB" with Cancel (a few
+  minutes); then the game starts with the old version. **Cancel** during preparing leaves no `game` folder.
+- [ ] Quit the game: within a few seconds `<copy>\game` is gone again.
+- [ ] After a later Steam update: the packed copy says "… of it old Steam files: pack it again" → **Pack** frees them.
+
 ## Release
-- [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-0.6.0-setup.exe`.
+- [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-0.7.0-setup.exe`.
 - [ ] Install: no admin prompt, Start-menu entry, the app starts. Uninstall: asks about deleting data; **No** keeps
   `%LOCALAPPDATA%\Dispatch\backups`.
 - [ ] Windows SmartScreen warns on first run (the build is unsigned, as decided).

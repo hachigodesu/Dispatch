@@ -492,6 +492,54 @@ review would help.
 - ~~Auto-update and more languages.~~ Done (update check + verified installer instead of Velopack).
 - Direct Steam Cloud editing: still needs spike S6 (not started).
 
+**Game versions per profile: done (2026-11-12, needs an in-game check).** Steam keeps only one version installed, so a
+profile whose mods are made for an older version (e.g. 1.60) needs a kept copy of that version. Settings → Game
+versions lists the Steam install (with its beta branch, read from the app manifest) plus copies:
+- **Keep a copy of the Steam version** (`GameCopier`): the workflow is Steam → Properties → Game Versions & Betas →
+  pick the old branch, wait, Keep a copy, switch Steam back. The copy goes to `<chosen folder>\ETS2 <version>`;
+  refused if that exists (never overwrites), if it's inside the install, if the game runs, if Steam's `StateFlags`
+  isn't 4 (downloading/updating) or if there isn't enough space (+1 GB). Files go into `<dest>.dispatch-partial`,
+  which is renamed when complete and file count/bytes still match; a failed or cancelled copy is removed again.
+- **Shared files instead of a 41 GB copy.** On the same NTFS drive as the install (and if a test link next to the
+  destination works), every file becomes a hard link to the install's file: the copy needs almost no space at
+  first. Steam updates by building changed files anew and moving them over the old ones (copy, patch, replace, per
+  community reports, not documented by Valve), so the copy keeps the old file and only then uses space for it: a copy
+  ends up costing the files that differ between the versions. `dispatch-copy.json` in the copy records each shared
+  file's size and write time; if one changes (Steam or anyone writing into it in place, which would change the copy
+  too) the copy is shown as broken and is never launched (`GameCopyRecord.Inspect`, run on every refresh and before
+  launching). Settings shows what each copy really uses (files with a link count of 1) next to what is shared, since
+  Explorer counts shared files fully. Dispatch never writes to, re-times or changes attributes of a shared file;
+  deleting a copy only removes its names. On another drive (or with links refused) it's a full copy, and the confirm
+  dialog says so.
+- **Packed copies** (`GamePacker`, `PackedCopy`). Measured on 1.60.1.7 vs 1.62.2.1: SCS rebuilds every archive for
+  each version, so a shared copy ends up almost fully its own (37.6 GB), yet 91% of the data *inside* the archives is
+  the same (Steam's own log agrees: a branch switch reused 34 GB and downloaded 5 GB). Windows' LZX compression saves
+  0.6% (the archives are already compressed), so it isn't used. **Pack to save space** cuts the copy and the Steam
+  install into content-defined pieces (gear rolling hash, 16 KB average) and keeps only pieces Steam doesn't have:
+  `dispatch-pack.data` (3.57 GB for the real 1.60 copy, packed and checked in 3.5 minutes), `dispatch-pack.bin`
+  (every file as a list of pieces, plus its SHA-256) and `base\` (hard links to the Steam files used, so a Steam
+  update can't take them away; they then count as the copy's own space and **Pack** packs it again against the new
+  version). The packed copy is built in `<copy>.dispatch-packing`, read back completely and compared with the
+  original (SHA-256 per file); only then is the original swapped out (`.dispatch-unpacked`, deleted; an interrupted
+  swap is finished or undone on the next refresh). Launching a packed copy first rebuilds `<copy>\game\` (a banner
+  with progress and Cancel; files identical to a Steam file become links; every written file is checked against its
+  SHA-256), and it's removed when the game closes (or on the next refresh after Dispatch was closed meanwhile). Needs
+  the same NTFS drive as the Steam install. Cost: a few minutes and ~40 GB of free space while playing. Not done:
+  sharing pieces between several packed copies (each keeps its own data).
+- **Add an existing copy** (any folder with `bin\win_x64\<exe>`; version from the exe). **Remove from list** never
+  deletes the folder.
+- Each profile picks **Automatic** (default) or a specific version (Profiles tab, shown when there's more than one).
+  Automatic = `VersionPicker`: fewest active local mods whose `compatible_versions` don't match, ties → newest, same
+  version → Steam. Workshop items and mods without version info don't count. Stored in `settings.json`
+  (`profileVersions`, keyed by game + local/cloud + profile folder; follows rename and duplicate), never in the profile.
+- **Launch** starts the selected profile's version: Steam install via `steam://rungameid`, copies directly from
+  their folder with `SteamAppId` set (the exe doesn't call `SteamAPI_RestartAppIfNecessary`, checked read-only), Steam
+  must be running (otherwise Dispatch asks Steam to start). Steam launch options don't apply to copies.
+- Known limit: a profile played in a newer version can't be loaded by an older one (the game's own
+  `profiles(<version>).bak` folders and Dispatch's backups are the way back); the profile view warns when a profile
+  launches an older version than Steam's. Not yet checked for real: that a copy started directly runs with DLC and
+  Workshop mods, and that a real Steam update leaves a shared copy intact (if it doesn't, the copy is reported broken).
+
 ---
 
 ## 7. Risks, unknowns and spikes

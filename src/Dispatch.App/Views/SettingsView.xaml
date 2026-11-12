@@ -75,6 +75,49 @@
             </StackPanel>
             <TextBlock Text="{Binding Settings.DataFolder}" Style="{StaticResource Muted}" FontSize="11" Margin="0,6,0,0" />
 
+            <TextBlock x:Name="VersionsSection" Text="{Binding Versions.Header}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
+            <TextBlock Text="{x:Static res:Strings.VersionsHint}" Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,8" />
+            <ListBox ItemsSource="{Binding Versions.Items}" SelectedItem="{Binding Versions.Selected}" MaxHeight="220">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="vm:InstallationItemViewModel">
+                        <StackPanel Margin="0,2">
+                            <TextBlock Text="{Binding Label}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding Folder}" Style="{StaticResource Muted}" FontSize="11" />
+                            <TextBlock Text="{Binding Space}" Style="{StaticResource Muted}" FontSize="11"
+                                       Visibility="{Binding HasSpace, Converter={StaticResource VisibleWhen}}" />
+                            <TextBlock Text="{Binding Detail}" FontSize="11" TextWrapping="Wrap"
+                                       Visibility="{Binding HasDetail, Converter={StaticResource VisibleWhen}}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="DarkOrange" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsBroken}" Value="True">
+                                                <Setter Property="Foreground" Value="IndianRed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <WrapPanel Margin="0,8,0,0">
+                <Button Content="{x:Static res:Strings.VersionsKeepCopy}" Command="{Binding Versions.KeepCopyCommand}" Margin="0,0,8,6" />
+                <Button Content="{x:Static res:Strings.VersionsAddCopy}" Command="{Binding Versions.AddCopyCommand}" Margin="0,0,8,6" />
+                <Button Content="{x:Static res:Strings.VersionsPack}" Command="{Binding Versions.PackCommand}" Margin="0,0,8,6" />
+                <Button Content="{x:Static res:Strings.VersionsRemove}" Command="{Binding Versions.RemoveCommand}" Margin="0,0,8,6" />
+                <Button Content="{x:Static res:Strings.VersionsOpenFolder}" Command="{Binding Versions.OpenFolderCommand}" Margin="0,0,8,6" />
+            </WrapPanel>
+            <DockPanel Margin="0,4,0,0" Visibility="{Binding Versions.IsCopying, Converter={StaticResource VisibleWhen}}">
+                <Button DockPanel.Dock="Right" Content="{x:Static res:Strings.Cancel}" Command="{Binding Versions.CancelCopyCommand}" Margin="8,0,0,0" />
+                <ProgressBar Value="{Binding Versions.CopyProgress}" Height="6" VerticalAlignment="Center" />
+            </DockPanel>
+            <TextBlock Text="{Binding Versions.CopyStatus}" TextWrapping="Wrap" Margin="0,4,0,0"
+                       Visibility="{Binding Versions.CopyStatus, Converter={StaticResource VisibleWhen}}" />
+            <TextBlock Text="{x:Static res:Strings.VersionsLaunchNote}" Style="{StaticResource Muted}" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0" />
+            <TextBlock Text="{x:Static res:Strings.VersionsPackNote}" Style="{StaticResource Muted}" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,0" />
+
             <TextBlock Text="{x:Static res:Strings.FullBackupsHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
             <TextBlock Text="{x:Static res:Strings.FullBackupsHint}" Style="{StaticResource Muted}" Margin="0,0,0,8" />
             <TextBlock Text="{x:Static res:Strings.NoBackups}" Style="{StaticResource Muted}"

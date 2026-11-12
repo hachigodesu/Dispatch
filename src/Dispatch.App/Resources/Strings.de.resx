@@ -300,4 +300,94 @@ Details stehen im Protokollordner.</value></data>
   <data name="CompatDetailMismatch" xml:space="preserve"><value>Gemacht für {0}; du hast {1}.</value></data>
   <data name="CompatNoteLogSaysIncompatible" xml:space="preserve"><value>Hinweis: Laut Protokoll des Spiels ist er dennoch inkompatibel.</value></data>
   <data name="CompatNoteLogSaysCompatible" xml:space="preserve"><value>Hinweis: Das Protokoll des Spiels hat ihn nicht als inkompatibel gemeldet.</value></data>
+  <data name="VersionsHeader" xml:space="preserve"><value>Spielversionen für {0}</value></data>
+  <data name="VersionsHint" xml:space="preserve"><value>Steam hält immer nur eine Version des Spiels installiert. Um eine ältere Version daneben zu behalten (für Profile, deren Mods noch nicht aktualisiert sind): Öffne in Steam die Eigenschaften des Spiels → Spielversionen &amp; Betas und wähle diese Version. Wenn Steam fertig geladen hat, klicke auf Kopie behalten und stelle Steam danach wieder auf die neueste Version um. Lege Kopien auf dasselbe Laufwerk wie das Spiel: Dort teilen sie sich jede Datei, die gleich bleibt, und nur die Dateien, die ein Update ändert, brauchen Platz.</value></data>
+  <data name="VersionsLaunchNote" xml:space="preserve"><value>Kopien werden direkt gestartet, nicht über Steam. Steams Startoptionen gelten für sie daher nicht, und Steam muss laufen. Jedes Profil wählt seine Version im Tab Profile.</value></data>
+  <data name="VersionsSteam" xml:space="preserve"><value>{0} · Steam</value></data>
+  <data name="VersionsSteamBranch" xml:space="preserve"><value>{0} · Steam, Beta-Zweig „{1}“</value></data>
+  <data name="VersionsBranchHint" xml:space="preserve"><value>Steam ist auf einem Beta-Zweig. Wenn du eine Kopie behalten hast, stelle Steam in den Eigenschaften des Spiels wieder auf die neueste Version um.</value></data>
+  <data name="VersionsCopy" xml:space="preserve"><value>{0} · Kopie in „{1}“</value></data>
+  <data name="VersionsMissing" xml:space="preserve"><value>Ordner nicht gefunden. Stelle ihn wieder her oder entferne ihn aus der Liste.</value></data>
+  <data name="VersionUnknown" xml:space="preserve"><value>unbekannte Version</value></data>
+  <data name="VersionsKeepCopy" xml:space="preserve"><value>Kopie der Steam-Version behalten…</value></data>
+  <data name="VersionsAddCopy" xml:space="preserve"><value>Vorhandene Kopie hinzufügen…</value></data>
+  <data name="VersionsRemove" xml:space="preserve"><value>Aus der Liste entfernen</value></data>
+  <data name="VersionsOpenFolder" xml:space="preserve"><value>Ordner öffnen</value></data>
+  <data name="VersionsPickParent" xml:space="preserve"><value>Wähle, wo die Kopie liegen soll (dort wird ein Ordner „{0}“ angelegt)</value></data>
+  <data name="VersionsPickCopy" xml:space="preserve"><value>Wähle den Ordner einer Kopie von {0}</value></data>
+  <data name="VersionsConfirmCopy" xml:space="preserve"><value>{0} {1} ({2}) kopieren nach
+{3}?
+
+Das kann eine Weile dauern. Starte das Spiel nicht und lass Steam es nicht aktualisieren, bis die Kopie fertig ist.</value></data>
+  <data name="VersionsCopying" xml:space="preserve"><value>Kopiere… {0} von {1}</value></data>
+  <data name="VersionsCopyDone" xml:space="preserve"><value>{0} liegt jetzt in {1}. Du kannst Steam wieder auf die neueste Version umstellen.</value></data>
+  <data name="VersionsCopyCancelled" xml:space="preserve"><value>Kopieren abgebrochen. Es wurde nichts behalten.</value></data>
+  <data name="VersionsCopyFailed" xml:space="preserve"><value>Die Kopie wurde nicht fertig und wieder entfernt: {0}</value></data>
+  <data name="VersionsExists" xml:space="preserve"><value>{0} gibt es schon. Dispatch überschreibt nie einen Ordner; wähle einen anderen Ort.</value></data>
+  <data name="VersionsInsideInstall" xml:space="preserve"><value>Wähle einen Ordner außerhalb des Installationsordners des Spiels.</value></data>
+  <data name="VersionsNoSpace" xml:space="preserve"><value>Nicht genug freier Speicher auf {0}: Die Kopie braucht {1}, frei sind {2}.</value></data>
+  <data name="VersionsSteamBusy" xml:space="preserve"><value>Steam lädt oder aktualisiert das Spiel gerade. Warte, bis es fertig ist, und versuche es dann noch einmal.</value></data>
+  <data name="VersionsCloseGame" xml:space="preserve"><value>Beende {0}, bevor du es kopierst.</value></data>
+  <data name="VersionsAlreadyKept" xml:space="preserve"><value>Du behältst schon eine Kopie von {0}:
+{1}</value></data>
+  <data name="VersionsNotAGame" xml:space="preserve"><value>{0} wurde in diesem Ordner nicht gefunden (erwartet: {1}).</value></data>
+  <data name="VersionsIsSteamInstall" xml:space="preserve"><value>Das ist die Steam-Installation selbst; sie steht schon in der Liste.</value></data>
+  <data name="VersionsAlreadyListed" xml:space="preserve"><value>Dieser Ordner steht schon in der Liste.</value></data>
+  <data name="VersionsConfirmRemove" xml:space="preserve"><value>{0} aus der Liste entfernen?
+{1}
+
+Der Ordner bleibt auf der Festplatte; lösche ihn selbst, wenn du ihn nicht mehr brauchst.</value></data>
+  <data name="VersionsNeedsSteam" xml:space="preserve"><value>Steam läuft nicht. Dispatch hat Steam gebeten zu starten; klicke noch einmal auf Starten, sobald du angemeldet bist.</value></data>
+  <data name="LaunchCopyFailed" xml:space="preserve"><value>{0} konnte nicht gestartet werden: {1}</value></data>
+  <data name="LaunchVersion" xml:space="preserve"><value>{0} starten</value></data>
+  <data name="LaunchWith" xml:space="preserve"><value>Spielversion</value></data>
+  <data name="LaunchAuto" xml:space="preserve"><value>Automatisch: {0}</value></data>
+  <data name="LaunchAutoAllMatch" xml:space="preserve"><value>Jede aktive Mod, die ihre Spielversionen angibt, unterstützt {0}.</value></data>
+  <data name="LaunchAutoSome" xml:space="preserve"><value>Aktive Mods, die nicht für {0} gemacht sind: {1}. Das sind die wenigsten unter deinen Versionen.</value></data>
+  <data name="LaunchAutoNoInfo" xml:space="preserve"><value>Keine der aktiven Mods gibt ihre Spielversionen an, daher wird die neueste Version verwendet.</value></data>
+  <data name="LaunchOlderWarning" xml:space="preserve"><value>Diese Version ist älter als die Steam-Version. Ein Profil, das in einer neueren Version gespielt wurde, lässt sich in einer älteren nicht laden.</value></data>
+  <data name="VersionsConfirmShare" xml:space="preserve"><value>{0} {1} behalten in
+{3}?
+
+Auf diesem Laufwerk teilt sich die Kopie die Spieldateien ({2}) mit der Steam-Installation und braucht jetzt fast keinen Platz. Wenn Steam das Spiel aktualisiert, behält die Kopie die alten Fassungen der geänderten Dateien, und nur diese brauchen Platz (so viel freien Speicher braucht dann auch das Steam-Update).
+
+Starte das Spiel nicht und lass Steam es nicht aktualisieren, bis das fertig ist, und ändere keine Dateien in der Kopie: Geteilte Dateien sind auch die Dateien der Steam-Installation.</value></data>
+  <data name="VersionsFullCopyTip" xml:space="preserve"><value>Das ist nicht das Laufwerk des Spiels, daher wird jede Datei kopiert. Auf dem Laufwerk des Spiels würde die Kopie unveränderte Dateien teilen und fast keinen Platz brauchen.</value></data>
+  <data name="VersionsSpaceShared" xml:space="preserve"><value>{0} eigene Daten, {1} mit der Steam-Installation geteilt</value></data>
+  <data name="VersionsSpaceFull" xml:space="preserve"><value>{0} (vollständige Kopie)</value></data>
+  <data name="VersionsBroken" xml:space="preserve"><value>Ein Steam-Update hat {0} der Dateien geändert, die sich diese Kopie teilt. Sie ist daher kein sauberes {1} mehr und wird nicht gestartet. Entferne sie, stelle Steam wieder auf diese Version um und behalte eine neue Kopie.</value></data>
+  <data name="VersionsBrokenLaunch" xml:space="preserve"><value>{0} kann nicht gestartet werden: Ein Steam-Update hat Dateien geändert, die die Kopie mit der Steam-Installation teilt. Siehe Einstellungen → Spielversionen.</value></data>
+  <data name="VersionsPacked" xml:space="preserve"><value>{0} · gepackte Kopie in „{1}“</value></data>
+  <data name="VersionsPack" xml:space="preserve"><value>Packen, um Platz zu sparen…</value></data>
+  <data name="VersionsConfirmPack" xml:space="preserve"><value>{0} packen?
+
+Dispatch behält nur die Daten, die diese Version nicht mit der Steam-Installation ({1}) gemeinsam hat, und teilt den Rest mit ihr. Eine Kopie, die ein oder zwei Versionen alt ist, schrumpft meist auf etwa ein Zehntel.
+
+Vor jedem Spielen baut Dispatch den vollständigen Spielordner wieder auf: Das dauert ein paar Minuten und braucht während des Spielens etwa {2} freien Platz. Wenn das Spiel geschlossen wird, wird er wieder entfernt.
+
+Die Dateien der Kopie in
+{3}
+werden erst gelöscht, wenn die gepackte Kopie zurückgelesen wurde und Byte für Byte mit ihnen übereinstimmt.</value></data>
+  <data name="VersionsConfirmRepack" xml:space="preserve"><value>{0} erneut packen?
+
+Steam hat seit dem Packen aktualisiert, daher hält die Kopie {1} alte Steam-Dateien fest. Erneutes Packen gegen die Steam-Installation ({2}) gibt frei, was die neue Version noch gemeinsam hat.</value></data>
+  <data name="VersionsPackSameDrive" xml:space="preserve"><value>Beim Packen werden Daten mit der Steam-Installation geteilt, daher muss die Kopie auf demselben Laufwerk ({0}) liegen.</value></data>
+  <data name="VersionsPackNotYet" xml:space="preserve"><value>Diese Kopie teilt noch fast alle Dateien mit der Steam-Installation, Packen würde also noch nichts sparen. Packe sie, nachdem Steam auf eine andere Version gewechselt ist.</value></data>
+  <data name="VersionsPackIndexing" xml:space="preserve"><value>Steam-Installation wird gelesen: {0} von {1}</value></data>
+  <data name="VersionsPackPacking" xml:space="preserve"><value>Wird gepackt: {0} von {1}</value></data>
+  <data name="VersionsPackChecking" xml:space="preserve"><value>Gepackte Kopie wird geprüft: {0} von {1}</value></data>
+  <data name="VersionsPackDone" xml:space="preserve"><value>{0} ist gepackt: Die Kopie belegt jetzt {1} eigenen Platz statt {2}.</value></data>
+  <data name="VersionsPackFailed" xml:space="preserve"><value>Das Packen wurde nicht abgeschlossen; die Kopie ist unverändert.
+
+{0}</value></data>
+  <data name="VersionsPackCancelled" xml:space="preserve"><value>Packen abgebrochen; die Kopie ist unverändert.</value></data>
+  <data name="VersionsSpacePacked" xml:space="preserve"><value>{0} eigener Platz (gepackt; wird vor jedem Spielen aufgebaut)</value></data>
+  <data name="VersionsSpacePackedStale" xml:space="preserve"><value>{0} eigener Platz, davon {1} alte Steam-Dateien: erneut packen, um sie freizugeben</value></data>
+  <data name="VersionsPackDamaged" xml:space="preserve"><value>Diese gepackte Kopie ist beschädigt ({0} wurde geändert oder fehlt) und kann nicht gespielt werden.</value></data>
+  <data name="VersionsPreparing" xml:space="preserve"><value>{0} wird vorbereitet: {1} von {2}</value></data>
+  <data name="VersionsPrepareNoSpace" xml:space="preserve"><value>Zum Spielen von {0} werden {1} frei auf {2} für die aufgebauten Spieldateien benötigt; frei sind {3}.</value></data>
+  <data name="VersionsPrepareFailed" xml:space="preserve"><value>{0} konnte nicht vorbereitet werden.
+
+{1}</value></data>
+  <data name="VersionsPackNote" xml:space="preserve"><value>Gepackte Kopien behalten nur, was sich von der Steam-Installation unterscheidet. Sie werden vor jedem Spielen aufgebaut und beim Schließen des Spiels wieder entfernt.</value></data>
 </root>

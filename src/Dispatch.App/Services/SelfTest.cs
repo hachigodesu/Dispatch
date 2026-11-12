@@ -111,7 +111,8 @@ internal static class SelfTest
             bool bulk = await BulkAndDeleteAsync(vm, dialogs, profileName, Step);
             bool v1 = await V1Async(vm, dialogs, profileName, resultFile, Step);
             bool v2 = await ConflictsAsync(vm, profileName, resultFile, Step) && await SwitchGameAsync(vm, profileName, Step);
-            m4 = m4 && bulk && v1 && v2;
+            bool versions = await VersionsAsync(vm, dialogs, profileName, Step);
+            m4 = m4 && bulk && v1 && v2 && versions;
             Step($"dialog errors: {(dialogs.Errors.Count == 0 ? "none" : string.Join(" / ", dialogs.Errors))}");
             ok = saved && restored && m3 && m4 && !vm.Mods.TypeOptions.Contains("Maps") && dialogs.Errors.Count == 0;
         }
@@ -123,6 +124,159 @@ internal static class SelfTest
         Step(ok ? "RESULT: PASS" : "RESULT: FAIL");
         await File.WriteAllTextAsync(resultFile, log.ToString());
         return ok;
+    }
+
+    /// <summary>
+    /// Game versions: lists a fake copy (a temp folder with a copy of the game's exe, so it has the same version),
+    /// pins the test profile to it and back to automatic, and copies a small fake install with the real copier.
+    /// Nothing is launched, the Steam install is only read, and settings.json isn't written (settings are read-only
+    /// during the self-test). The temp folders are deleted afterwards.
+    /// </summary>
+    /// <summary>
+    /// Packing on a small fake "old version" next to the fake install: pack, rebuild for playing, remove the rebuilt
+    /// folder, then a "Steam update" replaces a shared file and the copy is packed again. Nothing is launched.
+    /// </summary>
+    private static async Task<bool> PackingAsync(MainViewModel vm, string temp, string fakeSteam, Action<string> step)
+    {
+        var versions = vm.Versions;
+        var game = vm.Game;
+        var steam = versions.Steam! with { Folder = fakeSteam };
+        byte[] big = new byte[3 << 20];
+        new Random(7).NextBytes(big);
+        File.WriteAllBytes(Path.Combine(fakeSteam, "dlc_big.scs"), big);
+
+        string old = Path.Combine(temp, "old version");
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(old, game.ExeRelativePath))!);
+        File.Copy(Path.Combine(fakeSteam, game.ExeRelativePath), Path.Combine(old, game.ExeRelativePath));
+        File.WriteAllText(Path.Combine(old, "base.scs"), "base");
+        File.WriteAllBytes(Path.Combine(old, "dlc_big.scs"), big); // the same data as the "Steam" file
+        bool listed = versions.AddCopyFrom(old);
+        var item = versions.Items.First(i => i.Folder == old);
+        bool canPack = item.CanPack;
+        bool packed = await versions.PackFolderAsync(game, old, steam, item.Installation.Version?.ToString(), item.Health?.OwnBytes ?? 0);
+        item = versions.Items.First(i => i.Folder == old);
+        bool small = item.Installation.IsPacked && item.Health is { IsPacked: true, IsBroken: false } h && h.OwnBytes < (1 << 20) &&
+                     !item.CanPack && versions.Available.Any(a => a.Folder == old);
+        step($"versions: packed a copy ({listed}, {canPack}, {packed}, {small}): \"{item.Label}\", {item.Space}; {versions.CopyStatus}");
+
+        bool prepared = await versions.PrepareAsync(item.Installation) && File.Exists(item.Installation.ExePath(game)) &&
+                        File.ReadAllBytes(Path.Combine(old, Dispatch.Core.Games.PackedCopy.GameFolder, "dlc_big.scs")).AsSpan().SequenceEqual(big);
+        versions.CleanUpRebuilt(afterGameClosed: true);
+        bool cleaned = !Directory.Exists(Path.Combine(old, Dispatch.Core.Games.PackedCopy.GameFolder));
+
+        string staged = Path.Combine(temp, "staged-big.scs");
+        File.WriteAllText(staged, "a new version of the big file");
+        File.Move(staged, Path.Combine(fakeSteam, "dlc_big.scs"), overwrite: true);
+        await vm.RefreshCommand.ExecuteAsync(null);
+        item = versions.Items.First(i => i.Folder == old);
+        bool stale = item.Health?.Pack is { StaleBaseBytes: > 0 } && item.CanPack && item.CanLaunch;
+        bool repacked = await versions.PackFolderAsync(game, old, steam, item.Installation.Version?.ToString(), item.Health?.OwnBytes ?? 0);
+        item = versions.Items.First(i => i.Folder == old);
+        bool fresh = item.Health?.Pack is { StaleBaseBytes: 0 } && await versions.PrepareAsync(item.Installation) &&
+                     File.ReadAllBytes(Path.Combine(old, Dispatch.Core.Games.PackedCopy.GameFolder, "dlc_big.scs")).AsSpan().SequenceEqual(big);
+        versions.CleanUpRebuilt(afterGameClosed: true);
+        step($"versions: rebuilt for playing ({prepared}), removed after ({cleaned}), Steam update noticed ({stale}), packed again ({repacked}, {fresh}): {item.Space}");
+        versions.RemoveCopy(old);
+        return listed && canPack && packed && small && prepared && cleaned && stale && repacked && fresh;
+    }
+
+    private static async Task<bool> VersionsAsync(MainViewModel vm, AutoYesDialogs dialogs, string profileName, Action<string> step)
+    {
+        var versions = vm.Versions;
+        var game = vm.Game;
+        var steam = versions.Steam;
+        if (steam?.Version is null)
+        {
+            step("versions: no Steam install with a version, skipped");
+            return true;
+        }
+
+        string temp = Path.Combine(Path.GetTempPath(), "DispatchTest-versions-" + Guid.NewGuid().ToString("N")[..8]);
+        int errorsBefore = dialogs.Errors.Count;
+        try
+        {
+            string copy = Path.Combine(temp, "copy");
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(copy, game.ExeRelativePath))!);
+            File.Copy(steam.ExePath(game), Path.Combine(copy, game.ExeRelativePath));
+            int before = versions.Items.Count;
+            bool added = versions.AddCopyFrom(copy) && versions.Items.Count == before + 1 &&
+                         versions.Items.Any(i => i.Folder == copy && i.Installation.Version == steam.Version);
+            bool refusesTwice = !versions.AddCopyFrom(copy) && !versions.AddCopyFrom(steam.Folder);
+            step($"versions: copy listed ({added}), refuses duplicates and the Steam install ({refusesTwice}); {versions.Items.Count} installations");
+
+            var p = vm.Profiles;
+            p.Selected = p.Items.First(i => i.Name == profileName && !i.IsCloud);
+            bool autoSteam = p.HasVersionChoice && p.SelectedLaunchChoice?.Key == "" && p.LaunchInstallation == steam &&
+                             vm.LaunchLabel.Contains(steam.Version.ToString(), StringComparison.Ordinal);
+            step($"versions: automatic picks Steam for the same version ({autoSteam}): \"{p.SelectedLaunchChoice?.Label}\", button \"{vm.LaunchLabel}\", hint \"{p.LaunchHint}\"");
+
+            string key = AppSettings.ProfileVersionKey(game, cloud: false, p.Selected.Profile.FolderName);
+            p.SelectedLaunchChoice = p.LaunchChoices.First(c => c.Key == copy);
+            bool pinned = p.LaunchInstallation?.Folder == copy && vm.Settings.Current.ProfileVersions.GetValueOrDefault(key) == copy;
+            await vm.RefreshCommand.ExecuteAsync(null);
+            p = vm.Profiles;
+            p.Selected = p.Items.First(i => i.Name == profileName && !i.IsCloud);
+            bool keptPin = p.SelectedLaunchChoice?.Key == copy && p.LaunchInstallation?.Folder == copy;
+            p.SelectedLaunchChoice = p.LaunchChoices[0];
+            bool backToAuto = !vm.Settings.Current.ProfileVersions.ContainsKey(key) && p.LaunchInstallation == steam;
+            step($"versions: pin to the copy ({pinned}), kept after refresh ({keptPin}), back to automatic ({backToAuto})");
+
+            // The real copier on a small fake install (a folder with the exe and two files).
+            string fakeSteam = Path.Combine(temp, "fake install");
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(fakeSteam, game.ExeRelativePath))!);
+            File.Copy(steam.ExePath(game), Path.Combine(fakeSteam, game.ExeRelativePath));
+            File.WriteAllText(Path.Combine(fakeSteam, "base.scs"), "base");
+            File.WriteAllText(Path.Combine(fakeSteam, "dlc_test.scs"), "dlc");
+            string dest = Path.Combine(temp, "kept", $"{game.ShortName} {steam.Version}");
+            bool copied = await versions.CopyToAsync(game, steam with { Folder = fakeSteam }, dest, 0) &&
+                          Directory.GetFiles(dest, "*", SearchOption.AllDirectories).Length == 4 && // 3 + Dispatch's record
+                          File.Exists(Path.Combine(dest, Dispatch.Core.Games.GameCopyRecord.FileName)) &&
+                          !Directory.Exists(dest + Dispatch.Core.Games.GameCopier.PartialSuffix) &&
+                          versions.Items.Any(i => i.Folder == dest);
+            bool refusesExisting = !await versions.CopyToAsync(game, steam with { Folder = fakeSteam }, dest, 0);
+            step($"versions: kept a copy of a small install ({copied}), refuses an existing folder ({refusesExisting}): {versions.CopyStatus}");
+
+            // Same drive: the files are shared. A replaced file (how Steam updates) keeps the copy intact; a file
+            // written in place breaks it, and it's then no longer offered for launching.
+            var kept = versions.Items.First(i => i.Folder == dest);
+            bool shared = kept.Health is { MadeByDispatch: true, SharedAtCopy: 3, StillShared: 3, IsBroken: false };
+            string staged = Path.Combine(temp, "staged.scs");
+            File.WriteAllText(staged, "base v2");
+            File.Move(staged, Path.Combine(fakeSteam, "base.scs"), overwrite: true);
+            await vm.RefreshCommand.ExecuteAsync(null);
+            kept = versions.Items.First(i => i.Folder == dest);
+            bool survivesReplace = kept.Health is { IsBroken: false, StillShared: 2 } && kept.CanLaunch &&
+                                   File.ReadAllText(Path.Combine(dest, "base.scs")) == "base";
+            File.AppendAllText(Path.Combine(fakeSteam, "dlc_test.scs"), " changed in place");
+            await vm.RefreshCommand.ExecuteAsync(null);
+            kept = versions.Items.First(i => i.Folder == dest);
+            bool brokenNoticed = kept.IsBroken && !versions.Available.Any(a => a.Folder == dest) && kept.Detail.Length > 0;
+            step($"versions: shared ({shared}; {kept.Space}), survives a replaced file ({survivesReplace}), in-place change marks it broken ({brokenNoticed})");
+
+            bool packed = await PackingAsync(vm, temp, fakeSteam, step);
+
+            versions.RemoveCopy(dest);
+            versions.RemoveCopy(copy);
+            bool removed = versions.Items.Count == before && Directory.Exists(copy) && Directory.Exists(dest);
+            step($"versions: removed from the list, folders left on disk ({removed}); version row shown: {vm.Profiles.HasVersionChoice}");
+
+            // The refusals above are expected errors, not failures.
+            int expected = dialogs.Errors.Count - errorsBefore;
+            dialogs.Errors.RemoveRange(errorsBefore, expected);
+            return added && refusesTwice && autoSteam && pinned && keptPin && backToAuto && copied && refusesExisting && shared && survivesReplace &&
+                   brokenNoticed && packed && removed && expected == 3;
+        }
+        finally
+        {
+            try
+            {
+                Directory.Delete(temp, recursive: true);
+            }
+            catch (IOException)
+            {
+                // Temp folder; Windows cleans it up eventually.
+            }
+        }
     }
 
     /// <summary>

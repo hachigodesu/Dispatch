@@ -30,6 +30,14 @@ public sealed class AppPaths(string localAppData)
 
 public sealed record GamePaths(string Cache, string Backups, string NotesFile, string Presets);
 
+/// <summary>A folder with a kept copy of a game version (Settings → Game versions).</summary>
+public sealed class GameCopySetting
+{
+    public string Game { get; set; } = GameDefinition.Ets2.Key;
+
+    public string Folder { get; set; } = "";
+}
+
 /// <summary>User settings, saved as JSON. Unknown or broken files fall back to defaults.</summary>
 public sealed class AppSettings
 {
@@ -54,6 +62,28 @@ public sealed class AppSettings
 
     /// <summary>A version the user chose to skip ("0.6.0").</summary>
     public string? SkippedUpdateVersion { get; set; }
+
+    /// <summary>Kept copies of other game versions, for every game.</summary>
+    public List<GameCopySetting> GameCopies { get; set; } = [];
+
+    /// <summary>
+    /// The game version a profile launches with: key from <see cref="ProfileVersionKey"/>, value "steam" or a copy's
+    /// folder. A profile that isn't listed picks automatically.
+    /// </summary>
+    public Dictionary<string, string> ProfileVersions { get; set; } = [];
+
+    public const string SteamVersion = "steam";
+
+    public static string ProfileVersionKey(GameDefinition game, bool cloud, string profileFolder) =>
+        $"{game.Key}|{(cloud ? "cloud" : "local")}|{profileFolder}";
+
+    public IEnumerable<string> CopiesFor(GameDefinition game) =>
+        GameCopies.Where(c => string.Equals(c.Game, game.Key, StringComparison.OrdinalIgnoreCase) && c.Folder.Length > 0)
+                  .Select(c => c.Folder);
+
+    /// <summary>When true, <see cref="Save"/> does nothing (the self-test must leave the user's settings alone).</summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool ReadOnly { get; set; }
 
     public int BackupRetentionSmall { get; set; } = 20;
 
@@ -104,6 +134,11 @@ public sealed class AppSettings
 
     public void Save(string file)
     {
+        if (ReadOnly)
+        {
+            return;
+        }
+
         Directory.CreateDirectory(Path.GetDirectoryName(file)!);
         string temp = file + ".tmp";
         File.WriteAllText(temp, JsonSerializer.Serialize(this, Json));

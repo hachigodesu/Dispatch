@@ -36,10 +36,12 @@ public partial class App : Application
         SettingsViewModel.ApplyLanguage(e.Args.Length >= 6 && e.Args[0] == "--screenshot" ? e.Args[5] : settings.Language);
         if (selfTest)
         {
-            settings.Game = Dispatch.Core.Games.GameDefinition.Ets2.Key; // the self-test profile is an ETS2 one (not saved)
+            settings.ReadOnly = true; // nothing the self-test does may change the user's settings.json
+            settings.Game = Dispatch.Core.Games.GameDefinition.Ets2.Key; // the self-test profile is an ETS2 one
         }
         else if (e.Args.Length >= 5 && e.Args[0] == "--screenshot")
         {
+            settings.ReadOnly = true;
             settings.Game = e.Args[4]; // "--screenshot out.png tab profile ats": show that game (not saved)
         }
 
@@ -68,6 +70,11 @@ public partial class App : Application
         if (screenshot is not null)
         {
             int tab = e.Args.Length >= 3 && int.TryParse(e.Args[2], out int t) ? t : 0;
+            if (e.Args.Length >= 7)
+            {
+                viewModel.Versions.AddCopyFrom(e.Args[6]); // a 7th argument lists a game copy for this run only (not saved)
+            }
+
             if (e.Args.Length >= 4)
             {
                 viewModel.Profiles.Selected = viewModel.Profiles.Items.FirstOrDefault(p => p.Name == e.Args[3]) ?? viewModel.Profiles.Selected;

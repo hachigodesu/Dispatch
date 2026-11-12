@@ -33,7 +33,7 @@
                 <TextBlock Text="{Binding GameVersion}" VerticalAlignment="Center" Style="{StaticResource Muted}" />
             </StackPanel>
             <!-- The command disables the button while a refresh runs. -->
-            <Button Grid.Column="2" Content="{x:Static res:Strings.LaunchGame}" Command="{Binding LaunchGameCommand}"
+            <Button Grid.Column="2" Content="{Binding LaunchLabel}" Command="{Binding LaunchGameCommand}"
                     MinWidth="110" VerticalAlignment="Center" Margin="0,0,8,0" Style="{StaticResource AccentButtonStyle}" />
             <Button Grid.Column="3" Content="{x:Static res:Strings.Refresh}" Command="{Binding RefreshCommand}"
                     MinWidth="96" VerticalAlignment="Center" />
@@ -53,6 +53,17 @@
                     <TextBlock Text="{Binding BannerText}" FontWeight="SemiBold" TextWrapping="Wrap" />
                     <ProgressBar Value="{Binding Progress}" Height="4" Margin="0,4,12,0"
                                  Visibility="{Binding IsBusy, Converter={StaticResource VisibleWhen}}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+        <!-- A packed copy being rebuilt before it's played -->
+        <Border DockPanel.Dock="Top" Background="#220078D4" BorderBrush="#0078D4" BorderThickness="0,1" Padding="20,6"
+                DataContext="{Binding Versions}" Visibility="{Binding IsPreparing, Converter={StaticResource VisibleWhen}}">
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Content="{x:Static res:Strings.Cancel}" Command="{Binding CancelPrepareCommand}" />
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding PrepareStatus}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <ProgressBar Value="{Binding PrepareProgress}" Height="4" Margin="0,4,12,0" />
                 </StackPanel>
             </DockPanel>
         </Border>

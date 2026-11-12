@@ -56,6 +56,26 @@
                 </Border>
                 <TextBlock Text="{Binding Selected.Error}" Foreground="IndianRed" TextWrapping="Wrap"
                            Visibility="{Binding Selected.Error, Converter={StaticResource VisibleWhen}}" />
+                <!-- Game version this profile launches with (only when kept copies of other versions exist). -->
+                <StackPanel Margin="0,6,0,0" Visibility="{Binding HasVersionChoice, Converter={StaticResource VisibleWhen}}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{x:Static res:Strings.LaunchWith}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <ComboBox ItemsSource="{Binding LaunchChoices}" SelectedItem="{Binding SelectedLaunchChoice}"
+                                  DisplayMemberPath="Label" MinWidth="280" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding LaunchHint}" TextWrapping="Wrap" FontSize="11" Margin="0,4,0,0"
+                               Visibility="{Binding LaunchHint, Converter={StaticResource VisibleWhen}}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource Muted}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding LaunchHintIsWarning}" Value="True">
+                                        <Setter Property="Foreground" Value="DarkOrange" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
             </StackPanel>
 
             <!-- Toolbar (only for editable profiles) -->

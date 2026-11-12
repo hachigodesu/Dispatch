@@ -24,12 +24,24 @@ public partial class MainWindow : Window
     public void SaveScreenshot(string path, int tab, int sidePanel = 0)
     {
         bool settingsEnd = tab == 5; // 5 = Settings, scrolled to the bottom (language, updates, about)
-        Tabs.SelectedIndex = settingsEnd ? 2 : tab;
+        bool settingsVersions = tab == 6; // 6 = Settings, scrolled to Game versions
+        Tabs.SelectedIndex = settingsEnd || settingsVersions ? 2 : tab;
         ProfilesPage.SidePanel.SelectedIndex = sidePanel;
-        if (settingsEnd)
+        if (settingsEnd || settingsVersions)
         {
             Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-            (SettingsPage.Content as System.Windows.Controls.ScrollViewer)?.ScrollToEnd();
+            if (SettingsPage.Content is System.Windows.Controls.ScrollViewer scroll)
+            {
+                if (settingsEnd)
+                {
+                    scroll.ScrollToEnd();
+                }
+                else
+                {
+                    var top = SettingsPage.VersionsSection.TransformToAncestor(scroll).Transform(new Point(0, 0));
+                    scroll.ScrollToVerticalOffset(scroll.VerticalOffset + top.Y - 8);
+                }
+            }
         }
 
         SaveScreenshot(this, path);

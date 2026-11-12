@@ -45,6 +45,22 @@ public sealed partial class MainViewModel : ObservableObject
         _dialogs = dialogs;
         Updates = new UpdateViewModel(settings, paths, dialogs, () => Profiles.ConfirmLeave(),
                                       () => System.Windows.Application.Current?.Shutdown());
+        Versions = new VersionsViewModel(platform, settings, paths, dialogs);
+        Profiles.ConfigureVersions(Versions, settings, paths.SettingsFile);
+        Profiles.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName is nameof(ProfilesViewModel.LaunchInstallation) or nameof(ProfilesViewModel.HasVersionChoice))
+            {
+                OnPropertyChanged(nameof(LaunchLabel));
+            }
+        };
+        Versions.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(VersionsViewModel.IsPreparing))
+            {
+                LaunchGameCommand.NotifyCanExecuteChanged();
+            }
+        };
         Games.Add(_game);
         _selectedGame = _game;
 
@@ -129,6 +145,13 @@ public sealed partial class MainViewModel : ObservableObject
 
     public UpdateViewModel Updates { get; }
 
+    public VersionsViewModel Versions { get; }
+
+    /// <summary>"Launch game", or "Launch 1.60.3.1" when the selected profile has a version to choose from.</summary>
+    public string LaunchLabel => Profiles.HasVersionChoice && Profiles.LaunchInstallation?.Version is { } v
+        ? string.Format(CultureInfo.CurrentCulture, Strings.LaunchVersion, v)
+        : Strings.LaunchGame;
+
     [ObservableProperty]
     private bool _isGameRunning;
 
@@ -155,28 +178,72 @@ public sealed partial class MainViewModel : ObservableObject
         Profiles.IsGameRunning = value;
         Mods.OnGameRunningChanged();
         LaunchGameCommand.NotifyCanExecuteChanged();
+        if (!value)
+        {
+            Versions.CleanUpRebuilt(afterGameClosed: true); // a packed copy's rebuilt files go once the game has closed
+        }
     }
 
-    private bool CanLaunch() => !IsGameRunning;
+    private bool CanLaunch() => !IsGameRunning && !Versions.IsPreparing;
 
-    /// <summary>Starts the game through Steam (with your Steam launch options). Asks about unsaved changes first.</summary>
+    /// <summary>
+    /// Starts the game version the selected profile uses: the Steam install through Steam (with your Steam launch
+    /// options), or a kept copy directly; a packed copy is rebuilt first. Asks about unsaved changes first.
+    /// </summary>
     [RelayCommand(CanExecute = nameof(CanLaunch))]
-    private void LaunchGame()
+    private async Task LaunchGameAsync()
     {
         if (!Profiles.ConfirmLeave())
         {
             return;
         }
 
+        var install = Profiles.LaunchInstallation;
+        if (install is null || install.IsSteam)
+        {
+            try
+            {
+                Process.Start(GameLauncher.ThroughSteam(_game))?.Dispose();
+                Log.Information("Launched {Game} through Steam", _game.ShortName);
+            }
+            catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+            {
+                _dialogs.ShowError(string.Format(CultureInfo.CurrentCulture, Strings.LaunchFailed, ex.Message));
+            }
+
+            return;
+        }
+
+        string label = VersionsViewModel.Describe(install);
+        if (VersionsViewModel.Inspect(install.Folder) is { IsBroken: true })
+        {
+            // A Steam update changed files this copy shares since the last refresh.
+            _dialogs.ShowError(string.Format(CultureInfo.CurrentCulture, Strings.VersionsBrokenLaunch, label));
+            _ = RefreshCommand.ExecuteAsync(null);
+            return;
+        }
+
         try
         {
-            Process.Start(new ProcessStartInfo("steam://rungameid/" + _game.SteamAppId.ToString(CultureInfo.InvariantCulture))
-            { UseShellExecute = true })?.Dispose();
-            Log.Information("Launched {Game} through Steam", _game.ShortName);
+            if (_platform.ActiveSteamAccountId is null)
+            {
+                // The game needs a signed-in Steam client; starting a copy without one fails or runs without DLC.
+                Process.Start(new ProcessStartInfo("steam://open/main") { UseShellExecute = true })?.Dispose();
+                _dialogs.ShowInfo(Strings.VersionsNeedsSteam);
+                return;
+            }
+
+            if (!await Versions.PrepareAsync(install) || IsGameRunning)
+            {
+                return;
+            }
+
+            Process.Start(GameLauncher.Directly(_game, install))?.Dispose();
+            Log.Information("Launched {Game} {Version} from {Folder}", _game.ShortName, install.Version, install.Folder);
         }
         catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
         {
-            _dialogs.ShowError(string.Format(CultureInfo.CurrentCulture, Strings.LaunchFailed, ex.Message));
+            _dialogs.ShowError(string.Format(CultureInfo.CurrentCulture, Strings.LaunchCopyFailed, label, ex.Message));
         }
     }
 
@@ -200,6 +267,7 @@ public sealed partial class MainViewModel : ObservableObject
             var snapshot = await Task.Run(() => GameSnapshot.Load(_platform, _paths, Settings.Current, game, progress, CancellationToken.None));
 
             Mods.Load(snapshot);
+            Versions.Load(snapshot.Environment);
             Profiles.ConfigurePresets(_paths.ForGame(game).Presets, snapshot.Environment.Version?.ToString(), game);
             Profiles.Load(snapshot, Mods.ById);
             Mods.RefreshTargets();
