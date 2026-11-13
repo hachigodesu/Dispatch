@@ -104,6 +104,10 @@ public partial class App : Application
                 Views.MainWindow.SaveScreenshot(dlg, screenshot);
                 dlg.Close();
             }
+            else if (tab == 9)
+            {
+                window.SaveScreenshot(screenshot, 0, sidePanel: 3); // the Multiplayer panel
+            }
             else if (tab == 4)
             {
                 await viewModel.Profiles.ConflictCheck;

@@ -165,6 +165,8 @@
             </TabControl.Template>
             <TabControl.Resources>
                 <Style TargetType="TabItem">
+                    <!-- A tab's content takes its text colour from the tab: the theme's, not Windows' default black. -->
+                    <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="TabItem">
@@ -269,32 +271,32 @@
             </TabItem>
             <TabItem Header="{x:Static res:Strings.PanelMultiplayer}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,8,0,0">
-                    <StackPanel>
-                        <TextBlock Text="{x:Static res:Strings.ConvoyTitle}" Style="{StaticResource SectionHeader}" />
-                        <TextBlock Text="{x:Static res:Strings.ConvoyHint}" Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,4" />
-                        <TextBlock Text="{Binding ConvoySummary}" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,4" />
-                        <Button Content="{x:Static res:Strings.ConvoyCopyList}" Command="{Binding CopyConvoyListCommand}" HorizontalAlignment="Left"
-                                Margin="0,0,0,8" />
+                    <StackPanel Margin="0,0,12,0">
                         <TextBlock Text="{x:Static res:Strings.TruckersMpTitle}" Style="{StaticResource SectionHeader}" />
                         <TextBlock Text="{x:Static res:Strings.TruckersMpHint}" Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,4" />
-                        <TextBlock Text="{Binding TruckersMpSummary}" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <TextBlock Text="{Binding TruckersMpSummary}" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,16" />
+                        <TextBlock Text="{x:Static res:Strings.ConvoyTitle}" Style="{StaticResource SectionHeader}" />
+                        <TextBlock Text="{x:Static res:Strings.ConvoyHint}" Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,4" />
+                        <TextBlock Text="{Binding ConvoySummary}" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,6" />
                         <ItemsControl ItemsSource="{Binding Multiplayer}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="vm:MultiplayerItemViewModel">
                                     <DockPanel Margin="0,2">
-                                        <Border DockPanel.Dock="Right" Style="{StaticResource Badge}" Margin="4,0,0,0" ToolTip="{Binding TruckersMpDetail}"
-                                                Background="{Binding IsTruckersMpSupported, Converter={StaticResource BoolToBrush}, ConverterParameter=#2E7D32|#6B6B6B}">
-                                            <TextBlock Text="{Binding TruckersMpLabel}" Style="{StaticResource BadgeText}" />
-                                        </Border>
-                                        <Border DockPanel.Dock="Right" Style="{StaticResource Badge}" Margin="4,0,0,0" ToolTip="{Binding ConvoyDetail}"
+                                        <Border DockPanel.Dock="Right" Style="{StaticResource Badge}" Margin="6,0,0,0" ToolTip="{Binding ConvoyDetail}"
                                                 Background="{Binding IsConvoyOptional, Converter={StaticResource BoolToBrush}, ConverterParameter=#2E7D32|#1565C0}">
                                             <TextBlock Text="{Binding ConvoyLabel}" Style="{StaticResource BadgeText}" />
                                         </Border>
-                                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" ToolTip="{Binding ConvoyDetail}" />
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding ConvoyDetail}" />
+                                            <TextBlock Text="{Binding ConvoyDetail}" Style="{StaticResource Muted}" FontSize="11"
+                                                       Visibility="{Binding HasConvoyNote, Converter={StaticResource VisibleWhen}}" />
+                                        </StackPanel>
                                     </DockPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        <Button Content="{x:Static res:Strings.ConvoyCopyList}" Command="{Binding CopyConvoyListCommand}" HorizontalAlignment="Left"
+                                Margin="0,8,0,8" />
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

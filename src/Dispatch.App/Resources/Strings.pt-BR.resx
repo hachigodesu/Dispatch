@@ -434,13 +434,7 @@ O jogo não vê os mods que estão lá, então ele inicia mais rápido e a lista
   <data name="ConvoyReasonMissing" xml:space="preserve"><value>Não está instalado aqui, então não dá para verificar; o jogo o ignora.</value></data>
   <data name="ConvoyReasonUnreadable" xml:space="preserve"><value>O Dispatch não consegue ler o manifesto deste mod protegido, então ele conta como necessário.</value></data>
   <data name="TruckersMpTitle" xml:space="preserve"><value>TruckersMP</value></data>
-  <data name="TruckersMpHint" xml:space="preserve"><value>TruckersMP é um mod multijogador à parte, com regras próprias. Oficialmente, ele só suporta ProMods (nos servidores ProMods) e os mods de clima sazonal do Grimes. O Dispatch os reconhece pelo nome com uma lista mantida à mão (novembro de 2026); veja a base de conhecimento do TruckersMP para a lista atual.</value></data>
-  <data name="TruckersMpSummary" xml:space="preserve"><value>{0} dos mods ativos são suportados no TruckersMP, {1} não.</value></data>
-  <data name="TruckersMpSupported" xml:space="preserve"><value>TruckersMP</value></data>
-  <data name="TruckersMpNotSupported" xml:space="preserve"><value>Fora do TMP</value></data>
-  <data name="TruckersMpReasonProMods" xml:space="preserve"><value>ProMods: suportado nos servidores ProMods do TruckersMP, na versão que esses servidores usam.</value></data>
-  <data name="TruckersMpReasonWeather" xml:space="preserve"><value>Os mods de clima sazonal do Grimes são suportados no TruckersMP.</value></data>
-  <data name="TruckersMpReasonOther" xml:space="preserve"><value>O TruckersMP não suporta este mod.</value></data>
+  <data name="TruckersMpHint" xml:space="preserve"><value>TruckersMP é um mod multijogador à parte, com regras próprias: ele só suporta ProMods (nos servidores ProMods) e os mods de clima sazonal do Grimes. O Dispatch verifica isso pelo nome com uma lista mantida à mão; a base de conhecimento do TruckersMP tem a palavra final.</value></data>
   <data name="MultiplayerNoMods" xml:space="preserve"><value>Este perfil não tem mods ativos: qualquer pessoa pode entrar.</value></data>
   <data name="TabHealth" xml:space="preserve"><value>Saúde</value></data>
   <data name="HealthHint" xml:space="preserve"><value>Problemas que o Dispatch encontra em cada perfil, com uma correção quando houver. Toda correção é uma alteração normal do perfil: ele é copiado antes e dá para desfazer em Backups.</value></data>
@@ -474,4 +468,10 @@ O jogo não vê os mods que estão lá, então ele inicia mais rápido e a lista
   <data name="HealthUnsavedFirst" xml:space="preserve"><value>"{0}" tem alterações não salvas na aba Perfis. Salve ou descarte-as primeiro.</value></data>
   <data name="HealthFixed" xml:space="preserve"><value>"{0}" alterado (com backup antes).</value></data>
   <data name="HealthFixedVersion" xml:space="preserve"><value>"{0}" volta a iniciar com a versão automática.</value></data>
+  <data name="TruckersMpNone" xml:space="preserve"><value>Nenhum mod deste perfil é suportado no TruckersMP.</value></data>
+  <data name="TruckersMpAll" xml:space="preserve"><value>Todos os mods deste perfil são suportados no TruckersMP.</value></data>
+  <data name="TruckersMpSome" xml:space="preserve"><value>Suportados no TruckersMP: {0}. Os outros {1} mods não.</value></data>
+  <data name="TruckersMpNoMods" xml:space="preserve"><value>Sem mods, então não há nada para verificar.</value></data>
+  <data name="TruckersMpProModsPart" xml:space="preserve"><value>ProMods ({0} arquivos, nos servidores ProMods)</value></data>
+  <data name="TruckersMpWeatherPart" xml:space="preserve"><value>o clima sazonal do Grimes ({0} arquivos)</value></data>
 </root>

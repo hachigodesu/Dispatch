@@ -434,13 +434,7 @@ Dispatch оставит только данные, которых эта вер�
   <data name="ConvoyReasonMissing" xml:space="preserve"><value>Здесь не установлен, поэтому проверить нельзя; игра его пропускает.</value></data>
   <data name="ConvoyReasonUnreadable" xml:space="preserve"><value>Dispatch не может прочитать манифест этого защищённого мода, поэтому он считается нужным.</value></data>
   <data name="TruckersMpTitle" xml:space="preserve"><value>TruckersMP</value></data>
-  <data name="TruckersMpHint" xml:space="preserve"><value>TruckersMP — отдельный мультиплеерный мод со своими правилами. Официально он поддерживает только ProMods (на своих серверах ProMods) и сезонные погодные моды от Grimes. Dispatch узнаёт их по названию из списка, который ведётся вручную (ноябрь 2026); актуальный список есть в базе знаний TruckersMP.</value></data>
-  <data name="TruckersMpSummary" xml:space="preserve"><value>Активных модов с поддержкой в TruckersMP: {0}, без поддержки: {1}.</value></data>
-  <data name="TruckersMpSupported" xml:space="preserve"><value>TruckersMP</value></data>
-  <data name="TruckersMpNotSupported" xml:space="preserve"><value>Не для TMP</value></data>
-  <data name="TruckersMpReasonProMods" xml:space="preserve"><value>ProMods: поддерживается на серверах ProMods в TruckersMP, в той версии, что стоит на этих серверах.</value></data>
-  <data name="TruckersMpReasonWeather" xml:space="preserve"><value>Сезонные погодные моды от Grimes поддерживаются в TruckersMP.</value></data>
-  <data name="TruckersMpReasonOther" xml:space="preserve"><value>TruckersMP не поддерживает этот мод.</value></data>
+  <data name="TruckersMpHint" xml:space="preserve"><value>TruckersMP — отдельный мультиплеерный мод со своими правилами: он поддерживает только ProMods (на своих серверах ProMods) и сезонные погодные моды от Grimes. Dispatch проверяет это по названию из списка, который ведётся вручную; последнее слово за базой знаний TruckersMP.</value></data>
   <data name="MultiplayerNoMods" xml:space="preserve"><value>В этом профиле нет активных модов: присоединиться может любой.</value></data>
   <data name="TabHealth" xml:space="preserve"><value>Состояние</value></data>
   <data name="HealthHint" xml:space="preserve"><value>Проблемы, которые Dispatch находит в каждом профиле, с исправлением, если оно есть. Каждое исправление — обычное изменение профиля: сначала создаётся резервная копия, и его можно отменить в панели «Копии».</value></data>
@@ -474,4 +468,10 @@ Dispatch оставит только данные, которых эта вер�
   <data name="HealthUnsavedFirst" xml:space="preserve"><value>В профиле «{0}» есть несохранённые изменения на вкладке «Профили». Сначала сохраните или отмените их.</value></data>
   <data name="HealthFixed" xml:space="preserve"><value>Профиль «{0}» изменён (резервная копия создана заранее).</value></data>
   <data name="HealthFixedVersion" xml:space="preserve"><value>Профиль «{0}» снова запускается с автоматической версией.</value></data>
+  <data name="TruckersMpNone" xml:space="preserve"><value>Ни один мод этого профиля не поддерживается в TruckersMP.</value></data>
+  <data name="TruckersMpAll" xml:space="preserve"><value>Все моды этого профиля поддерживаются в TruckersMP.</value></data>
+  <data name="TruckersMpSome" xml:space="preserve"><value>Поддерживаются в TruckersMP: {0}. Остальные моды ({1}) — нет.</value></data>
+  <data name="TruckersMpNoMods" xml:space="preserve"><value>Модов нет, проверять нечего.</value></data>
+  <data name="TruckersMpProModsPart" xml:space="preserve"><value>ProMods (файлов: {0}, на серверах ProMods)</value></data>
+  <data name="TruckersMpWeatherPart" xml:space="preserve"><value>сезонная погода от Grimes (файлов: {0})</value></data>
 </root>

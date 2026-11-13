@@ -777,18 +777,6 @@ public static class Strings
 
     public static string TruckersMpHint => Get(nameof(TruckersMpHint));
 
-    public static string TruckersMpSummary => Get(nameof(TruckersMpSummary));
-
-    public static string TruckersMpSupported => Get(nameof(TruckersMpSupported));
-
-    public static string TruckersMpNotSupported => Get(nameof(TruckersMpNotSupported));
-
-    public static string TruckersMpReasonProMods => Get(nameof(TruckersMpReasonProMods));
-
-    public static string TruckersMpReasonWeather => Get(nameof(TruckersMpReasonWeather));
-
-    public static string TruckersMpReasonOther => Get(nameof(TruckersMpReasonOther));
-
     public static string MultiplayerNoMods => Get(nameof(MultiplayerNoMods));
 
     public static string TabHealth => Get(nameof(TabHealth));
@@ -854,4 +842,16 @@ public static class Strings
     public static string HealthFixed => Get(nameof(HealthFixed));
 
     public static string HealthFixedVersion => Get(nameof(HealthFixedVersion));
+
+    public static string TruckersMpNone => Get(nameof(TruckersMpNone));
+
+    public static string TruckersMpAll => Get(nameof(TruckersMpAll));
+
+    public static string TruckersMpSome => Get(nameof(TruckersMpSome));
+
+    public static string TruckersMpNoMods => Get(nameof(TruckersMpNoMods));
+
+    public static string TruckersMpProModsPart => Get(nameof(TruckersMpProModsPart));
+
+    public static string TruckersMpWeatherPart => Get(nameof(TruckersMpWeatherPart));
 }

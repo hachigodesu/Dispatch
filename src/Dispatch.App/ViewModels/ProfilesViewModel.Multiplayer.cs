@@ -29,16 +29,10 @@ public sealed class MultiplayerItemViewModel(int position, MultiplayerEntry entr
         _ => Strings.ConvoyReasonRequired,
     };
 
+    /// <summary>Shown under the name when it isn't simply "every player needs it".</summary>
+    public bool HasConvoyNote => Entry.ConvoyReason != ConvoyReason.Required;
+
     public bool IsTruckersMpSupported => Entry.TruckersMp == TruckersMpSupport.Supported;
-
-    public string TruckersMpLabel => IsTruckersMpSupported ? Strings.TruckersMpSupported : Strings.TruckersMpNotSupported;
-
-    public string TruckersMpDetail => Entry.TruckersMpReason switch
-    {
-        TruckersMpReason.ProMods => Strings.TruckersMpReasonProMods,
-        TruckersMpReason.SeasonalWeather => Strings.TruckersMpReasonWeather,
-        _ => Strings.TruckersMpReasonOther,
-    };
 }
 
 /// <summary>
@@ -70,9 +64,27 @@ public sealed partial class ProfilesViewModel
         ConvoySummary = entries.Count == 0
             ? Strings.MultiplayerNoMods
             : string.Format(CultureInfo.CurrentCulture, Strings.ConvoySummary, entries.Count - optional, optional);
+        // "ProMods (10 files, on its ProMods servers)" rather than every part's name.
+        var parts = new List<string>();
+        int proMods = entries.Count(e => e.TruckersMpReason == TruckersMpReason.ProMods);
+        int weather = entries.Count(e => e.TruckersMpReason == TruckersMpReason.SeasonalWeather);
+        if (proMods > 0)
+        {
+            parts.Add(string.Format(CultureInfo.CurrentCulture, Strings.TruckersMpProModsPart, proMods));
+        }
+
+        if (weather > 0)
+        {
+            parts.Add(string.Format(CultureInfo.CurrentCulture, Strings.TruckersMpWeatherPart, weather));
+        }
+
         TruckersMpSummary = entries.Count == 0
-            ? ""
-            : string.Format(CultureInfo.CurrentCulture, Strings.TruckersMpSummary, supported, entries.Count - supported);
+            ? Strings.TruckersMpNoMods
+            : supported == 0
+                ? Strings.TruckersMpNone
+                : supported == entries.Count
+                    ? Strings.TruckersMpAll
+                    : string.Format(CultureInfo.CurrentCulture, Strings.TruckersMpSome, string.Join(", ", parts), entries.Count - supported);
         CopyConvoyListCommand.NotifyCanExecuteChanged();
     }
 

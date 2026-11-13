@@ -434,13 +434,7 @@ Gra nie widzi modów w bibliotece, więc uruchamia się szybciej, a jej lista mo
   <data name="ConvoyReasonMissing" xml:space="preserve"><value>Nie jest tu zainstalowany, więc nie da się go sprawdzić; gra go pomija.</value></data>
   <data name="ConvoyReasonUnreadable" xml:space="preserve"><value>Dispatch nie może odczytać manifestu tego chronionego moda, więc traktuje go jako potrzebny.</value></data>
   <data name="TruckersMpTitle" xml:space="preserve"><value>TruckersMP</value></data>
-  <data name="TruckersMpHint" xml:space="preserve"><value>TruckersMP to osobny mod wieloosobowy z własnymi zasadami. Oficjalnie obsługuje tylko ProMods (na swoich serwerach ProMods) oraz sezonowe mody pogodowe Grimesa. Dispatch rozpoznaje je po nazwie z listy prowadzonej ręcznie (listopad 2026); aktualną znajdziesz w bazie wiedzy TruckersMP.</value></data>
-  <data name="TruckersMpSummary" xml:space="preserve"><value>Aktywne mody obsługiwane w TruckersMP: {0}, nieobsługiwane: {1}.</value></data>
-  <data name="TruckersMpSupported" xml:space="preserve"><value>TruckersMP</value></data>
-  <data name="TruckersMpNotSupported" xml:space="preserve"><value>Nie w TMP</value></data>
-  <data name="TruckersMpReasonProMods" xml:space="preserve"><value>ProMods: obsługiwane na serwerach ProMods TruckersMP, w wersji używanej przez te serwery.</value></data>
-  <data name="TruckersMpReasonWeather" xml:space="preserve"><value>Sezonowe mody pogodowe Grimesa są obsługiwane w TruckersMP.</value></data>
-  <data name="TruckersMpReasonOther" xml:space="preserve"><value>TruckersMP nie obsługuje tego moda.</value></data>
+  <data name="TruckersMpHint" xml:space="preserve"><value>TruckersMP to osobny mod wieloosobowy z własnymi zasadami: obsługuje tylko ProMods (na swoich serwerach ProMods) i sezonowe mody pogodowe Grimesa. Dispatch sprawdza to po nazwie z ręcznie prowadzonej listy; ostatnie słowo ma baza wiedzy TruckersMP.</value></data>
   <data name="MultiplayerNoMods" xml:space="preserve"><value>Ten profil nie ma aktywnych modów: każdy może dołączyć.</value></data>
   <data name="TabHealth" xml:space="preserve"><value>Stan</value></data>
   <data name="HealthHint" xml:space="preserve"><value>Problemy, które Dispatch znajduje w każdym profilu, z rozwiązaniem, jeśli istnieje. Każde rozwiązanie to zwykła zmiana profilu: najpierw powstaje kopia zapasowa, a zmianę można cofnąć w panelu Kopie.</value></data>
@@ -474,4 +468,10 @@ Gra nie widzi modów w bibliotece, więc uruchamia się szybciej, a jej lista mo
   <data name="HealthUnsavedFirst" xml:space="preserve"><value>„{0}” ma niezapisane zmiany na karcie Profile. Najpierw je zapisz lub odrzuć.</value></data>
   <data name="HealthFixed" xml:space="preserve"><value>Zmieniono „{0}” (najpierw zrobiono kopię zapasową).</value></data>
   <data name="HealthFixedVersion" xml:space="preserve"><value>„{0}” znów uruchamia się z wersją automatyczną.</value></data>
+  <data name="TruckersMpNone" xml:space="preserve"><value>Żaden mod tego profilu nie jest obsługiwany w TruckersMP.</value></data>
+  <data name="TruckersMpAll" xml:space="preserve"><value>Wszystkie mody tego profilu są obsługiwane w TruckersMP.</value></data>
+  <data name="TruckersMpSome" xml:space="preserve"><value>Obsługiwane w TruckersMP: {0}. Pozostałe mody ({1}) nie.</value></data>
+  <data name="TruckersMpNoMods" xml:space="preserve"><value>Brak modów, więc nie ma czego sprawdzać.</value></data>
+  <data name="TruckersMpProModsPart" xml:space="preserve"><value>ProMods (pliki: {0}, na serwerach ProMods)</value></data>
+  <data name="TruckersMpWeatherPart" xml:space="preserve"><value>sezonowa pogoda Grimesa (pliki: {0})</value></data>
 </root>
