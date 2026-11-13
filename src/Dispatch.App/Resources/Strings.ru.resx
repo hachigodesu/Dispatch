@@ -389,5 +389,89 @@ Dispatch оставит только данные, которых эта вер�
   <data name="VersionsPrepareFailed" xml:space="preserve"><value>Не удалось подготовить {0}.
 
 {1}</value></data>
-  <data name="VersionsPackNote" xml:space="preserve"><value>Сжатые копии хранят только то, что отличается от установки Steam. Они собираются перед каждой игрой и удаляются после её закрытия.</value></data>
+  <data name="VersionsPackNote" xml:space="preserve"><value>Упакованные копии хранят только то, чем отличаются от установки Steam и друг от друга. Перед каждой игрой они восстанавливаются, а после закрытия игры удаляются.</value></data>
+  <data name="VersionsSpacePackedShared" xml:space="preserve"><value>{0} собственных данных и ещё {1} общих с другими сохранёнными версиями (упакована; восстанавливается перед каждой игрой)</value></data>
+  <data name="VersionsAutoRepacking" xml:space="preserve"><value>Повторная упаковка {0} после обновления Steam. {1}</value></data>
+  <data name="VersionsAutoRepackDone" xml:space="preserve"><value>{0} снова упакована после обновления Steam: теперь занимает {1} собственных данных вместо {2}.</value></data>
+  <data name="VersionsAutoRepackFailed" xml:space="preserve"><value>Не удалось снова упаковать {0} после обновления Steam, поэтому пока она хранит старые файлы Steam: {1}</value></data>
+  <data name="VersionsAutoRepack" xml:space="preserve"><value>Автоматически заново упаковывать сохранённые версии после обновления игры в Steam</value></data>
+  <data name="ShowInLibrary" xml:space="preserve"><value>В библиотеке модов</value></data>
+  <data name="LibrarySummary" xml:space="preserve"><value>Модов в библиотеке: {0} ({1})</value></data>
+  <data name="LibraryProfilesUnreadable" xml:space="preserve"><value>Не удалось прочитать один из профилей, поэтому Dispatch не может определить, какие моды не используются. Ничего не перемещено. Сначала исправьте или удалите этот профиль (см. вкладку «Профили»).</value></data>
+  <data name="LibraryMoveTitle" xml:space="preserve"><value>Библиотека модов</value></data>
+  <data name="LibraryMoveUnusedQuestion" xml:space="preserve"><value>Переместить в библиотеку модов моды, которые не использует ни один профиль: {0} ({1})?
+
+{2}
+
+Игра не видит моды в библиотеке, поэтому запускается быстрее, а её список модов короче. Когда вы добавите такой мод в профиль в Dispatch, он сам вернётся на место. Ничего не копируется и не удаляется, и вернуть моды можно в любой момент.</value></data>
+  <data name="LibraryStillUsed" xml:space="preserve"><value>Эти моды используются профилем, поэтому остаются в папке модов: {0}</value></data>
+  <data name="LibraryMoveAllBackQuestion" xml:space="preserve"><value>Вернуть все моды из библиотеки ({0}) в папку модов?
+
+{1}</value></data>
+  <data name="LibraryMovedIn" xml:space="preserve"><value>Перемещено в библиотеку модов: {0}.</value></data>
+  <data name="LibraryMovedBack" xml:space="preserve"><value>Возвращено в папку модов: {0}.</value></data>
+  <data name="LibraryMoveUnused" xml:space="preserve"><value>Переместить неиспользуемые моды в библиотеку…</value></data>
+  <data name="LibraryMoveAllBack" xml:space="preserve"><value>Вернуть все</value></data>
+  <data name="LibraryOpen" xml:space="preserve"><value>Открыть папку библиотеки</value></data>
+  <data name="LibraryHint" xml:space="preserve"><value>Моды, которые не использует ни один профиль, переносятся из папки модов игры, поэтому игра запускается быстрее. Они сами возвращаются, когда их начинает использовать профиль.</value></data>
+  <data name="LibraryMoveSelected" xml:space="preserve"><value>Переместить в библиотеку модов</value></data>
+  <data name="LibraryMoveSelectedBack" xml:space="preserve"><value>Вернуть в папку модов</value></data>
+  <data name="LibraryBadge" xml:space="preserve"><value>Библиотека</value></data>
+  <data name="LibraryDetail" xml:space="preserve"><value>В библиотеке модов Dispatch: игра не видит этот мод, даже в своём менеджере модов. Добавьте его в профиль в Dispatch, и он сам вернётся в папку модов.</value></data>
+  <data name="LibraryBroughtBack" xml:space="preserve"><value>Из библиотеки возвращены моды, которые использует профиль: {0}.</value></data>
+  <data name="PanelMultiplayer" xml:space="preserve"><value>Мультиплеер</value></data>
+  <data name="ConvoyTitle" xml:space="preserve"><value>Конвой (мультиплеер самой игры)</value></data>
+  <data name="ConvoyHint" xml:space="preserve"><value>Всем участникам сессии «Конвой» нужны моды хоста в том же порядке. Моды, которые автор отметил как необязательные, можно не ставить, если хост разрешает необязательные моды. Моды карт нужны всегда.</value></data>
+  <data name="ConvoySummary" xml:space="preserve"><value>Модов, нужных каждому игроку: {0}, необязательных: {1}.</value></data>
+  <data name="ConvoyCopyList" xml:space="preserve"><value>Скопировать список для конвоя</value></data>
+  <data name="ConvoyListHeader" xml:space="preserve"><value>Моды профиля «{0}» (сверху = наивысший приоритет):</value></data>
+  <data name="ConvoyListCopied" xml:space="preserve"><value>Список скопирован. Вставьте его в сообщение для тех, с кем вы ездите. Набор (панель «Наборы») передаёт точный порядок загрузки.</value></data>
+  <data name="ConvoyRequired" xml:space="preserve"><value>Нужен</value></data>
+  <data name="ConvoyOptional" xml:space="preserve"><value>Необязателен</value></data>
+  <data name="ConvoyReasonRequired" xml:space="preserve"><value>Этот мод нужен каждому игроку.</value></data>
+  <data name="ConvoyReasonOptional" xml:space="preserve"><value>Автор отметил его как необязательный (mp_mod_optional): игроки могут его не ставить, если хост разрешает необязательные моды.</value></data>
+  <data name="ConvoyReasonMap" xml:space="preserve"><value>Отмечен как необязательный, но моды карт в «Конвое» нужны всегда.</value></data>
+  <data name="ConvoyReasonMissing" xml:space="preserve"><value>Здесь не установлен, поэтому проверить нельзя; игра его пропускает.</value></data>
+  <data name="ConvoyReasonUnreadable" xml:space="preserve"><value>Dispatch не может прочитать манифест этого защищённого мода, поэтому он считается нужным.</value></data>
+  <data name="TruckersMpTitle" xml:space="preserve"><value>TruckersMP</value></data>
+  <data name="TruckersMpHint" xml:space="preserve"><value>TruckersMP — отдельный мультиплеерный мод со своими правилами. Официально он поддерживает только ProMods (на своих серверах ProMods) и сезонные погодные моды от Grimes. Dispatch узнаёт их по названию из списка, который ведётся вручную (ноябрь 2026); актуальный список есть в базе знаний TruckersMP.</value></data>
+  <data name="TruckersMpSummary" xml:space="preserve"><value>Активных модов с поддержкой в TruckersMP: {0}, без поддержки: {1}.</value></data>
+  <data name="TruckersMpSupported" xml:space="preserve"><value>TruckersMP</value></data>
+  <data name="TruckersMpNotSupported" xml:space="preserve"><value>Не для TMP</value></data>
+  <data name="TruckersMpReasonProMods" xml:space="preserve"><value>ProMods: поддерживается на серверах ProMods в TruckersMP, в той версии, что стоит на этих серверах.</value></data>
+  <data name="TruckersMpReasonWeather" xml:space="preserve"><value>Сезонные погодные моды от Grimes поддерживаются в TruckersMP.</value></data>
+  <data name="TruckersMpReasonOther" xml:space="preserve"><value>TruckersMP не поддерживает этот мод.</value></data>
+  <data name="MultiplayerNoMods" xml:space="preserve"><value>В этом профиле нет активных модов: присоединиться может любой.</value></data>
+  <data name="TabHealth" xml:space="preserve"><value>Состояние</value></data>
+  <data name="HealthHint" xml:space="preserve"><value>Проблемы, которые Dispatch находит в каждом профиле, с исправлением, если оно есть. Каждое исправление — обычное изменение профиля: сначала создаётся резервная копия, и его можно отменить в панели «Копии».</value></data>
+  <data name="HealthRecheck" xml:space="preserve"><value>Проверить снова</value></data>
+  <data name="HealthChecking" xml:space="preserve"><value>Проверка…</value></data>
+  <data name="HealthSummaryAllGood" xml:space="preserve"><value>Проблем не найдено (профилей: {0}).</value></data>
+  <data name="HealthSummary" xml:space="preserve"><value>Профилей с проблемами: {0} из {1}.</value></data>
+  <data name="HealthNoProblems" xml:space="preserve"><value>Нет проблем</value></data>
+  <data name="HealthProblemOne" xml:space="preserve"><value>1 проблема</value></data>
+  <data name="HealthProblemCount" xml:space="preserve"><value>Проблем: {0}</value></data>
+  <data name="HealthUnreadable" xml:space="preserve"><value>Не удалось прочитать: {0}</value></data>
+  <data name="HealthReadOnly" xml:space="preserve"><value>Профиль Steam Cloud: только для просмотра, Dispatch его не меняет.</value></data>
+  <data name="HealthMissingTitle" xml:space="preserve"><value>Моды из порядка загрузки, которые не установлены (игра их пропускает): {0}</value></data>
+  <data name="HealthWrongVersionTitle" xml:space="preserve"><value>Моды, сделанные не для {1} — версии, с которой запускается этот профиль: {0}</value></data>
+  <data name="HealthMissingDlcTitle" xml:space="preserve"><value>Моды, которым нужно DLC, которого у вас нет (игра их не использует): {0}</value></data>
+  <data name="HealthOlderTitle" xml:space="preserve"><value>Моды, активные в старой копии, хотя установлена более новая: {0}</value></data>
+  <data name="HealthOlderLine" xml:space="preserve"><value>{0}: активна {1}, установлена {2}</value></data>
+  <data name="HealthSaveTitle" xml:space="preserve"><value>Последнее сохранение («{0}») сделано с модами, которых нет в порядке загрузки: {1}</value></data>
+  <data name="HealthSaveNotInstalled" xml:space="preserve"><value>Не установлены: {0}</value></data>
+  <data name="HealthGameWarningsTitle" xml:space="preserve"><value>Активные моды, о проблемах с которыми игра сообщила при последнем запуске: {0}</value></data>
+  <data name="HealthConflictsTitle" xml:space="preserve"><value>Пары активных модов, заменяющих файлы друг друга: {0}</value></data>
+  <data name="HealthConflictsText" xml:space="preserve"><value>Часто это задумано (патчи, дополнения совместимости). Побеждает мод, стоящий выше в списке.</value></data>
+  <data name="HealthMore" xml:space="preserve"><value>…и ещё {0}</value></data>
+  <data name="HealthFixRemove" xml:space="preserve"><value>Убрать их из порядка загрузки</value></data>
+  <data name="HealthFixWorkshop" xml:space="preserve"><value>Открыть в Мастерской</value></data>
+  <data name="HealthFixAutomatic" xml:space="preserve"><value>Запускать с {0}</value></data>
+  <data name="HealthFixNewer" xml:space="preserve"><value>Использовать более новые копии</value></data>
+  <data name="HealthFixAddSaveMods" xml:space="preserve"><value>Добавить установленные ({0})</value></data>
+  <data name="HealthFixShowConflicts" xml:space="preserve"><value>Показать конфликты</value></data>
+  <data name="HealthFixOpenProfile" xml:space="preserve"><value>Открыть профиль</value></data>
+  <data name="HealthUnsavedFirst" xml:space="preserve"><value>В профиле «{0}» есть несохранённые изменения на вкладке «Профили». Сначала сохраните или отмените их.</value></data>
+  <data name="HealthFixed" xml:space="preserve"><value>Профиль «{0}» изменён (резервная копия создана заранее).</value></data>
+  <data name="HealthFixedVersion" xml:space="preserve"><value>Профиль «{0}» снова запускается с автоматической версией.</value></data>
 </root>

@@ -22,18 +22,25 @@ public sealed partial class ModsViewModel : ObservableObject
     private readonly Func<ModInstaller> _installer;
     private ModNotesStore _notes;
     private readonly Func<Task> _refresh;
+    private readonly Func<IReadOnlyList<ModInfo>, string, IReadOnlyList<LibraryMove>> _move;
     private List<ModItemViewModel> _all = [];
     private string? _modDir;
+    private string? _libraryDir;
+    private HashSet<string> _used = [];
+    private bool _allProfilesRead;
 
-    public ModsViewModel(ProfilesViewModel profiles, IDialogs dialogs, Func<ModInstaller> installer, ModNotesStore notes, Func<Task> refresh)
+    /// <param name="move">Moves mods into a folder (the library, or back to mod\); see <see cref="ModLibrary.Move"/>.</param>
+    public ModsViewModel(ProfilesViewModel profiles, IDialogs dialogs, Func<ModInstaller> installer, ModNotesStore notes, Func<Task> refresh,
+                         Func<IReadOnlyList<ModInfo>, string, IReadOnlyList<LibraryMove>> move)
     {
         _profiles = profiles;
         _dialogs = dialogs;
         _installer = installer;
         _notes = notes;
         _refresh = refresh;
+        _move = move;
         SelectedMods.CollectionChanged += (_, _) => OnSelectionChanged();
-        ShowOptions = [Strings.ShowAll, Strings.ShowDuplicates, Strings.ShowUnused, Strings.ShowProblems, Strings.ShowGameWarnings];
+        ShowOptions = [Strings.ShowAll, Strings.ShowDuplicates, Strings.ShowUnused, Strings.ShowInLibrary, Strings.ShowProblems, Strings.ShowGameWarnings];
         _show = Strings.ShowAll;
     }
 
@@ -80,8 +87,12 @@ public sealed partial class ModsViewModel : ObservableObject
     private string _message = "";
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(InstallCommand), nameof(UninstallCommand))]
+    [NotifyCanExecuteChangedFor(nameof(InstallCommand), nameof(UninstallCommand), nameof(MoveUnusedToLibraryCommand), nameof(MoveAllBackCommand))]
     private bool _isWorking;
+
+    /// <summary>"12 mods in the library (3.4 GB)", or empty while it's empty.</summary>
+    [ObservableProperty]
+    private string _librarySummary = "";
 
     public string SelectionLabel => SelectedMods.Count > 1
         ? string.Format(CultureInfo.CurrentCulture, Strings.SelectedCount, SelectedMods.Count)
@@ -109,6 +120,9 @@ public sealed partial class ModsViewModel : ObservableObject
         }
 
         _modDir = snapshot.Environment.ModDir;
+        _libraryDir = snapshot.Environment.ModLibraryDir;
+        _used = snapshot.UsedPackageIds;
+        _allProfilesRead = snapshot.AllProfilesRead;
         var duplicates = ModDuplicates.Find(snapshot.Scan.Mods);
         var keepIds = SelectedMods.Select(m => m.PackageId).ToHashSet(StringComparer.Ordinal);
         var byId = new Dictionary<string, ModItemViewModel>(StringComparer.Ordinal);
@@ -146,6 +160,13 @@ public sealed partial class ModsViewModel : ObservableObject
         TypeFilter = TypeOptions.Contains(keepType) ? keepType : Strings.AllTypes;
         ApplyFilter();
         InstallCommand.NotifyCanExecuteChanged(); // the mod folder is known now
+        var inLibrary = _all.Where(m => m.InLibrary).ToList();
+        LibrarySummary = inLibrary.Count == 0
+            ? ""
+            : string.Format(CultureInfo.CurrentCulture, Strings.LibrarySummary, inLibrary.Count, FormatSize(inLibrary.Sum(m => m.Mod.SizeBytes)));
+        MoveUnusedToLibraryCommand.NotifyCanExecuteChanged();
+        MoveAllBackCommand.NotifyCanExecuteChanged();
+        OpenLibraryCommand.NotifyCanExecuteChanged();
 
         // Keep the selection across refreshes (e.g. after "Add to profile").
         SelectedMods.Clear();
@@ -181,6 +202,7 @@ public sealed partial class ModsViewModel : ObservableObject
         Show == Strings.ShowDuplicates ? m.IsDuplicate
         : Show == Strings.ShowUnused ? m.UsedIn.Count == 0
         : Show == Strings.ShowGameWarnings ? m.HasGameMessages
+        : Show == Strings.ShowInLibrary ? m.InLibrary
         : Show != Strings.ShowProblems || m.CompatStatus is CompatStatus.VersionMismatch or CompatStatus.MissingDlc or CompatStatus.Unreadable;
 
     private void SaveNote(ModItemViewModel mod)
@@ -201,6 +223,8 @@ public sealed partial class ModsViewModel : ObservableObject
     public void OnGameRunningChanged()
     {
         InstallCommand.NotifyCanExecuteChanged();
+        MoveUnusedToLibraryCommand.NotifyCanExecuteChanged();
+        MoveAllBackCommand.NotifyCanExecuteChanged();
         OnSelectionChanged();
     }
 
@@ -228,6 +252,122 @@ public sealed partial class ModsViewModel : ObservableObject
         AddToProfileCommand.NotifyCanExecuteChanged();
         RemoveFromProfileCommand.NotifyCanExecuteChanged();
         UninstallCommand.NotifyCanExecuteChanged();
+        MoveToLibraryCommand.NotifyCanExecuteChanged();
+        MoveBackCommand.NotifyCanExecuteChanged();
+    }
+
+    // ---- mod library -----------------------------------------------------------------------------
+
+    internal static string FormatSize(long bytes) => bytes switch
+    {
+        >= 1L << 30 => (bytes / (double)(1L << 30)).ToString("F1", CultureInfo.CurrentCulture) + " GB",
+        _ => (bytes / (double)(1L << 20)).ToString("F0", CultureInfo.CurrentCulture) + " MB",
+    };
+
+    private bool CanMoveUnused() => !IsWorking && !_profiles.IsGameRunning && _libraryDir is not null &&
+                                    _all.Any(m => m.Mod.Source == ModSource.Local && !m.InLibrary && !_used.Contains(m.PackageId));
+
+    /// <summary>Moves every local mod no profile uses into the library (they come back by themselves when a profile needs them).</summary>
+    [RelayCommand(CanExecute = nameof(CanMoveUnused))]
+    private async Task MoveUnusedToLibraryAsync()
+    {
+        if (!_allProfilesRead)
+        {
+            _dialogs.ShowError(Strings.LibraryProfilesUnreadable);
+            return;
+        }
+
+        var unused = ModLibrary.Unused(_all.Select(m => m.Mod), _used);
+        if (unused.Count == 0 || !_dialogs.Confirm(Strings.LibraryMoveTitle, string.Format(CultureInfo.CurrentCulture, Strings.LibraryMoveUnusedQuestion,
+                unused.Count, FormatSize(unused.Sum(m => m.SizeBytes)), _libraryDir)))
+        {
+            return;
+        }
+
+        await MoveAsync(unused, _libraryDir!, Strings.LibraryMovedIn);
+    }
+
+    private bool CanMoveToLibrary() => !IsWorking && !_profiles.IsGameRunning && _libraryDir is not null &&
+                                       CurrentSelection().Any(m => m.Mod.Source == ModSource.Local && !m.InLibrary);
+
+    /// <summary>Moves the selected local mods into the library; mods a profile uses stay where they are.</summary>
+    [RelayCommand(CanExecute = nameof(CanMoveToLibrary))]
+    private async Task MoveToLibraryAsync()
+    {
+        if (!_allProfilesRead)
+        {
+            _dialogs.ShowError(Strings.LibraryProfilesUnreadable);
+            return;
+        }
+
+        var chosen = CurrentSelection().Where(m => m.Mod.Source == ModSource.Local && !m.InLibrary).ToList();
+        var used = chosen.Where(m => _used.Contains(m.PackageId)).ToList();
+        if (used.Count > 0)
+        {
+            _dialogs.ShowInfo(string.Format(CultureInfo.CurrentCulture, Strings.LibraryStillUsed, string.Join(", ", used.Select(m => m.DisplayName))));
+        }
+
+        var mods = chosen.Except(used).Select(m => m.Mod).ToList();
+        if (mods.Count > 0)
+        {
+            await MoveAsync(mods, _libraryDir!, Strings.LibraryMovedIn);
+        }
+    }
+
+    private bool CanMoveBack() => !IsWorking && !_profiles.IsGameRunning && _modDir is not null && CurrentSelection().Any(m => m.InLibrary);
+
+    [RelayCommand(CanExecute = nameof(CanMoveBack))]
+    private async Task MoveBackAsync() =>
+        await MoveAsync(CurrentSelection().Where(m => m.InLibrary).Select(m => m.Mod).ToList(), _modDir!, Strings.LibraryMovedBack);
+
+    private bool CanMoveAllBack() => !IsWorking && !_profiles.IsGameRunning && _modDir is not null && _all.Any(m => m.InLibrary);
+
+    /// <summary>Empties the library: every mod in it goes back to mod\ (where the game sees it again).</summary>
+    [RelayCommand(CanExecute = nameof(CanMoveAllBack))]
+    private async Task MoveAllBackAsync()
+    {
+        var all = _all.Where(m => m.InLibrary).Select(m => m.Mod).ToList();
+        if (_dialogs.Confirm(Strings.LibraryMoveTitle, string.Format(CultureInfo.CurrentCulture, Strings.LibraryMoveAllBackQuestion, all.Count, _modDir)))
+        {
+            await MoveAsync(all, _modDir!, Strings.LibraryMovedBack);
+        }
+    }
+
+    private bool CanOpenLibrary() => _libraryDir is not null && Directory.Exists(_libraryDir);
+
+    [RelayCommand(CanExecute = nameof(CanOpenLibrary))]
+    private void OpenLibrary() =>
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe", $"\"{_libraryDir}\"") { UseShellExecute = true })?.Dispose();
+
+    private async Task MoveAsync(IReadOnlyList<ModInfo> mods, string target, string doneFormat)
+    {
+        IsWorking = true;
+        try
+        {
+            var results = await Task.Run(() => _move(mods, target));
+            foreach (var r in results)
+            {
+                Log.Information("Library: {Mod} {From} -> {To}: {Outcome} ({Message})", r.Mod.PackageId, r.Mod.Path, r.Target, r.Outcome, r.Message);
+            }
+
+            var problems = results.Where(r => r.Outcome != LibraryMoveOutcome.Moved).Select(r => $"• {r.Mod.DisplayName}: {r.Message}").ToList();
+            if (problems.Count > 0)
+            {
+                _dialogs.ShowInfo(string.Join(Environment.NewLine, problems));
+            }
+
+            SelectedMods.Clear();
+            await _refresh();
+            Message = string.Format(CultureInfo.CurrentCulture, doneFormat, results.Count(r => r.Outcome == LibraryMoveOutcome.Moved));
+        }
+        catch (GameRunningException ex)
+        {
+            _dialogs.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsWorking = false;
+        }
     }
 
     // ---- install / uninstall ---------------------------------------------------------------------
@@ -256,7 +396,7 @@ public sealed partial class ModsViewModel : ObservableObject
         try
         {
             var results = _installer().Install(_modDir!, files, name =>
-                _dialogs.Confirm(Strings.ReplaceTitle, string.Format(CultureInfo.CurrentCulture, Strings.ReplaceQuestion, name)));
+                _dialogs.Confirm(Strings.ReplaceTitle, string.Format(CultureInfo.CurrentCulture, Strings.ReplaceQuestion, name)), _libraryDir);
             foreach (var r in results)
             {
                 Log.Information("Install {Source}: {Outcome} ({Message})", r.Source, r.Outcome, r.Message);

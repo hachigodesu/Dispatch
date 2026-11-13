@@ -3,7 +3,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Dispatch.Core.Games;
 
-/// <summary>The two Windows file calls .NET doesn't offer: making a hard link and counting a file's links.</summary>
+/// <summary>The Windows file calls .NET doesn't offer: making a hard link, counting a file's links, comparing identities.</summary>
 internal static partial class NativeFiles
 {
     /// <summary>Makes <paramref name="link"/> a second name for <paramref name="existing"/> (same NTFS volume only).</summary>
@@ -17,6 +17,27 @@ internal static partial class NativeFiles
             // Share everything so a running Steam or game isn't disturbed.
             using SafeFileHandle handle = File.OpenHandle(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
             return GetFileInformationByHandle(handle, out var info) ? (int)info.NumberOfLinks : null;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// True when both names are links to the same file (same volume and file index); false when they aren't or either
+    /// can't be read.
+    /// </summary>
+    public static bool SameFile(string a, string b) => FileId(a) is { } x && FileId(b) is { } y && x == y;
+
+    private static (uint Volume, ulong Index)? FileId(string path)
+    {
+        try
+        {
+            using SafeFileHandle handle = File.OpenHandle(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            return GetFileInformationByHandle(handle, out var info)
+                ? (info.VolumeSerialNumber, ((ulong)info.FileIndexHigh << 32) | info.FileIndexLow)
+                : null;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {

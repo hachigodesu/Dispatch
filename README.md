@@ -37,6 +37,8 @@ something is installed somewhere unusual, you can set the paths in **Settings**.
   the game reported problems with. Add your own tags and notes to any mod.
 - **Install** mods by dropping `.scs` or `.zip` files onto Dispatch. **Uninstall** sends them to the Recycle Bin.
   Workshop items are never deleted; unsubscribe from those in Steam.
+- **Mod library:** move the mods no profile uses out of the game's mod folder in one click. The game starts faster and
+  its own mod list gets shorter. When you add one of them to a profile, Dispatch moves it back by itself.
 
 ### Edit load orders
 - Turn mods on and off and **drag and drop** them into order. Select several mods to move or remove them together.
@@ -46,6 +48,14 @@ something is installed somewhere unusual, you can set the paths in **Settings**.
 - **Copy a load order** from one profile to others.
 - **Presets:** save a load order under a name. You can apply it to any profile, or export it as a file to share. When
   you import a preset, Dispatch lists the mods you don't have, with Workshop links where there are any.
+
+### Check your profiles
+- The **Health** tab lists each profile's problems with a fix for each: mods that aren't installed, mods made for
+  another game version, mods needing a DLC you don't own, an older copy of a mod you have a newer one of, and mods your
+  newest save was made with that aren't active any more. It also notes file conflicts and the game's own warnings.
+- The **Multiplayer** panel shows which active mods everyone in your **Convoy** needs too, and which are optional.
+  Copy the list to send to the people you drive with. It also hints which mods **TruckersMP** supports (only ProMods
+  and the seasonal weather mods).
 
 ### Manage profiles
 - **Duplicate** a profile as a full copy, or as a fresh start that has its settings and mods but no saves. You can
@@ -65,8 +75,11 @@ while to catch up. Dispatch can keep a copy of the version you have now:
 
 Copies don't need to take the space of a whole game:
 - A copy on the same drive as Steam **shares every unchanged file** with the Steam install.
-- **Pack to save space** stores only what differs from the Steam install, which is about a tenth of the game.
-  Dispatch rebuilds the game when you launch that version and removes the rebuilt files after you quit.
+- **Pack to save space** stores only what differs from the Steam install and from your other packed versions, which is
+  about a tenth of the game. Dispatch rebuilds the game when you launch that version and removes the rebuilt files
+  after you quit.
+- After Steam updates the game, Dispatch packs your kept versions again by itself in the background, so they stay
+  small. You can turn that off in Settings.
 
 Copies are started directly, not through Steam, so Steam must be running and Steam's launch options don't apply to
 them.

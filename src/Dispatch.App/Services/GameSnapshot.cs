@@ -20,6 +20,13 @@ public sealed record GameSnapshot(
     IReadOnlyDictionary<string, string> NamesFromProfiles,
     IReadOnlyList<Dispatch.Core.Games.GameDefinition> InstalledGames)
 {
+    /// <summary>Package IDs in any profile's load order (local and Steam Cloud).</summary>
+    public HashSet<string> UsedPackageIds { get; } =
+        Profiles.SelectMany(p => p.LoadOrder?.TopFirst ?? []).Select(e => e.PackageId).ToHashSet(StringComparer.Ordinal);
+
+    /// <summary>False when a profile couldn't be read: then nobody can say which mods are unused.</summary>
+    public bool AllProfilesRead => Profiles.All(p => p.LoadOrder is not null);
+
     /// <summary>Reads the whole picture. Read-only: nothing on disk is modified (except Dispatch's own cache).</summary>
     public static GameSnapshot Load(IPlatform platform, AppPaths paths, AppSettings settings, Dispatch.Core.Games.GameDefinition game,
                                     IProgress<(int Done, int Total)>? progress, CancellationToken cancel)

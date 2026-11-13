@@ -9,10 +9,13 @@ namespace Dispatch.Core.Games;
 /// dispatch-pack.bin    the recipe: every file of the version, as pieces of the files below
 /// dispatch-pack.data   the pieces no other file has (what's unique to this version)
 /// base\…               hard links to the Steam install's files the recipe uses (no extra space while Steam keeps them)
+/// base\dispatch-shared\…  hard links to other packed copies' data files the recipe uses (versions share most data)
 /// game\…               the full game, rebuilt from the above before playing and removed afterwards
 /// </code>
 /// Steam updates a file by replacing it, so a base link keeps the old file alive: the recipe keeps working after any
 /// update, the old file just starts to take space of its own. Packing again against the new Steam version frees it.
+/// Data files are never written after packing (packing again makes a new one), so linking another copy's data file is
+/// just as safe: it stays readable even when that copy is packed again or deleted.
 /// </summary>
 public static class PackedCopy
 {
@@ -22,13 +25,24 @@ public static class PackedCopy
     public const string GameFolder = "game";
     public const string RebuiltMarker = "dispatch-rebuilt.txt";
 
+    /// <summary>Folder in base\ for links to other packed copies' data files (Steam has no folder of this name).</summary>
+    public const string SharedFolder = "dispatch-shared";
+
     public static bool IsPacked(string folder) => File.Exists(Path.Combine(folder, RecipeFile));
+
+    /// <summary>A base file that is another packed copy's data file rather than a Steam file.</summary>
+    public static bool IsShared(PackBaseFile b) => b.Path.StartsWith(SharedFolder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// Health and space of a packed copy, from file metadata only. Broken when the data file or a base file is missing
-    /// or was written to; base files Steam has replaced since (no other name left) count as the copy's own space.
+    /// or was written to. A Steam base file Steam has replaced since is stale: it counts as the copy's own space, and
+    /// packing again frees it.
     /// </summary>
-    public static CopyHealth Inspect(string folder)
+    /// <param name="steamFolder">
+    /// The Steam install, to tell stale files exactly (the base link is no longer the same file as Steam's). Without
+    /// it, a base file nobody else links to counts as stale, which misses files several copies still share.
+    /// </param>
+    public static CopyHealth Inspect(string folder, string? steamFolder = null)
     {
         var recipe = PackRecipe.Read(folder, withFiles: true);
         var changed = new List<string>();
@@ -45,6 +59,7 @@ public static class PackedCopy
 
         int shared = 0;
         long stale = 0;
+        long withCopies = 0;
         foreach (var b in recipe.Bases)
         {
             var info = new FileInfo(Path.Combine(folder, BaseFolder, b.Path));
@@ -54,7 +69,26 @@ public static class PackedCopy
                 continue;
             }
 
-            if (NativeFiles.LinkCount(info.FullName) is > 1)
+            if (IsShared(b))
+            {
+                // Another copy's data: shared while that copy (or another one using it) still has it.
+                if (NativeFiles.LinkCount(info.FullName) is > 1)
+                {
+                    shared++;
+                    withCopies += b.Size;
+                }
+                else
+                {
+                    own += b.Size;
+                }
+
+                continue;
+            }
+
+            bool isSteams = steamFolder is not null
+                ? NativeFiles.SameFile(info.FullName, Path.Combine(steamFolder, b.Path))
+                : NativeFiles.LinkCount(info.FullName) is > 1;
+            if (isSteams)
             {
                 shared++;
             }
@@ -67,7 +101,7 @@ public static class PackedCopy
         own += stale;
         long total = recipe.Files.Sum(f => f.Size);
         long rebuild = recipe.Files.Where(f => f.WholeBase < 0).Sum(f => f.Size);
-        var pack = new PackInfo(recipe.DataBytes, stale, Directory.Exists(Path.Combine(folder, GameFolder)), rebuild);
+        var pack = new PackInfo(recipe.DataBytes, stale, Directory.Exists(Path.Combine(folder, GameFolder)), rebuild, withCopies);
         return new CopyHealth(true, recipe.Bases.Count, shared, changed, own, total, pack);
     }
 }
@@ -77,7 +111,8 @@ public static class PackedCopy
 /// <param name="StaleBaseBytes">Steam files Steam has since replaced; packing again frees them.</param>
 /// <param name="IsRebuilt">The full game folder is there right now (while playing, or left over).</param>
 /// <param name="RebuildBytes">Space the rebuilt game folder needs (files that can't be shared).</param>
-public sealed record PackInfo(long DataBytes, long StaleBaseBytes, bool IsRebuilt, long RebuildBytes);
+/// <param name="SharedWithCopiesBytes">Other packed copies' data this copy uses (no extra space while they have it).</param>
+public sealed record PackInfo(long DataBytes, long StaleBaseBytes, bool IsRebuilt, long RebuildBytes, long SharedWithCopiesBytes = 0);
 
 /// <summary>A part of a file: <paramref name="Source"/> is a base file's index, or -1 for the data file.</summary>
 public readonly record struct PackSegment(int Source, long Offset, long Length);

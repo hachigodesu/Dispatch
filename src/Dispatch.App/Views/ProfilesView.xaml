@@ -152,7 +152,41 @@
         </DockPanel>
 
         <!-- Right: details / add mods / backups -->
-        <TabControl x:Name="SidePanel" Grid.Column="2">
+        <TabControl x:Name="SidePanel" Grid.Column="2" SelectedIndex="{Binding SidePanelIndex}">
+            <!-- Six tabs in 390 px: compact headers that wrap in place (the theme's panel stretches them and moves the
+                 selected row to the bottom). -->
+            <TabControl.Template>
+                <ControlTemplate TargetType="TabControl">
+                    <DockPanel>
+                        <WrapPanel DockPanel.Dock="Top" IsItemsHost="True" Margin="0,0,0,2" />
+                        <ContentPresenter ContentSource="SelectedContent" />
+                    </DockPanel>
+                </ControlTemplate>
+            </TabControl.Template>
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border x:Name="Bd" Padding="6,4" Margin="0,0,1,2" CornerRadius="4" Background="Transparent">
+                                    <ContentPresenter ContentSource="Header" TextElement.FontSize="12" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="#22808080" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="#40808080" />
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.45" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
             <TabItem Header="{x:Static res:Strings.PanelDetails}">
                 <v:ModDetailsView DataContext="{Binding SelectedEntryMod}" Margin="0,8,0,0" />
             </TabItem>
@@ -232,6 +266,37 @@
                         </ListBox>
                     </Grid>
                 </DockPanel>
+            </TabItem>
+            <TabItem Header="{x:Static res:Strings.PanelMultiplayer}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,8,0,0">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static res:Strings.ConvoyTitle}" Style="{StaticResource SectionHeader}" />
+                        <TextBlock Text="{x:Static res:Strings.ConvoyHint}" Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,4" />
+                        <TextBlock Text="{Binding ConvoySummary}" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,4" />
+                        <Button Content="{x:Static res:Strings.ConvoyCopyList}" Command="{Binding CopyConvoyListCommand}" HorizontalAlignment="Left"
+                                Margin="0,0,0,8" />
+                        <TextBlock Text="{x:Static res:Strings.TruckersMpTitle}" Style="{StaticResource SectionHeader}" />
+                        <TextBlock Text="{x:Static res:Strings.TruckersMpHint}" Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,4" />
+                        <TextBlock Text="{Binding TruckersMpSummary}" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <ItemsControl ItemsSource="{Binding Multiplayer}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="vm:MultiplayerItemViewModel">
+                                    <DockPanel Margin="0,2">
+                                        <Border DockPanel.Dock="Right" Style="{StaticResource Badge}" Margin="4,0,0,0" ToolTip="{Binding TruckersMpDetail}"
+                                                Background="{Binding IsTruckersMpSupported, Converter={StaticResource BoolToBrush}, ConverterParameter=#2E7D32|#6B6B6B}">
+                                            <TextBlock Text="{Binding TruckersMpLabel}" Style="{StaticResource BadgeText}" />
+                                        </Border>
+                                        <Border DockPanel.Dock="Right" Style="{StaticResource Badge}" Margin="4,0,0,0" ToolTip="{Binding ConvoyDetail}"
+                                                Background="{Binding IsConvoyOptional, Converter={StaticResource BoolToBrush}, ConverterParameter=#2E7D32|#1565C0}">
+                                            <TextBlock Text="{Binding ConvoyLabel}" Style="{StaticResource BadgeText}" />
+                                        </Border>
+                                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" ToolTip="{Binding ConvoyDetail}" />
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="{x:Static res:Strings.PanelPresets}">
                 <DockPanel Margin="0,8,0,0">

@@ -103,12 +103,19 @@ public sealed partial class ProfilesViewModel : ObservableObject
     [ObservableProperty]
     private string _message = "";
 
+    /// <summary>The side panel's tab (0 Details, 1 Add, 2 Conflicts, 3 Multiplayer, 4 Presets, 5 Backups).</summary>
+    [ObservableProperty]
+    private int _sidePanelIndex;
+
     /// <summary>Local profiles that loaded fine can be edited; Steam Cloud profiles are read-only (PLAN.md §5.10).</summary>
     public bool CanEdit => Selected is { IsCloud: false, LoadOrder: not null };
 
     public bool CanSave => CanEdit && IsDirty && !IsGameRunning;
 
     public ModItemViewModel? SelectedEntryMod => SelectedEntry?.Mod;
+
+    /// <summary>The installed mod with this package ID, if any.</summary>
+    internal Dispatch.Core.Mods.ModInfo? ModFor(string packageId) => _mods.GetValueOrDefault(packageId)?.Mod;
 
     public void Load(Services.GameSnapshot snapshot, IReadOnlyDictionary<string, ModItemViewModel> mods)
     {
@@ -206,6 +213,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
         RefreshAvailable();
         RefreshBackups();
         RefreshLaunchChoices();
+        RefreshMultiplayer();
         if (profile?.LoadOrder is null)
         {
             ClearConflicts();
@@ -240,6 +248,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
             RefreshAvailable();
             ScheduleConflictCheck();
             RefreshLaunchChoices();
+            RefreshMultiplayer();
         }
     }
 

@@ -117,6 +117,38 @@ public sealed partial class ProfilesViewModel
         LaunchHintIsWarning = older;
     }
 
+    /// <summary>
+    /// What any profile launches with (its pinned version, or the automatic pick), without selecting it. Pinned is
+    /// true when the profile is set to a specific version.
+    /// </summary>
+    internal (GameInstallation? Installation, bool Pinned, VersionChoice? Auto) LaunchFor(ProfileItemViewModel profile)
+    {
+        if (_versions is null || _versionSettings is null)
+        {
+            return (null, false, null);
+        }
+
+        var available = _versions.Available;
+        var mods = (profile.LoadOrder?.TopFirst ?? []).Select(e => _mods.GetValueOrDefault(e.PackageId)?.Mod).OfType<ModInfo>().ToList();
+        var auto = VersionPicker.Pick(available, mods);
+        string? saved = VersionKey(profile) is { } key && _versionSettings.ProfileVersions.TryGetValue(key, out var v) ? v : null;
+        var pinned = saved is null
+            ? null
+            : available.FirstOrDefault(i => string.Equals(i.IsSteam ? AppSettings.SteamVersion : i.Folder, saved, StringComparison.OrdinalIgnoreCase));
+        return (pinned ?? auto?.Installation, pinned is not null, auto);
+    }
+
+    /// <summary>Sets a profile back to the automatic version (the health report's fix for a pinned version that doesn't fit).</summary>
+    internal void UseAutomaticVersion(ProfileItemViewModel profile)
+    {
+        if (VersionKey(profile) is { } key && _versionSettings is not null && _versionSettings.ProfileVersions.Remove(key))
+        {
+            Log.Information("Profile {Folder} launches with the automatic version again", profile.Profile.FolderName);
+            SaveVersionSettings();
+            RefreshLaunchChoices();
+        }
+    }
+
     partial void OnSelectedLaunchChoiceChanged(LaunchChoice? value)
     {
         if (_fillingChoices || value is null || VersionKey(_shown) is not { } key || _versionSettings is null)

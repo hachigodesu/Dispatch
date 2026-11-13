@@ -39,6 +39,13 @@
                 <Button Content="{x:Static res:Strings.UninstallMods}" Command="{Binding UninstallCommand}" Margin="0,0,12,0" />
                 <TextBlock Text="{x:Static res:Strings.DropHint}" Style="{StaticResource Muted}" FontSize="11" VerticalAlignment="Center" />
             </WrapPanel>
+            <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                <Button Content="{x:Static res:Strings.LibraryMoveUnused}" Command="{Binding MoveUnusedToLibraryCommand}" Margin="0,0,6,0"
+                        ToolTip="{x:Static res:Strings.LibraryHint}" />
+                <Button Content="{x:Static res:Strings.LibraryMoveAllBack}" Command="{Binding MoveAllBackCommand}" Margin="0,0,6,0" />
+                <Button Content="{x:Static res:Strings.LibraryOpen}" Command="{Binding OpenLibraryCommand}" Margin="0,0,12,0" />
+                <TextBlock Text="{Binding LibrarySummary}" Style="{StaticResource Muted}" FontSize="11" VerticalAlignment="Center" />
+            </WrapPanel>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
                 <TextBlock Text="{Binding SelectionLabel}" FontWeight="SemiBold" Margin="0,0,10,0"
                            Visibility="{Binding SelectionLabel, Converter={StaticResource VisibleWhen}}" />
@@ -57,6 +64,9 @@
                     <ContextMenu>
                         <MenuItem x:Name="AddMenu" Header="{x:Static res:Strings.AddToProfile}" />
                         <MenuItem x:Name="RemoveMenu" Header="{x:Static res:Strings.RemoveFromProfile}" />
+                        <Separator />
+                        <MenuItem Header="{x:Static res:Strings.LibraryMoveSelected}" Command="{Binding MoveToLibraryCommand}" />
+                        <MenuItem Header="{x:Static res:Strings.LibraryMoveSelectedBack}" Command="{Binding MoveBackCommand}" />
                         <Separator />
                         <MenuItem Header="{x:Static res:Strings.UninstallMods}" Command="{Binding UninstallCommand}" />
                     </ContextMenu>
@@ -77,6 +87,10 @@
                                            TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Style="{StaticResource Badge}" Background="#4A6A8A" Margin="0,0,6,0"
+                                        Visibility="{Binding InLibrary, Converter={StaticResource VisibleWhen}}">
+                                    <TextBlock Text="{x:Static res:Strings.LibraryBadge}" Style="{StaticResource BadgeText}" />
+                                </Border>
                                 <Border Style="{StaticResource Badge}" Background="#B25E00" Margin="0,0,6,0"
                                         Visibility="{Binding IsDuplicate, Converter={StaticResource VisibleWhen}}">
                                     <TextBlock Text="{Binding DuplicateBadge}" Style="{StaticResource BadgeText}" />

@@ -19,7 +19,8 @@ public enum PackPhase
 
 public readonly record struct PackProgress(PackPhase Phase, long Done, long Total);
 
-public sealed record PackResult(long DataBytes, int Files, int BaseFiles, TimeSpan Took);
+/// <param name="SharedCopies">How many other packed copies' data files the packed copy uses.</param>
+public sealed record PackResult(long DataBytes, int Files, int BaseFiles, TimeSpan Took, int SharedCopies = 0);
 
 /// <summary>
 /// Packs a copy (see <see cref="PackedCopy"/>), packs a packed copy again against a newer Steam install, and rebuilds
@@ -44,8 +45,14 @@ public static class GamePacker
     /// puts the packed copy in its place. Throws InvalidOperationException (with the reason) when it can't start.
     /// </summary>
     /// <param name="commit">False: pack and check, then throw the packed copy away (a dry run; the copy stays as it is).</param>
+    /// <param name="shareWith">
+    /// Other packed copies of the game whose data this one may use (linked, like Steam's files). Pass only copies that
+    /// are packed against the current Steam install: a copy packed again later leaves its old data file alive for as
+    /// long as another copy links it. Folders that aren't usable (not packed, another game, other drive) are skipped.
+    /// </param>
     public static PackResult Pack(IPlatform platform, GameDefinition game, string copyFolder, string steamFolder, string? version,
-                                  IProgress<PackProgress>? progress, CancellationToken cancel, bool commit = true)
+                                  IProgress<PackProgress>? progress, CancellationToken cancel, bool commit = true,
+                                  IReadOnlyList<string>? shareWith = null)
     {
         copyFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(copyFolder));
         steamFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(steamFolder));
@@ -90,6 +97,8 @@ public static class GamePacker
         {
             Directory.CreateDirectory(staging);
             var bases = LinkSteamFiles(steamFolder, Path.Combine(staging, PackedCopy.BaseFolder), cancel);
+            int steamBases = bases.Count;
+            LinkSharedData(game, copyFolder, shareWith ?? [], Path.Combine(staging, PackedCopy.BaseFolder), bases);
             var chunker = new ContentChunker();
             var index = IndexBases(staging, bases, chunker, progress, cancel);
 
@@ -149,7 +158,9 @@ public static class GamePacker
                         }
                     }
 
-                    int whole = segments is [{ Source: >= 0, Offset: 0 } only] && only.Length == file.Size && bases[only.Source].Size == file.Size
+                    // Only Steam files become links when rebuilding; another copy's data file is never handed to the game.
+                    int whole = segments is [{ Source: >= 0, Offset: 0 } only] && only.Source < steamBases && only.Length == file.Size &&
+                                bases[only.Source].Size == file.Size
                         ? only.Source
                         : -1;
                     files.Add(new PackedFile(file.Path, file.Size, file.WriteTicks, sha.GetHashAndReset(), whole, segments));
@@ -185,7 +196,7 @@ public static class GamePacker
 
             Check(staging, totalBytes, progress, cancel);
             source.Dispose();
-            var result = new PackResult(dataBytes, files.Count, keep.Count, watch.Elapsed);
+            var result = new PackResult(dataBytes, files.Count, keep.Count, watch.Elapsed, keep.Count(PackedCopy.IsShared));
             if (!commit)
             {
                 GameCopier.TryDelete(staging);
@@ -388,6 +399,45 @@ public static class GamePacker
         }
 
         return bases;
+    }
+
+    /// <summary>Links the data files of other packed copies into base\dispatch-shared\ (after Steam's files, so Steam wins).</summary>
+    private static void LinkSharedData(GameDefinition game, string copyFolder, IReadOnlyList<string> shareWith, string baseFolder,
+                                       List<PackBaseFile> bases)
+    {
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { copyFolder };
+        foreach (string other in shareWith)
+        {
+            string folder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(other));
+            if (!seen.Add(folder) || !PackedCopy.IsPacked(folder))
+            {
+                continue;
+            }
+
+            try
+            {
+                var recipe = PackRecipe.Read(folder, withFiles: false);
+                var data = new FileInfo(Path.Combine(folder, PackedCopy.DataFile));
+                if (!string.Equals(recipe.Game, game.Key, StringComparison.OrdinalIgnoreCase) || !data.Exists || data.Length != recipe.DataBytes ||
+                    data.Length == 0)
+                {
+                    continue;
+                }
+
+                string relative = Path.Combine(PackedCopy.SharedFolder, $"{bases.Count(PackedCopy.IsShared) + 1}.data");
+                string link = Path.Combine(baseFolder, relative);
+                Directory.CreateDirectory(Path.GetDirectoryName(link)!);
+                if (NativeFiles.TryCreateHardLink(link, data.FullName))
+                {
+                    var info = new FileInfo(link);
+                    bases.Add(new PackBaseFile(relative, info.Length, info.LastWriteTimeUtc.Ticks));
+                }
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException or EndOfStreamException)
+            {
+                // Not usable right now: pack without it.
+            }
+        }
     }
 
     private static Dictionary<UInt128, Location> IndexBases(string staging, List<PackBaseFile> bases, ContentChunker chunker,

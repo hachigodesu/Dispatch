@@ -59,6 +59,12 @@ public sealed record GameEnvironment(
 {
     public string? ModDir => UserDataDir is null ? null : Path.Combine(UserDataDir, "mod");
 
+    /// <summary>
+    /// Dispatch's mod library: mods no profile uses, kept out of the game's sight (the game only reads mod\). Next to
+    /// mod\, so moving between them is instant and never copies.
+    /// </summary>
+    public string? ModLibraryDir => UserDataDir is null ? null : Path.Combine(UserDataDir, Mods.ModLibrary.FolderName);
+
     /// <summary>Workshop content folders for this game in every known Steam library.</summary>
     public IEnumerable<string> WorkshopContentDirs =>
         SteamLibraries.Select(l => Path.Combine(l, "steamapps", "workshop", "content",

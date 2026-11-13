@@ -540,6 +540,46 @@ versions lists the Steam install (with its beta branch, read from the app manife
   launches an older version than Steam's. Not yet checked for real: that a copy started directly runs with DLC and
   Workshop mods, and that a real Steam update leaves a shared copy intact (if it doesn't, the copy is reported broken).
 
+### After 0.7.0 (2026-11-13, requested)
+
+**Packed copies share data with each other.** A copy being packed may use the data files of other packed copies of
+the game that are up to date with the Steam install: they're hard-linked into `base\dispatch-shared\` (after Steam's
+files, so Steam's pieces win) and indexed like Steam's files. Data files are never written after packing, so a link
+stays valid when that copy is packed again or deleted (its data then counts as this copy's own). Only up-to-date copies
+are offered, so an old data file is never kept alive by a copy packed later; the rebuilt game never gets a link to a
+data file. Stale Steam files are now told exactly (the base link is no longer the same file as Steam's, by volume and
+file index), because a file several copies link keeps a link count above one after Steam replaced it.
+
+**Packing again after a Steam update is automatic** (Settings → Game versions, on by default). On every refresh, when
+the game closes and every 10 minutes, outdated packed copies are packed again in the background, newest first (so
+older ones can use its data), while Steam isn't busy and the game isn't running. A banner shows progress with Cancel
+(stops it for the session); launching stops it cleanly and it carries on after the game closes; a copy that fails isn't
+tried again in that session. The self-test packs two fake copies (the second shares the first one's data) and has one
+packed again by hand and one automatically; it never packs the user's real copies.
+
+**Mod library.** `Documents\<game>\mod library (Dispatch)`, next to `mod\` (same drive: moves are instant). "Move unused
+mods to the library…" moves every local mod no profile (local or Steam Cloud) uses; refused when a profile can't be
+read. Single mods can be moved either way from the right-click menu; "Move all back" empties it. Mods in the library
+are scanned and listed (badge, filter, details note) and can be added to profiles; after every refresh (every change
+Dispatch makes ends with one) and before launching, mods a profile uses are moved back to `mod\`. Nothing is ever
+overwritten (a name already taken is skipped), nothing moves while the game runs, Workshop items are never moved, and
+every move is written to `dispatch-moves.txt` in the library. Installing a mod whose name is in the library replaces
+that copy (to the Recycle Bin, as before).
+
+**Multiplayer panel** (Profiles side panel). Convoy (the game's own multiplayer): every active mod is needed by everyone
+except mods marked `mp_mod_optional: true`, which the host can allow to be left out; map mods are always needed;
+unreadable and missing mods count as needed. "Copy the list for your convoy" puts the load order with Workshop links on
+the clipboard. TruckersMP has no field to read: as of November 2026 it supports only ProMods (on its ProMods servers)
+and Grimes' seasonal weather mods, matched by name from a hand-kept list and shown as a hint.
+
+**Health tab.** For every profile: mods that aren't installed, mods made for another version than the one it launches
+with, mods needing an unowned DLC, an older copy active while a newer one is installed, mods the newest save (its
+`info.sii` `dependencies[]`, read-only) was made with that aren't active, plus notes (not counted as problems) for the
+game's log warnings and file conflicts. Fixes: remove from the load order, use the newer copies (in place), add the
+installed mods the save needs, launch with the automatic version, open Workshop pages, show the conflicts. Fixes go
+through the normal safe save (backup, game closed) and are refused while that profile has unsaved edits; Steam Cloud
+profiles are only shown.
+
 ---
 
 ## 7. Risks, unknowns and spikes

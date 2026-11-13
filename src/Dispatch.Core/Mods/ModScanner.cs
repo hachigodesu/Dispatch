@@ -28,11 +28,16 @@ public sealed class ModScanner(string cacheDir)
     {
         var sw = Stopwatch.StartNew();
         var cache = LoadCache(env.SteamBuildId);
-        var work = new List<(string Id, ModSource Source, ulong? WorkshopId, string Path)>();
+        var work = new List<(string Id, ModSource Source, ulong? WorkshopId, string Path, bool InLibrary)>();
 
-        if (env.ModDir is { } modDir && Directory.Exists(modDir))
+        foreach (var (dir, inLibrary) in new[] { (env.ModDir, false), (env.ModLibraryDir, true) })
         {
-            foreach (var entry in Directory.EnumerateFileSystemEntries(modDir))
+            if (dir is null || !Directory.Exists(dir))
+            {
+                continue;
+            }
+
+            foreach (var entry in Directory.EnumerateFileSystemEntries(dir))
             {
                 var attributes = File.GetAttributes(entry);
                 if ((attributes & (FileAttributes.Hidden | FileAttributes.System)) != 0)
@@ -44,7 +49,7 @@ public sealed class ModScanner(string cacheDir)
                 string ext = Path.GetExtension(entry);
                 if (isDir || ext.Equals(".scs", StringComparison.OrdinalIgnoreCase) || ext.Equals(".zip", StringComparison.OrdinalIgnoreCase))
                 {
-                    work.Add((isDir ? Path.GetFileName(entry) : Path.GetFileNameWithoutExtension(entry), ModSource.Local, null, entry));
+                    work.Add((isDir ? Path.GetFileName(entry) : Path.GetFileNameWithoutExtension(entry), ModSource.Local, null, entry, inLibrary));
                 }
             }
         }
@@ -55,7 +60,7 @@ public sealed class ModScanner(string cacheDir)
             {
                 if (ulong.TryParse(Path.GetFileName(item), out ulong id))
                 {
-                    work.Add((ModInfo.WorkshopPackageId(id), ModSource.Workshop, id, item));
+                    work.Add((ModInfo.WorkshopPackageId(id), ModSource.Workshop, id, item, false));
                 }
             }
         }
@@ -65,17 +70,17 @@ public sealed class ModScanner(string cacheDir)
         var gameVersion = env.Version?.ToString() ?? "";
         Parallel.For(0, work.Count, new ParallelOptions { MaxDegreeOfParallelism = 4, CancellationToken = cancel }, i =>
         {
-            var (id, source, workshopId, path) = work[i];
+            var (id, source, workshopId, path, inLibrary) = work[i];
             var (size, mtime) = Stamp(path);
             if (cache.TryGetValue(path, out var cached) && cached.SizeBytes == size && cached.LastWriteUtc == mtime &&
                 (cached.IconFile is null || File.Exists(cached.IconFile)))
             {
-                results[i] = cached;
+                results[i] = cached with { InLibrary = inLibrary };
                 Interlocked.Increment(ref hits);
             }
             else
             {
-                results[i] = ScanOne(id, source, workshopId, path, size, mtime, gameVersion);
+                results[i] = ScanOne(id, source, workshopId, path, size, mtime, gameVersion) with { InLibrary = inLibrary };
             }
 
             progress?.Report((Interlocked.Increment(ref done), work.Count));

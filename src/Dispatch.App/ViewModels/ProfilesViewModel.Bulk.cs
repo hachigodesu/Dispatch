@@ -153,6 +153,31 @@ public sealed partial class ProfilesViewModel
             return Message = string.Format(CultureInfo.CurrentCulture, unsavedFormat, count, target.Name);
         }
 
+        return await SaveChangeAsync(target, change, string.Format(CultureInfo.CurrentCulture, savedFormat, count, target.Name));
+    }
+
+    /// <summary>
+    /// A change to a profile that isn't open with unsaved edits (the health report's fixes). Refused, with a message,
+    /// while that profile has unsaved changes in the editor, so nothing the user is working on gets mixed in.
+    /// </summary>
+    internal async Task<string?> FixProfileAsync(ProfileItemViewModel target, Func<IReadOnlyList<ActiveModEntry>, List<ActiveModEntry>> change, string done)
+    {
+        if (target.IsCloud)
+        {
+            return null;
+        }
+
+        if (Selected?.Profile.MainDir == target.Profile.MainDir && IsDirty)
+        {
+            _dialogs.ShowError(string.Format(CultureInfo.CurrentCulture, Strings.HealthUnsavedFirst, target.Name));
+            return null;
+        }
+
+        return await SaveChangeAsync(target, change, done);
+    }
+
+    private async Task<string?> SaveChangeAsync(ProfileItemViewModel target, Func<IReadOnlyList<ActiveModEntry>, List<ActiveModEntry>> change, string done)
+    {
         try
         {
             // Read fresh (the game may have saved since the last refresh), change, save with a backup.
@@ -164,11 +189,11 @@ public sealed partial class ProfilesViewModel
             }
 
             var backup = LoadOrderService.Save(_writer(), target.Profile, current, updated);
-            Log.Information("Changed load order of {Folder} from the Mods tab ({Before} → {After} mods), backup {Backup}",
+            Log.Information("Changed load order of {Folder} ({Before} → {After} mods), backup {Backup}",
                             target.Profile.FolderName, current.TopFirst.Count, updated.Count, backup.Id);
             _keepSelection = Selected?.Profile.MainDir;
             await _refresh();
-            return Message = string.Format(CultureInfo.CurrentCulture, savedFormat, count, target.Name);
+            return Message = done;
         }
         catch (Exception ex) when (ex is GameRunningException or ConcurrentChangeException or InvalidOperationException
                                        or InvalidDataException or IOException or UnauthorizedAccessException)

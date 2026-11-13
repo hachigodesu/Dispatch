@@ -56,9 +56,9 @@
                 </StackPanel>
             </DockPanel>
         </Border>
-        <!-- A packed copy being rebuilt before it's played -->
+        <!-- A packed copy being rebuilt before it's played, or packed again after a Steam update -->
         <Border DockPanel.Dock="Top" Background="#220078D4" BorderBrush="#0078D4" BorderThickness="0,1" Padding="20,6"
-                DataContext="{Binding Versions}" Visibility="{Binding IsPreparing, Converter={StaticResource VisibleWhen}}">
+                DataContext="{Binding Versions}" Visibility="{Binding IsBannerVisible, Converter={StaticResource VisibleWhen}}">
             <DockPanel>
                 <Button DockPanel.Dock="Right" Content="{x:Static res:Strings.Cancel}" Command="{Binding CancelPrepareCommand}" />
                 <StackPanel VerticalAlignment="Center">
@@ -95,12 +95,15 @@
         <TextBlock DockPanel.Dock="Bottom" Text="{x:Static res:Strings.ReadOnlyNotice}" Margin="20,0"
                    Style="{StaticResource Muted}" FontStyle="Italic" />
 
-        <TabControl x:Name="Tabs" Margin="12,4,12,4">
+        <TabControl x:Name="Tabs" Margin="12,4,12,4" SelectedIndex="{Binding SelectedTab}">
             <TabItem Header="{x:Static res:Strings.TabProfiles}">
                 <v:ProfilesView x:Name="ProfilesPage" DataContext="{Binding Profiles}" />
             </TabItem>
             <TabItem Header="{x:Static res:Strings.TabMods}">
                 <v:ModsView DataContext="{Binding Mods}" />
+            </TabItem>
+            <TabItem Header="{x:Static res:Strings.TabHealth}">
+                <v:HealthView DataContext="{Binding Health}" />
             </TabItem>
             <TabItem Header="{x:Static res:Strings.TabSettings}">
                 <v:SettingsView x:Name="SettingsPage" />

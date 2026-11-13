@@ -63,6 +63,9 @@ public sealed class AppSettings
     /// <summary>A version the user chose to skip ("0.6.0").</summary>
     public string? SkippedUpdateVersion { get; set; }
 
+    /// <summary>Pack packed copies again by themselves after a Steam update (frees the old Steam files they hold on to).</summary>
+    public bool AutoRepackCopies { get; set; } = true;
+
     /// <summary>Kept copies of other game versions, for every game.</summary>
     public List<GameCopySetting> GameCopies { get; set; } = [];
 

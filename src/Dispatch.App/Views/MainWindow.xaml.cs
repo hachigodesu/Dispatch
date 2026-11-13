@@ -25,7 +25,8 @@ public partial class MainWindow : Window
     {
         bool settingsEnd = tab == 5; // 5 = Settings, scrolled to the bottom (language, updates, about)
         bool settingsVersions = tab == 6; // 6 = Settings, scrolled to Game versions
-        Tabs.SelectedIndex = settingsEnd || settingsVersions ? 2 : tab;
+        // 0 Profiles, 1 Mods, 2 Settings, 7 Health (the option's numbers predate the Health tab).
+        Tabs.SelectedIndex = tab switch { 2 or 5 or 6 => 3, 7 => 2, _ => tab };
         ProfilesPage.SidePanel.SelectedIndex = sidePanel;
         if (settingsEnd || settingsVersions)
         {

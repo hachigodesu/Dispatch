@@ -217,6 +217,9 @@ public sealed partial class ModItemViewModel : ObservableObject
 
     public bool IsDuplicate => Duplicate is not null;
 
+    /// <summary>Kept in Dispatch's mod library: the game doesn't see it until a profile uses it again.</summary>
+    public bool InLibrary => Mod.InLibrary;
+
     public string DuplicateBadge => Duplicate is null ? "" : Duplicate.IsOlder ? Strings.OlderBadge : Strings.DuplicateBadge;
 
     public string DuplicateText

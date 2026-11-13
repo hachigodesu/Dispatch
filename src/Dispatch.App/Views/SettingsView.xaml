@@ -117,6 +117,7 @@
                        Visibility="{Binding Versions.CopyStatus, Converter={StaticResource VisibleWhen}}" />
             <TextBlock Text="{x:Static res:Strings.VersionsLaunchNote}" Style="{StaticResource Muted}" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0" />
             <TextBlock Text="{x:Static res:Strings.VersionsPackNote}" Style="{StaticResource Muted}" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,0" />
+            <CheckBox Content="{x:Static res:Strings.VersionsAutoRepack}" IsChecked="{Binding Versions.AutoRepack}" Margin="0,6,0,0" />
 
             <TextBlock Text="{x:Static res:Strings.FullBackupsHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
             <TextBlock Text="{x:Static res:Strings.FullBackupsHint}" Style="{StaticResource Muted}" Margin="0,0,0,8" />

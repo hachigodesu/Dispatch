@@ -251,6 +251,88 @@ public sealed class GamePackerTests
         PackedCopy.IsPacked(s.Copy).ShouldBeTrue();
     }
 
+    /// <summary>A second old version (1.59) that has most of 1.60's own data, plus some of its own.</summary>
+    private static (string Folder, Dictionary<string, byte[]> Files) OlderCopy(Setup s)
+    {
+        string folder = Path.Combine(s.Tmp.Path, "ETS2 1.59.2.1");
+        var files = new Dictionary<string, byte[]>
+        {
+            ["base.scs"] = [.. s.Old["base.scs"].AsSpan(0, 2 << 20), .. Random(150_000, 30)],
+            ["dlc_old_only.scs"] = s.Old["dlc_old_only.scs"], // only the old versions have it
+            [Exe] = s.Old[Exe],
+        };
+        foreach (var (path, bytes) in files)
+        {
+            string full = Path.Combine(folder, path);
+            Directory.CreateDirectory(Path.GetDirectoryName(full)!);
+            File.WriteAllBytes(full, bytes);
+        }
+
+        GameCopyRecord.Write(folder, new GameCopyRecord(1, "ets2", "1.59.2.1", DateTime.UtcNow, []));
+        return (folder, files);
+    }
+
+    private static void ShouldRebuild(Setup s, string folder, Dictionary<string, byte[]> files)
+    {
+        string game = GamePacker.Rebuild(s.Platform, GameDefinition.Ets2, folder, null, CancellationToken.None);
+        foreach (var (path, bytes) in files)
+        {
+            File.ReadAllBytes(Path.Combine(game, path)).ShouldBe(bytes, path);
+        }
+
+        GamePacker.RemoveRebuilt(folder);
+    }
+
+    [Fact]
+    public void Packed_copies_share_data_with_each_other_and_survive_the_other_being_deleted()
+    {
+        using var s = new Setup();
+        var first = s.Pack();
+        var (older, files) = OlderCopy(s);
+
+        long alone = GamePacker.Pack(s.Platform, GameDefinition.Ets2, older, s.Steam, null, null, CancellationToken.None, commit: false).DataBytes;
+
+        var shared = GamePacker.Pack(s.Platform, GameDefinition.Ets2, older, s.Steam, null, null, CancellationToken.None,
+                                     shareWith: [s.Copy, older, Path.Combine(s.Tmp.Path, "not there")]);
+        shared.SharedCopies.ShouldBe(1);
+        shared.DataBytes.ShouldBeLessThan(alone - 300_000); // dlc_old_only and the old exe come from 1.60's data
+        first.DataBytes.ShouldBeGreaterThan(300_000);
+
+        var health = GameCopyRecord.Inspect(older, s.Steam);
+        health.IsBroken.ShouldBeFalse();
+        health.Pack!.SharedWithCopiesBytes.ShouldBe(first.DataBytes);
+        health.Pack.StaleBaseBytes.ShouldBe(0);
+        ShouldRebuild(s, older, files);
+
+        // The rebuilt game never gets a link to another copy's data file.
+        string game = GamePacker.Rebuild(s.Platform, GameDefinition.Ets2, older, null, CancellationToken.None);
+        NativeFiles.SameFile(Path.Combine(game, "dlc_old_only.scs"), Path.Combine(s.Copy, PackedCopy.DataFile)).ShouldBeFalse();
+        GamePacker.RemoveRebuilt(older);
+
+        // 1.60 is deleted: 1.59 keeps working, and the data it used is now its own.
+        Directory.Delete(s.Copy, recursive: true);
+        var alone2 = GameCopyRecord.Inspect(older, s.Steam);
+        alone2.IsBroken.ShouldBeFalse();
+        alone2.Pack!.SharedWithCopiesBytes.ShouldBe(0);
+        alone2.OwnBytes.ShouldBeGreaterThan(shared.DataBytes + first.DataBytes - 1);
+        ShouldRebuild(s, older, files);
+    }
+
+    [Fact]
+    public void A_Steam_file_two_copies_still_link_counts_as_replaced_when_the_Steam_folder_is_known()
+    {
+        using var s = new Setup();
+        s.Pack();
+        var (older, _) = OlderCopy(s);
+        GamePacker.Pack(s.Platform, GameDefinition.Ets2, older, s.Steam, null, null, CancellationToken.None, shareWith: [s.Copy]);
+        s.SteamReplaces("base.scs", Random(3 << 20, 40));
+
+        // The old base.scs still has two names (both copies' links), so its link count can't tell it was replaced.
+        GameCopyRecord.Inspect(s.Copy).Pack!.StaleBaseBytes.ShouldBe(0);
+        GameCopyRecord.Inspect(s.Copy, s.Steam).Pack!.StaleBaseBytes.ShouldBe(3 << 20);
+        GameCopyRecord.Inspect(older, s.Steam).Pack!.StaleBaseBytes.ShouldBe(3 << 20);
+    }
+
     private sealed class SyncProgress(Action<PackProgress> report) : IProgress<PackProgress>
     {
         public void Report(PackProgress value) => report(value);

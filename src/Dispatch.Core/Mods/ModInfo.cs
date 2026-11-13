@@ -34,7 +34,8 @@ public sealed record ModInfo(
     string? IconFile,
     int? IconWidth,
     int? IconHeight,
-    IReadOnlyList<ModIssue> Issues)
+    IReadOnlyList<ModIssue> Issues,
+    bool InLibrary = false)
 {
     /// <summary>The <c>active_mods</c> identifier of a Workshop item: "mod_workshop_package." + 16 uppercase hex digits.</summary>
     public static string WorkshopPackageId(ulong workshopId) =>

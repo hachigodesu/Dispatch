@@ -698,4 +698,160 @@ public static class Strings
     public static string VersionsPrepareFailed => Get(nameof(VersionsPrepareFailed));
 
     public static string VersionsPackNote => Get(nameof(VersionsPackNote));
+
+    public static string VersionsSpacePackedShared => Get(nameof(VersionsSpacePackedShared));
+
+    public static string VersionsAutoRepacking => Get(nameof(VersionsAutoRepacking));
+
+    public static string VersionsAutoRepackDone => Get(nameof(VersionsAutoRepackDone));
+
+    public static string VersionsAutoRepackFailed => Get(nameof(VersionsAutoRepackFailed));
+
+    public static string VersionsAutoRepack => Get(nameof(VersionsAutoRepack));
+
+    public static string ShowInLibrary => Get(nameof(ShowInLibrary));
+
+    public static string LibrarySummary => Get(nameof(LibrarySummary));
+
+    public static string LibraryProfilesUnreadable => Get(nameof(LibraryProfilesUnreadable));
+
+    public static string LibraryMoveTitle => Get(nameof(LibraryMoveTitle));
+
+    public static string LibraryMoveUnusedQuestion => Get(nameof(LibraryMoveUnusedQuestion));
+
+    public static string LibraryStillUsed => Get(nameof(LibraryStillUsed));
+
+    public static string LibraryMoveAllBackQuestion => Get(nameof(LibraryMoveAllBackQuestion));
+
+    public static string LibraryMovedIn => Get(nameof(LibraryMovedIn));
+
+    public static string LibraryMovedBack => Get(nameof(LibraryMovedBack));
+
+    public static string LibraryMoveUnused => Get(nameof(LibraryMoveUnused));
+
+    public static string LibraryMoveAllBack => Get(nameof(LibraryMoveAllBack));
+
+    public static string LibraryOpen => Get(nameof(LibraryOpen));
+
+    public static string LibraryHint => Get(nameof(LibraryHint));
+
+    public static string LibraryMoveSelected => Get(nameof(LibraryMoveSelected));
+
+    public static string LibraryMoveSelectedBack => Get(nameof(LibraryMoveSelectedBack));
+
+    public static string LibraryBadge => Get(nameof(LibraryBadge));
+
+    public static string LibraryDetail => Get(nameof(LibraryDetail));
+
+    public static string LibraryBroughtBack => Get(nameof(LibraryBroughtBack));
+
+    public static string PanelMultiplayer => Get(nameof(PanelMultiplayer));
+
+    public static string ConvoyTitle => Get(nameof(ConvoyTitle));
+
+    public static string ConvoyHint => Get(nameof(ConvoyHint));
+
+    public static string ConvoySummary => Get(nameof(ConvoySummary));
+
+    public static string ConvoyCopyList => Get(nameof(ConvoyCopyList));
+
+    public static string ConvoyListHeader => Get(nameof(ConvoyListHeader));
+
+    public static string ConvoyListCopied => Get(nameof(ConvoyListCopied));
+
+    public static string ConvoyRequired => Get(nameof(ConvoyRequired));
+
+    public static string ConvoyOptional => Get(nameof(ConvoyOptional));
+
+    public static string ConvoyReasonRequired => Get(nameof(ConvoyReasonRequired));
+
+    public static string ConvoyReasonOptional => Get(nameof(ConvoyReasonOptional));
+
+    public static string ConvoyReasonMap => Get(nameof(ConvoyReasonMap));
+
+    public static string ConvoyReasonMissing => Get(nameof(ConvoyReasonMissing));
+
+    public static string ConvoyReasonUnreadable => Get(nameof(ConvoyReasonUnreadable));
+
+    public static string TruckersMpTitle => Get(nameof(TruckersMpTitle));
+
+    public static string TruckersMpHint => Get(nameof(TruckersMpHint));
+
+    public static string TruckersMpSummary => Get(nameof(TruckersMpSummary));
+
+    public static string TruckersMpSupported => Get(nameof(TruckersMpSupported));
+
+    public static string TruckersMpNotSupported => Get(nameof(TruckersMpNotSupported));
+
+    public static string TruckersMpReasonProMods => Get(nameof(TruckersMpReasonProMods));
+
+    public static string TruckersMpReasonWeather => Get(nameof(TruckersMpReasonWeather));
+
+    public static string TruckersMpReasonOther => Get(nameof(TruckersMpReasonOther));
+
+    public static string MultiplayerNoMods => Get(nameof(MultiplayerNoMods));
+
+    public static string TabHealth => Get(nameof(TabHealth));
+
+    public static string HealthHint => Get(nameof(HealthHint));
+
+    public static string HealthRecheck => Get(nameof(HealthRecheck));
+
+    public static string HealthChecking => Get(nameof(HealthChecking));
+
+    public static string HealthSummaryAllGood => Get(nameof(HealthSummaryAllGood));
+
+    public static string HealthSummary => Get(nameof(HealthSummary));
+
+    public static string HealthNoProblems => Get(nameof(HealthNoProblems));
+
+    public static string HealthProblemOne => Get(nameof(HealthProblemOne));
+
+    public static string HealthProblemCount => Get(nameof(HealthProblemCount));
+
+    public static string HealthUnreadable => Get(nameof(HealthUnreadable));
+
+    public static string HealthReadOnly => Get(nameof(HealthReadOnly));
+
+    public static string HealthMissingTitle => Get(nameof(HealthMissingTitle));
+
+    public static string HealthWrongVersionTitle => Get(nameof(HealthWrongVersionTitle));
+
+    public static string HealthMissingDlcTitle => Get(nameof(HealthMissingDlcTitle));
+
+    public static string HealthOlderTitle => Get(nameof(HealthOlderTitle));
+
+    public static string HealthOlderLine => Get(nameof(HealthOlderLine));
+
+    public static string HealthSaveTitle => Get(nameof(HealthSaveTitle));
+
+    public static string HealthSaveNotInstalled => Get(nameof(HealthSaveNotInstalled));
+
+    public static string HealthGameWarningsTitle => Get(nameof(HealthGameWarningsTitle));
+
+    public static string HealthConflictsTitle => Get(nameof(HealthConflictsTitle));
+
+    public static string HealthConflictsText => Get(nameof(HealthConflictsText));
+
+    public static string HealthMore => Get(nameof(HealthMore));
+
+    public static string HealthFixRemove => Get(nameof(HealthFixRemove));
+
+    public static string HealthFixWorkshop => Get(nameof(HealthFixWorkshop));
+
+    public static string HealthFixAutomatic => Get(nameof(HealthFixAutomatic));
+
+    public static string HealthFixNewer => Get(nameof(HealthFixNewer));
+
+    public static string HealthFixAddSaveMods => Get(nameof(HealthFixAddSaveMods));
+
+    public static string HealthFixShowConflicts => Get(nameof(HealthFixShowConflicts));
+
+    public static string HealthFixOpenProfile => Get(nameof(HealthFixOpenProfile));
+
+    public static string HealthUnsavedFirst => Get(nameof(HealthUnsavedFirst));
+
+    public static string HealthFixed => Get(nameof(HealthFixed));
+
+    public static string HealthFixedVersion => Get(nameof(HealthFixedVersion));
 }

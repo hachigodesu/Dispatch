@@ -26,20 +26,21 @@ public sealed class ModInstaller(IPlatform platform, string processName, Action<
         Extensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
 
     /// <param name="replaceExisting">Asked per file when a mod with the same file name is already installed.</param>
-    public IReadOnlyList<InstallResult> Install(string modDir, IEnumerable<string> files, Func<string, bool> replaceExisting)
+    /// <param name="libraryDir">The mod library: a mod of the same name there counts as installed too, and is replaced.</param>
+    public IReadOnlyList<InstallResult> Install(string modDir, IEnumerable<string> files, Func<string, bool> replaceExisting, string? libraryDir = null)
     {
         ThrowIfGameRunning();
         Directory.CreateDirectory(modDir);
         var results = new List<InstallResult>();
         foreach (var source in files)
         {
-            results.Add(InstallOne(modDir, source, replaceExisting));
+            results.Add(InstallOne(modDir, source, replaceExisting, libraryDir));
         }
 
         return results;
     }
 
-    private InstallResult InstallOne(string modDir, string source, Func<string, bool> replaceExisting)
+    private InstallResult InstallOne(string modDir, string source, Func<string, bool> replaceExisting, string? libraryDir)
     {
         if (!File.Exists(source))
         {
@@ -77,7 +78,18 @@ public sealed class ModInstaller(IPlatform platform, string processName, Action<
             return new(source, target, InstallOutcome.Skipped, format, "That file is already in the mod folder.");
         }
 
-        bool replacing = File.Exists(target) || Directory.Exists(Path.ChangeExtension(target, null));
+        // The same mod as a file or an unpacked folder, here or in the library (never the file being installed).
+        var existing = new[] { modDir, libraryDir }.OfType<string>()
+            .SelectMany(d => new[]
+            {
+                (Path: Path.Combine(d, Path.GetFileName(source)), Folder: false),
+                (Path: Path.Combine(d, Path.GetFileNameWithoutExtension(source)), Folder: true),
+            })
+            .Where(c => (c.Folder ? Directory.Exists(c.Path) : File.Exists(c.Path)) &&
+                        !string.Equals(Path.GetFullPath(c.Path), Path.GetFullPath(source), StringComparison.OrdinalIgnoreCase))
+            .Select(c => c.Path)
+            .ToList();
+        bool replacing = existing.Count > 0;
         if (replacing && !replaceExisting(Path.GetFileName(source)))
         {
             return new(source, target, InstallOutcome.Skipped, format, "A mod with this name is already installed; kept the existing one.");
@@ -93,15 +105,10 @@ public sealed class ModInstaller(IPlatform platform, string processName, Action<
             }
 
             ThrowIfGameRunning();
-            if (File.Exists(target))
+            foreach (string old in existing)
             {
-                sendToRecycleBin(target); // the replaced version stays recoverable
-            }
-
-            string folderMod = Path.ChangeExtension(target, null);
-            if (Directory.Exists(folderMod))
-            {
-                sendToRecycleBin(folderMod); // an unpacked copy of the same mod would be a duplicate
+                // The replaced version stays recoverable; an unpacked or library copy of the same mod would be a duplicate.
+                sendToRecycleBin(old);
             }
 
             File.Move(temp, target);
@@ -131,7 +138,7 @@ public sealed class ModInstaller(IPlatform platform, string processName, Action<
         ThrowIfGameRunning();
         if (!File.Exists(mod.Path) && !Directory.Exists(mod.Path))
         {
-            throw new InvalidOperationException($"\"{mod.DisplayName}\" is no longer in the mod folder.");
+            throw new InvalidOperationException($"\"{mod.DisplayName}\" is no longer where it was ({mod.Path}).");
         }
 
         sendToRecycleBin(mod.Path);

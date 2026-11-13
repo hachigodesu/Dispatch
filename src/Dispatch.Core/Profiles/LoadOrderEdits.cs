@@ -20,6 +20,10 @@ public static class LoadOrderEdits
         return topFirst.Where(e => !remove.Contains(e.PackageId)).ToList();
     }
 
+    /// <summary>Puts another mod in a mod's place (e.g. the newer copy for an older one). A mod that ends up twice is kept once, at its first place.</summary>
+    public static List<ActiveModEntry> Replace(IReadOnlyList<ActiveModEntry> topFirst, IReadOnlyDictionary<string, ActiveModEntry> replacements) =>
+        topFirst.Select(e => replacements.GetValueOrDefault(e.PackageId) ?? e).DistinctBy(e => e.PackageId, StringComparer.Ordinal).ToList();
+
     /// <summary>
     /// Moves the selected items one step up (towards index 0) as a block. Items already at the top stay, and the
     /// selected items keep their relative order. Returns the new order.

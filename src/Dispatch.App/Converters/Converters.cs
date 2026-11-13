@@ -95,6 +95,21 @@ public sealed class NotConverter : IValueConverter
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => value is not true;
 }
 
+/// <summary>A brush for true or false: parameter "#RRGGBB|#RRGGBB" (true colour first).</summary>
+public sealed class BoolToBrushConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        string[] colours = (parameter as string ?? "#2E7D32|#6B6B6B").Split('|');
+        var brush = new System.Windows.Media.SolidColorBrush(
+            (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(value is true ? colours[0] : colours[^1]));
+        brush.Freeze();
+        return brush;
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotSupportedException();
+}
+
 /// <summary>Visible when the value is true / non-null / a non-empty string. Parameter "invert" flips it.</summary>
 public sealed class VisibleWhenConverter : IValueConverter
 {

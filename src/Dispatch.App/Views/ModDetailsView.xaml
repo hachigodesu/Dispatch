@@ -22,6 +22,10 @@
                     <TextBlock Text="{Binding CompatLabel}" Style="{StaticResource BadgeText}" />
                 </Border>
                 <TextBlock Text="{Binding CompatDetail}" TextWrapping="Wrap" Margin="0,6,0,4" />
+                <Border Background="#224A6A8A" BorderBrush="#4A6A8A" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,4,0,4"
+                        Visibility="{Binding InLibrary, Converter={StaticResource VisibleWhen}}">
+                    <TextBlock Text="{x:Static res:Strings.LibraryDetail}" TextWrapping="Wrap" />
+                </Border>
                 <Border Background="#22B25E00" BorderBrush="#B25E00" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,4,0,4"
                         Visibility="{Binding IsDuplicate, Converter={StaticResource VisibleWhen}}">
                     <TextBlock Text="{Binding DuplicateText}" TextWrapping="Wrap" />

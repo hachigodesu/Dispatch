@@ -389,5 +389,89 @@ Steam se ha actualizado desde que se empaquetó, así que retiene {1} de archivo
   <data name="VersionsPrepareFailed" xml:space="preserve"><value>No se pudo preparar {0}.
 
 {1}</value></data>
-  <data name="VersionsPackNote" xml:space="preserve"><value>Las copias empaquetadas guardan solo lo que difiere de la instalación de Steam. Se reconstruyen antes de cada partida y se eliminan al cerrar el juego.</value></data>
+  <data name="VersionsPackNote" xml:space="preserve"><value>Las copias empaquetadas guardan solo lo que difiere de la instalación de Steam y entre sí. Se reconstruyen antes de cada partida y se eliminan al cerrar el juego.</value></data>
+  <data name="VersionsSpacePackedShared" xml:space="preserve"><value>{0} propios, más {1} compartidos con otras versiones guardadas (empaquetada; se reconstruye antes de cada partida)</value></data>
+  <data name="VersionsAutoRepacking" xml:space="preserve"><value>Volviendo a empaquetar {0} tras una actualización de Steam. {1}</value></data>
+  <data name="VersionsAutoRepackDone" xml:space="preserve"><value>{0} se ha vuelto a empaquetar tras una actualización de Steam: ahora ocupa {1} propios en lugar de {2}.</value></data>
+  <data name="VersionsAutoRepackFailed" xml:space="preserve"><value>{0} no se pudo volver a empaquetar tras una actualización de Steam, así que de momento conserva los archivos antiguos de Steam: {1}</value></data>
+  <data name="VersionsAutoRepack" xml:space="preserve"><value>Volver a empaquetar automáticamente las versiones guardadas cuando Steam actualice el juego</value></data>
+  <data name="ShowInLibrary" xml:space="preserve"><value>En la biblioteca de mods</value></data>
+  <data name="LibrarySummary" xml:space="preserve"><value>{0} mods en la biblioteca ({1})</value></data>
+  <data name="LibraryProfilesUnreadable" xml:space="preserve"><value>No se pudo leer un perfil, así que Dispatch no puede saber qué mods no se usan. No se ha movido nada. Primero arregla o elimina ese perfil (ver la pestaña Perfiles).</value></data>
+  <data name="LibraryMoveTitle" xml:space="preserve"><value>Biblioteca de mods</value></data>
+  <data name="LibraryMoveUnusedQuestion" xml:space="preserve"><value>¿Mover a la biblioteca de mods {0} mods ({1}) que no usa ningún perfil?
+
+{2}
+
+El juego no ve los mods que están ahí, así que arranca más rápido y su lista de mods es más corta. Cuando añades uno de ellos a un perfil en Dispatch, vuelve solo a su sitio. No se copia ni se borra nada, y puedes devolverlos en cualquier momento.</value></data>
+  <data name="LibraryStillUsed" xml:space="preserve"><value>Estos mods los usa algún perfil, así que se quedan en la carpeta de mods: {0}</value></data>
+  <data name="LibraryMoveAllBackQuestion" xml:space="preserve"><value>¿Devolver a la carpeta de mods los {0} mods de la biblioteca?
+
+{1}</value></data>
+  <data name="LibraryMovedIn" xml:space="preserve"><value>{0} mods movidos a la biblioteca de mods.</value></data>
+  <data name="LibraryMovedBack" xml:space="preserve"><value>{0} mods devueltos a la carpeta de mods.</value></data>
+  <data name="LibraryMoveUnused" xml:space="preserve"><value>Mover los mods sin usar a la biblioteca…</value></data>
+  <data name="LibraryMoveAllBack" xml:space="preserve"><value>Devolver todos</value></data>
+  <data name="LibraryOpen" xml:space="preserve"><value>Abrir la carpeta de la biblioteca</value></data>
+  <data name="LibraryHint" xml:space="preserve"><value>Los mods que no usa ningún perfil salen de la carpeta de mods del juego, así que el juego arranca más rápido. Vuelven solos cuando un perfil los usa.</value></data>
+  <data name="LibraryMoveSelected" xml:space="preserve"><value>Mover a la biblioteca de mods</value></data>
+  <data name="LibraryMoveSelectedBack" xml:space="preserve"><value>Devolver a la carpeta de mods</value></data>
+  <data name="LibraryBadge" xml:space="preserve"><value>Biblioteca</value></data>
+  <data name="LibraryDetail" xml:space="preserve"><value>En la biblioteca de mods de Dispatch: el juego no ve este mod, ni siquiera en su propio gestor de mods. Añádelo a un perfil en Dispatch y volverá solo a la carpeta de mods.</value></data>
+  <data name="LibraryBroughtBack" xml:space="preserve"><value>{0} mods devueltos desde la biblioteca porque los usa un perfil.</value></data>
+  <data name="PanelMultiplayer" xml:space="preserve"><value>Multijugador</value></data>
+  <data name="ConvoyTitle" xml:space="preserve"><value>Convoy (el multijugador del propio juego)</value></data>
+  <data name="ConvoyHint" xml:space="preserve"><value>Todos en una sesión de Convoy necesitan los mods del anfitrión, en el mismo orden. Los mods que su autor marcó como opcionales se pueden omitir si el anfitrión permite mods opcionales. Los mods de mapa siempre son necesarios.</value></data>
+  <data name="ConvoySummary" xml:space="preserve"><value>{0} mods que necesita cada jugador, {1} opcionales.</value></data>
+  <data name="ConvoyCopyList" xml:space="preserve"><value>Copiar la lista para tu convoy</value></data>
+  <data name="ConvoyListHeader" xml:space="preserve"><value>Mods de "{0}" (arriba = mayor prioridad):</value></data>
+  <data name="ConvoyListCopied" xml:space="preserve"><value>Lista copiada. Pégala en un mensaje para la gente con la que conduces. Una plantilla (panel Plantillas) comparte el orden de carga exacto.</value></data>
+  <data name="ConvoyRequired" xml:space="preserve"><value>Necesario</value></data>
+  <data name="ConvoyOptional" xml:space="preserve"><value>Opcional</value></data>
+  <data name="ConvoyReasonRequired" xml:space="preserve"><value>Todos los jugadores necesitan este mod.</value></data>
+  <data name="ConvoyReasonOptional" xml:space="preserve"><value>Su autor lo marcó como opcional (mp_mod_optional): los jugadores pueden omitirlo si el anfitrión permite mods opcionales.</value></data>
+  <data name="ConvoyReasonMap" xml:space="preserve"><value>Marcado como opcional, pero los mods de mapa siempre son necesarios en Convoy.</value></data>
+  <data name="ConvoyReasonMissing" xml:space="preserve"><value>No está instalado aquí, así que no se puede comprobar; el juego lo omite.</value></data>
+  <data name="ConvoyReasonUnreadable" xml:space="preserve"><value>Dispatch no puede leer el manifiesto de este mod protegido, así que cuenta como necesario.</value></data>
+  <data name="TruckersMpTitle" xml:space="preserve"><value>TruckersMP</value></data>
+  <data name="TruckersMpHint" xml:space="preserve"><value>TruckersMP es un mod multijugador aparte con sus propias reglas. Oficialmente solo admite ProMods (en sus servidores ProMods) y los mods de clima por estaciones de Grimes. Dispatch los reconoce por el nombre con una lista mantenida a mano (noviembre de 2026); consulta la base de conocimientos de TruckersMP para ver la actual.</value></data>
+  <data name="TruckersMpSummary" xml:space="preserve"><value>{0} de los mods activos son compatibles con TruckersMP, {1} no.</value></data>
+  <data name="TruckersMpSupported" xml:space="preserve"><value>TruckersMP</value></data>
+  <data name="TruckersMpNotSupported" xml:space="preserve"><value>No en TMP</value></data>
+  <data name="TruckersMpReasonProMods" xml:space="preserve"><value>ProMods: admitido en los servidores ProMods de TruckersMP, en la versión que usan esos servidores.</value></data>
+  <data name="TruckersMpReasonWeather" xml:space="preserve"><value>Los mods de clima por estaciones de Grimes son compatibles con TruckersMP.</value></data>
+  <data name="TruckersMpReasonOther" xml:space="preserve"><value>TruckersMP no admite este mod.</value></data>
+  <data name="MultiplayerNoMods" xml:space="preserve"><value>Este perfil no tiene mods activos: cualquiera puede unirse.</value></data>
+  <data name="TabHealth" xml:space="preserve"><value>Estado</value></data>
+  <data name="HealthHint" xml:space="preserve"><value>Problemas que Dispatch encuentra en cada perfil, con una solución cuando la hay. Cada solución es un cambio normal del perfil: se hace una copia de seguridad antes y se puede deshacer en el panel Copias.</value></data>
+  <data name="HealthRecheck" xml:space="preserve"><value>Volver a comprobar</value></data>
+  <data name="HealthChecking" xml:space="preserve"><value>Comprobando…</value></data>
+  <data name="HealthSummaryAllGood" xml:space="preserve"><value>No se han encontrado problemas en {0} perfiles.</value></data>
+  <data name="HealthSummary" xml:space="preserve"><value>{0} de {1} perfiles tienen problemas.</value></data>
+  <data name="HealthNoProblems" xml:space="preserve"><value>Sin problemas</value></data>
+  <data name="HealthProblemOne" xml:space="preserve"><value>1 problema</value></data>
+  <data name="HealthProblemCount" xml:space="preserve"><value>{0} problemas</value></data>
+  <data name="HealthUnreadable" xml:space="preserve"><value>No se pudo leer: {0}</value></data>
+  <data name="HealthReadOnly" xml:space="preserve"><value>Perfil de Steam Cloud: solo se muestra, Dispatch no lo modifica.</value></data>
+  <data name="HealthMissingTitle" xml:space="preserve"><value>{0} mods del orden de carga no están instalados, así que el juego los omite</value></data>
+  <data name="HealthWrongVersionTitle" xml:space="preserve"><value>{0} mods no están hechos para {1}, la versión con la que arranca este perfil</value></data>
+  <data name="HealthMissingDlcTitle" xml:space="preserve"><value>{0} mods necesitan un DLC que no tienes, así que el juego no los usa</value></data>
+  <data name="HealthOlderTitle" xml:space="preserve"><value>{0} mods son una copia antigua aunque hay una más nueva instalada</value></data>
+  <data name="HealthOlderLine" xml:space="preserve"><value>{0}: está activa la {1}, está instalada la {2}</value></data>
+  <data name="HealthSaveTitle" xml:space="preserve"><value>La partida guardada más reciente ("{0}") se hizo con {1} mods que no están en el orden de carga</value></data>
+  <data name="HealthSaveNotInstalled" xml:space="preserve"><value>No instalados: {0}</value></data>
+  <data name="HealthGameWarningsTitle" xml:space="preserve"><value>El juego informó de problemas con {0} mods activos en su último arranque</value></data>
+  <data name="HealthConflictsTitle" xml:space="preserve"><value>{0} pares de mods activos reemplazan archivos entre sí</value></data>
+  <data name="HealthConflictsText" xml:space="preserve"><value>Suele ser intencionado (parches, complementos de compatibilidad). Gana el mod que está más arriba en la lista.</value></data>
+  <data name="HealthMore" xml:space="preserve"><value>…y {0} más</value></data>
+  <data name="HealthFixRemove" xml:space="preserve"><value>Quitarlos del orden de carga</value></data>
+  <data name="HealthFixWorkshop" xml:space="preserve"><value>Abrir en el Workshop</value></data>
+  <data name="HealthFixAutomatic" xml:space="preserve"><value>Arrancar con {0} en su lugar</value></data>
+  <data name="HealthFixNewer" xml:space="preserve"><value>Usar las copias más nuevas</value></data>
+  <data name="HealthFixAddSaveMods" xml:space="preserve"><value>Añadir los {0} instalados</value></data>
+  <data name="HealthFixShowConflicts" xml:space="preserve"><value>Mostrar los conflictos</value></data>
+  <data name="HealthFixOpenProfile" xml:space="preserve"><value>Abrir el perfil</value></data>
+  <data name="HealthUnsavedFirst" xml:space="preserve"><value>"{0}" tiene cambios sin guardar en la pestaña Perfiles. Guárdalos o descártalos primero.</value></data>
+  <data name="HealthFixed" xml:space="preserve"><value>"{0}" modificado (con copia de seguridad previa).</value></data>
+  <data name="HealthFixedVersion" xml:space="preserve"><value>"{0}" vuelve a arrancar con la versión automática.</value></data>
 </root>

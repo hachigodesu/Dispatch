@@ -23,6 +23,7 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly IPlatform _platform;
     private readonly AppPaths _paths;
     private readonly DispatcherTimer _gameWatch;
+    private readonly DispatcherTimer _copyWatch;
     private readonly IDialogs _dialogs;
     private readonly AppSettings _settings;
 
@@ -41,11 +42,18 @@ public sealed partial class MainViewModel : ObservableObject
         Profiles = new ProfilesViewModel(dialogs, () => new SafeWriter(platform, Backups(), _game.ProcessName), Backups,
                                          () => RefreshCommand.ExecuteAsync(null));
         Mods = new ModsViewModel(Profiles, dialogs, () => new Dispatch.Core.Mods.ModInstaller(platform, _game.ProcessName, RecycleBin.Send),
-                                 Dispatch.Core.Mods.ModNotesStore.Load(paths.ForGame(_game).NotesFile), () => RefreshCommand.ExecuteAsync(null));
+                                 Dispatch.Core.Mods.ModNotesStore.Load(paths.ForGame(_game).NotesFile), () => RefreshCommand.ExecuteAsync(null),
+                                 (mods, target) => Dispatch.Core.Mods.ModLibrary.Move(platform, _game.ProcessName, mods, target));
         _dialogs = dialogs;
         Updates = new UpdateViewModel(settings, paths, dialogs, () => Profiles.ConfirmLeave(),
                                       () => System.Windows.Application.Current?.Shutdown());
         Versions = new VersionsViewModel(platform, settings, paths, dialogs);
+        Health = new HealthViewModel(Profiles, (profile, sidePanel) =>
+        {
+            SelectedTab = 0;
+            Profiles.Selected = profile; // asks about unsaved changes first, like a click
+            Profiles.SidePanelIndex = sidePanel;
+        });
         Profiles.ConfigureVersions(Versions, settings, paths.SettingsFile);
         Profiles.PropertyChanged += (_, e) =>
         {
@@ -68,6 +76,17 @@ public sealed partial class MainViewModel : ObservableObject
         _gameWatch = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _gameWatch.Tick += (_, _) => IsGameRunning = _platform.IsProcessRunning(_game.ProcessName);
         _gameWatch.Start();
+
+        // Steam may update the game while Dispatch is open: look at the kept copies now and then (metadata only).
+        _copyWatch = new DispatcherTimer { Interval = TimeSpan.FromMinutes(10) };
+        _copyWatch.Tick += (_, _) =>
+        {
+            if (!IsBusy && !IsGameRunning)
+            {
+                Versions.CheckCopies();
+            }
+        };
+        _copyWatch.Start();
         IsGameRunning = _platform.IsProcessRunning(_game.ProcessName);
         Profiles.IsGameRunning = IsGameRunning;
     }
@@ -147,6 +166,12 @@ public sealed partial class MainViewModel : ObservableObject
 
     public VersionsViewModel Versions { get; }
 
+    public HealthViewModel Health { get; }
+
+    /// <summary>The main tab: 0 Profiles, 1 Mods, 2 Health, 3 Settings.</summary>
+    [ObservableProperty]
+    private int _selectedTab;
+
     /// <summary>"Launch game", or "Launch 1.60.3.1" when the selected profile has a version to choose from.</summary>
     public string LaunchLabel => Profiles.HasVersionChoice && Profiles.LaunchInstallation?.Version is { } v
         ? string.Format(CultureInfo.CurrentCulture, Strings.LaunchVersion, v)
@@ -181,6 +206,7 @@ public sealed partial class MainViewModel : ObservableObject
         if (!value)
         {
             Versions.CleanUpRebuilt(afterGameClosed: true); // a packed copy's rebuilt files go once the game has closed
+            Versions.StartAutoRepack(); // and a repack that launching stopped carries on
         }
     }
 
@@ -196,6 +222,18 @@ public sealed partial class MainViewModel : ObservableObject
         if (!Profiles.ConfirmLeave())
         {
             return;
+        }
+
+        if (_snapshot is { } last && await Task.Run(() => BringBackUsedMods(last)) > 0)
+        {
+            Log.Information("Brought used mods back from the library before launching");
+            await RefreshCommand.ExecuteAsync(null);
+        }
+
+        if (Versions.IsAutoPacking)
+        {
+            // Repacking reads the whole Steam install; it stops cleanly and carries on after the game has closed.
+            await Versions.StopAutoRepackAsync();
         }
 
         var install = Profiles.LaunchInstallation;
@@ -249,6 +287,41 @@ public sealed partial class MainViewModel : ObservableObject
 
     public ObservableCollection<string> Problems { get; } = [];
 
+    private GameSnapshot? _snapshot;
+
+    /// <summary>
+    /// Mods in the library that a profile uses go back to mod\, so the game can load them. Runs after every refresh
+    /// (every change Dispatch makes to a profile ends with one) and before launching. Never while the game runs.
+    /// </summary>
+    private int BringBackUsedMods(GameSnapshot snapshot)
+    {
+        if (snapshot.Environment.ModDir is not { } modDir || _platform.IsProcessRunning(snapshot.Environment.Game.ProcessName))
+        {
+            return 0;
+        }
+
+        var back = Dispatch.Core.Mods.ModLibrary.NeededBack(snapshot.Scan.Mods, snapshot.UsedPackageIds);
+        if (back.Count == 0)
+        {
+            return 0;
+        }
+
+        try
+        {
+            var results = Dispatch.Core.Mods.ModLibrary.Move(_platform, snapshot.Environment.Game.ProcessName, back, modDir);
+            foreach (var r in results)
+            {
+                Log.Information("Library: {Mod} back to the mod folder because a profile uses it: {Outcome} ({Message})", r.Mod.PackageId, r.Outcome, r.Message);
+            }
+
+            return results.Count(r => r.Outcome == Dispatch.Core.Mods.LibraryMoveOutcome.Moved);
+        }
+        catch (Dispatch.Core.Safety.GameRunningException)
+        {
+            return 0;
+        }
+    }
+
     [RelayCommand]
     private async Task RefreshAsync()
     {
@@ -265,12 +338,25 @@ public sealed partial class MainViewModel : ObservableObject
             var progress = new Progress<(int Done, int Total)>(p => Progress = p.Total == 0 ? 0 : 100.0 * p.Done / p.Total);
             var game = _game;
             var snapshot = await Task.Run(() => GameSnapshot.Load(_platform, _paths, Settings.Current, game, progress, CancellationToken.None));
+            int broughtBack = await Task.Run(() => BringBackUsedMods(snapshot));
+            if (broughtBack > 0)
+            {
+                // A profile uses mods that were in the library (e.g. just added to it): they're in mod\ again now.
+                snapshot = await Task.Run(() => GameSnapshot.Load(_platform, _paths, Settings.Current, game, progress, CancellationToken.None));
+            }
 
+            _snapshot = snapshot;
             Mods.Load(snapshot);
+            if (broughtBack > 0)
+            {
+                Mods.Message = string.Format(CultureInfo.CurrentCulture, Strings.LibraryBroughtBack, broughtBack);
+            }
+
             Versions.Load(snapshot.Environment);
             Profiles.ConfigurePresets(_paths.ForGame(game).Presets, snapshot.Environment.Version?.ToString(), game);
             Profiles.Load(snapshot, Mods.ById);
             Mods.RefreshTargets();
+            Health.Load(snapshot);
             Settings.Load(snapshot.Environment);
 
             Problems.Clear();

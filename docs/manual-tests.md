@@ -130,8 +130,27 @@ and close the game unless a step says otherwise.
 - [ ] Quit the game: within a few seconds `<copy>\game` is gone again.
 - [ ] After a later Steam update: the packed copy says "… of it old Steam files: pack it again" → **Pack** frees them.
 
+## After 0.7.0: shared packed copies, automatic repacking
+- [ ] Keep and pack a second old version on the same drive: it reads "… of its own, plus … shared with other kept
+  versions" and is much smaller than the first one. Launch it once: it plays normally.
+- [ ] After a Steam update (or with the setting just switched on): a blue banner "Packing <version> again after a Steam
+  update" appears by itself; **Cancel** stops it until the next start. Launching while it runs stops it, and it carries
+  on after the game closes. Afterwards both copies show no old Steam files.
+
+## After 0.7.0: mod library
+- [ ] Mods → **Move unused mods to the library…**: the dialog shows how many and how much; afterwards they carry a
+  "Library" badge, the game's own mod manager no longer lists them, and the game starts faster.
+- [ ] Add a library mod to a profile (right-click → Add to profile): a message says it was moved back; the game sees it.
+- [ ] Right-click → Move to / back from the library; **Move all back** empties it. With the game running, nothing moves.
+
+## After 0.7.0: multiplayer and health
+- [ ] Profiles → **Multiplayer**: a map mod marked optional still says "Needed"; ProMods says "TruckersMP". **Copy the list
+  for your convoy** and paste it somewhere: names in order, Workshop links.
+- [ ] **Health** tab: each profile shows its problems; a fix (e.g. remove a missing mod) changes the profile, a backup
+  appears in Backups, and the problem is gone after the automatic check. A profile with unsaved edits refuses fixes.
+
 ## Release
-- [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-0.7.0-setup.exe`.
+- [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-<version>-setup.exe`.
 - [ ] Install: no admin prompt, Start-menu entry, the app starts. Uninstall: asks about deleting data; **No** keeps
   `%LOCALAPPDATA%\Dispatch\backups`.
 - [ ] Windows SmartScreen warns on first run (the build is unsigned, as decided).

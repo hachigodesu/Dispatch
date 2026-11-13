@@ -42,11 +42,12 @@ public sealed record GameCopyRecord(int Schema, string Game, string? Version, Da
     /// How a copy is doing: whether its shared files are still the ones it was made from, and how much space it really
     /// uses (files no other folder shares). Only reads file metadata; quick even for the whole game.
     /// </summary>
-    public static CopyHealth Inspect(string folder)
+    /// <param name="steamFolder">For packed copies: the Steam install, to tell stale base files exactly.</param>
+    public static CopyHealth Inspect(string folder, string? steamFolder = null)
     {
         if (PackedCopy.IsPacked(folder))
         {
-            return PackedCopy.Inspect(folder);
+            return PackedCopy.Inspect(folder, steamFolder);
         }
 
         var record = Read(folder);

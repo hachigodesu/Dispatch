@@ -127,59 +127,107 @@ internal static class SelfTest
     }
 
     /// <summary>
-    /// Game versions: lists a fake copy (a temp folder with a copy of the game's exe, so it has the same version),
-    /// pins the test profile to it and back to automatic, and copies a small fake install with the real copier.
-    /// Nothing is launched, the Steam install is only read, and settings.json isn't written (settings are read-only
-    /// during the self-test). The temp folders are deleted afterwards.
-    /// </summary>
-    /// <summary>
-    /// Packing on a small fake "old version" next to the fake install: pack, rebuild for playing, remove the rebuilt
-    /// folder, then a "Steam update" replaces a shared file and the copy is packed again. Nothing is launched.
+    /// Packing on small fake "old versions" next to the fake install: pack one, rebuild it for playing, remove the
+    /// rebuilt folder, pack a second one that uses the first one's data, then a "Steam update" replaces a shared file:
+    /// one copy is packed again by hand, the other automatically. Only the test's own copies are ever packed (see
+    /// VersionsViewModel.TestOverride). Nothing is launched.
     /// </summary>
     private static async Task<bool> PackingAsync(MainViewModel vm, string temp, string fakeSteam, Action<string> step)
     {
         var versions = vm.Versions;
         var game = vm.Game;
         var steam = versions.Steam! with { Folder = fakeSteam };
-        byte[] big = new byte[3 << 20];
-        new Random(7).NextBytes(big);
-        File.WriteAllBytes(Path.Combine(fakeSteam, "dlc_big.scs"), big);
+        versions.TestOverride = (fakeSteam, temp);
+        try
+        {
+            byte[] big = new byte[3 << 20];
+            new Random(7).NextBytes(big);
+            File.WriteAllBytes(Path.Combine(fakeSteam, "dlc_big.scs"), big);
+            byte[] oldOnly = new byte[2 << 20]; // in both old versions, not in "Steam"
+            new Random(8).NextBytes(oldOnly);
 
-        string old = Path.Combine(temp, "old version");
-        Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(old, game.ExeRelativePath))!);
-        File.Copy(Path.Combine(fakeSteam, game.ExeRelativePath), Path.Combine(old, game.ExeRelativePath));
-        File.WriteAllText(Path.Combine(old, "base.scs"), "base");
-        File.WriteAllBytes(Path.Combine(old, "dlc_big.scs"), big); // the same data as the "Steam" file
-        bool listed = versions.AddCopyFrom(old);
-        var item = versions.Items.First(i => i.Folder == old);
-        bool canPack = item.CanPack;
-        bool packed = await versions.PackFolderAsync(game, old, steam, item.Installation.Version?.ToString(), item.Health?.OwnBytes ?? 0);
-        item = versions.Items.First(i => i.Folder == old);
-        bool small = item.Installation.IsPacked && item.Health is { IsPacked: true, IsBroken: false } h && h.OwnBytes < (1 << 20) &&
-                     !item.CanPack && versions.Available.Any(a => a.Folder == old);
-        step($"versions: packed a copy ({listed}, {canPack}, {packed}, {small}): \"{item.Label}\", {item.Space}; {versions.CopyStatus}");
+            string MakeOld(string name, string baseText)
+            {
+                string folder = Path.Combine(temp, name);
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(folder, game.ExeRelativePath))!);
+                File.Copy(Path.Combine(fakeSteam, game.ExeRelativePath), Path.Combine(folder, game.ExeRelativePath));
+                File.WriteAllText(Path.Combine(folder, "base.scs"), baseText);
+                File.WriteAllBytes(Path.Combine(folder, "dlc_big.scs"), big); // the same data as the "Steam" file
+                File.WriteAllBytes(Path.Combine(folder, "dlc_old.scs"), oldOnly);
+                return folder;
+            }
 
-        bool prepared = await versions.PrepareAsync(item.Installation) && File.Exists(item.Installation.ExePath(game)) &&
-                        File.ReadAllBytes(Path.Combine(old, Dispatch.Core.Games.PackedCopy.GameFolder, "dlc_big.scs")).AsSpan().SequenceEqual(big);
-        versions.CleanUpRebuilt(afterGameClosed: true);
-        bool cleaned = !Directory.Exists(Path.Combine(old, Dispatch.Core.Games.PackedCopy.GameFolder));
+            bool Rebuilt(InstallationItemViewModel i) =>
+                File.Exists(i.Installation.ExePath(game)) &&
+                File.ReadAllBytes(Path.Combine(i.Folder, Dispatch.Core.Games.PackedCopy.GameFolder, "dlc_big.scs")).AsSpan().SequenceEqual(big) &&
+                File.ReadAllBytes(Path.Combine(i.Folder, Dispatch.Core.Games.PackedCopy.GameFolder, "dlc_old.scs")).AsSpan().SequenceEqual(oldOnly);
 
-        string staged = Path.Combine(temp, "staged-big.scs");
-        File.WriteAllText(staged, "a new version of the big file");
-        File.Move(staged, Path.Combine(fakeSteam, "dlc_big.scs"), overwrite: true);
-        await vm.RefreshCommand.ExecuteAsync(null);
-        item = versions.Items.First(i => i.Folder == old);
-        bool stale = item.Health?.Pack is { StaleBaseBytes: > 0 } && item.CanPack && item.CanLaunch;
-        bool repacked = await versions.PackFolderAsync(game, old, steam, item.Installation.Version?.ToString(), item.Health?.OwnBytes ?? 0);
-        item = versions.Items.First(i => i.Folder == old);
-        bool fresh = item.Health?.Pack is { StaleBaseBytes: 0 } && await versions.PrepareAsync(item.Installation) &&
-                     File.ReadAllBytes(Path.Combine(old, Dispatch.Core.Games.PackedCopy.GameFolder, "dlc_big.scs")).AsSpan().SequenceEqual(big);
-        versions.CleanUpRebuilt(afterGameClosed: true);
-        step($"versions: rebuilt for playing ({prepared}), removed after ({cleaned}), Steam update noticed ({stale}), packed again ({repacked}, {fresh}): {item.Space}");
-        versions.RemoveCopy(old);
-        return listed && canPack && packed && small && prepared && cleaned && stale && repacked && fresh;
+            InstallationItemViewModel Item(string folder) => versions.Items.First(i => i.Folder == folder);
+
+            string old = MakeOld("old version", "base");
+            bool listed = versions.AddCopyFrom(old);
+            var item = Item(old);
+            bool canPack = item.CanPack;
+            bool packed = await versions.PackFolderAsync(game, old, steam, item.Installation.Version?.ToString(), item.Health?.OwnBytes ?? 0);
+            item = Item(old);
+            bool small = item.Installation.IsPacked && item.Health is { IsPacked: true, IsBroken: false } h && h.OwnBytes < (3 << 20) &&
+                         !item.CanPack && item.CanShareData && versions.Available.Any(a => a.Folder == old);
+            step($"versions: packed a copy ({listed}, {canPack}, {packed}, {small}): \"{item.Label}\", {item.Space}; {versions.CopyStatus}");
+
+            bool prepared = await versions.PrepareAsync(item.Installation) && Rebuilt(item);
+            versions.CleanUpRebuilt(afterGameClosed: true);
+            bool cleaned = !Directory.Exists(Path.Combine(old, Dispatch.Core.Games.PackedCopy.GameFolder));
+
+            // A second old version: its own data is only what the first one doesn't have.
+            string older = MakeOld("older version", "older base");
+            versions.AddCopyFrom(older);
+            bool packedOlder = await versions.PackFolderAsync(game, older, steam, Item(older).Installation.Version?.ToString(), Item(older).Health?.OwnBytes ?? 0);
+            var second = Item(older);
+            bool sharesData = packedOlder && second.Health?.Pack is { SharedWithCopiesBytes: > 0 } && second.Health.OwnBytes < (1 << 20) &&
+                              await versions.PrepareAsync(second.Installation) && Rebuilt(second);
+            versions.CleanUpRebuilt(afterGameClosed: true);
+            step($"versions: rebuilt for playing ({prepared}), removed after ({cleaned}), a second copy uses the first one's data ({sharesData}): {second.Space}");
+
+            // "Steam update": both copies now hold on to the old big file.
+            string staged = Path.Combine(temp, "staged-big.scs");
+            File.WriteAllText(staged, "a new version of the big file");
+            File.Move(staged, Path.Combine(fakeSteam, "dlc_big.scs"), overwrite: true);
+            await vm.RefreshCommand.ExecuteAsync(null);
+            item = Item(old);
+            bool stale = item.NeedsRepack && Item(older).NeedsRepack && item.CanPack && item.CanLaunch;
+            bool repacked = await versions.PackFolderAsync(game, old, steam, item.Installation.Version?.ToString(), item.Health?.OwnBytes ?? 0);
+            item = Item(old);
+            bool fresh = item.Health?.Pack is { StaleBaseBytes: 0 } && await versions.PrepareAsync(item.Installation) && Rebuilt(item);
+            versions.CleanUpRebuilt(afterGameClosed: true);
+
+            // The other one is packed again by itself.
+            vm.Settings.Current.AutoRepackCopies = true;
+            versions.StartAutoRepack();
+            bool started = versions.IsAutoPacking;
+            await versions.AutoRepackTask;
+            vm.Settings.Current.AutoRepackCopies = false;
+            second = Item(older);
+            bool auto = started && !versions.IsAutoPacking && !second.NeedsRepack && second.Health?.Pack is { StaleBaseBytes: 0 } &&
+                        await versions.PrepareAsync(second.Installation) && Rebuilt(second);
+            versions.CleanUpRebuilt(afterGameClosed: true);
+            step($"versions: Steam update noticed ({stale}), packed again by hand ({repacked}, {fresh}) and automatically ({auto}): {versions.CopyStatus}");
+            versions.RemoveCopy(old);
+            versions.RemoveCopy(older);
+            return listed && canPack && packed && small && prepared && cleaned && sharesData && stale && repacked && fresh && auto;
+        }
+        finally
+        {
+            vm.Settings.Current.AutoRepackCopies = false;
+            versions.TestOverride = null;
+        }
     }
 
+    /// <summary>
+    /// Game versions: lists a fake copy (a temp folder with a copy of the game's exe, so it has the same version),
+    /// pins the test profile to it and back to automatic, and copies a small fake install with the real copier.
+    /// Nothing is launched, the Steam install is only read, and settings.json isn't written (settings are read-only
+    /// during the self-test). The temp folders are deleted afterwards.
+    /// </summary>
     private static async Task<bool> VersionsAsync(MainViewModel vm, AutoYesDialogs dialogs, string profileName, Action<string> step)
     {
         var versions = vm.Versions;
@@ -459,13 +507,24 @@ internal static class SelfTest
         b.NoteText = "";
         step($"tags/notes saved: {notes}; found by searching a tag: {searchable}");
 
-        // Uninstall both (to the Recycle Bin); they aren't active anywhere, so no profile question.
+        // Mod library, with only the two test mods (no profile uses them): both in, one back by hand.
+        string modDir = Path.GetDirectoryName(a!.Mod.Path)!;
+        string library = Path.Combine(Path.GetDirectoryName(modDir)!, Dispatch.Core.Mods.ModLibrary.FolderName);
+        bool libraryExisted = Directory.Exists(library);
         vm.Mods.SelectedMods.Clear();
         vm.Mods.SelectedMods.Add(vm.Mods.ById["DispatchSelfTest_a"]);
         vm.Mods.SelectedMods.Add(vm.Mods.ById["DispatchSelfTest_b"]);
-        await vm.Mods.UninstallCommand.ExecuteAsync(null);
-        bool uninstalled = !vm.Mods.ById.ContainsKey("DispatchSelfTest_a") && !vm.Mods.ById.ContainsKey("DispatchSelfTest_b");
-        step($"uninstall to Recycle Bin: {uninstalled}");
+        await vm.Mods.MoveToLibraryCommand.ExecuteAsync(null);
+        bool inLibrary = vm.Mods.ById["DispatchSelfTest_a"].InLibrary && vm.Mods.ById["DispatchSelfTest_b"].InLibrary &&
+                         File.Exists(Path.Combine(library, "DispatchSelfTest_b.scs")) && !File.Exists(Path.Combine(modDir, "DispatchSelfTest_b.scs"));
+        vm.Mods.Show = Resources.Strings.ShowInLibrary;
+        bool libraryFilter = vm.Mods.Items.Any(m => m.PackageId == "DispatchSelfTest_a") && vm.Mods.Items.All(m => m.InLibrary);
+        vm.Mods.Show = Resources.Strings.ShowAll;
+        vm.Mods.SelectedMods.Clear();
+        vm.Mods.SelectedMods.Add(vm.Mods.ById["DispatchSelfTest_a"]);
+        await vm.Mods.MoveBackCommand.ExecuteAsync(null);
+        bool movedBack = !vm.Mods.ById["DispatchSelfTest_a"].InLibrary && File.Exists(Path.Combine(modDir, "DispatchSelfTest_a.scs"));
+        step($"library: moved in ({inLibrary}), filter ({libraryFilter}), moved back by hand ({movedBack}): {vm.Mods.LibrarySummary}");
 
         // Copy load order: make a throwaway copy, change its order, copy the test profile's order onto it.
         string copyName = profileName + "Cp";
@@ -485,13 +544,62 @@ internal static class SelfTest
         bool copied = Dispatch.Core.Profiles.ProfileRepository.ReadLoadOrder(copy.Profile).TopFirst.Select(e => e.PackageId).SequenceEqual(order);
         step($"copy load order {profileName} → {copyName}: {copied}; message: {p.Message}");
 
+        // A profile starts using a mod that's in the library: it's back in mod\ by itself.
+        await p.AddModsAsync([vm.Mods.ById["DispatchSelfTest_b"]], vm.Profiles.Items.First(i => i.Name == copyName));
+        bool broughtBack = !vm.Mods.ById["DispatchSelfTest_b"].InLibrary && File.Exists(Path.Combine(modDir, "DispatchSelfTest_b.scs")) &&
+                           !File.Exists(Path.Combine(library, "DispatchSelfTest_b.scs"));
+        step($"library: brought back when a profile uses it ({broughtBack}): {vm.Mods.Message}");
+        copy = vm.Profiles.Items.First(i => i.Name == copyName);
+
+        // Multiplayer panel for the copy (the clipboard isn't touched).
+        p.Selected = vm.Profiles.Items.First(i => i.Name == copyName);
+        bool multiplayer = p.Multiplayer.Count == p.LoadOrder.Count && p.ConvoySummary.Length > 0 && p.CopyConvoyListCommand.CanExecute(null) &&
+                           p.Multiplayer.Any(m => m.Entry.PackageId == "DispatchSelfTest_b" && !m.IsConvoyOptional && !m.IsTruckersMpSupported);
+        step($"multiplayer: {multiplayer}: {p.ConvoySummary} {p.TruckersMpSummary}");
+
+        // Health: a mod that isn't installed shows up, and its fix removes it again (a backed-up change to the copy).
+        await p.FixProfileAsync(copy, current => Dispatch.Core.Profiles.LoadOrderEdits.AddToTop(current, [new("DispatchSelfTest_missing", "Missing test mod")]), "added");
+        await vm.Health.Checked;
+        var health = vm.Health.Items.First(i => i.Name == copyName);
+        var missingIssue = health.Issues.FirstOrDefault(i => i.Text.Contains("Missing test mod", StringComparison.Ordinal) && i.HasPrimary);
+        bool healthFound = missingIssue is not null && !health.IsHealthy;
+        if (missingIssue is not null)
+        {
+            await missingIssue.Primary!.ExecuteAsync(null);
+        }
+
+        await vm.Health.Checked;
+        copy = vm.Profiles.Items.First(i => i.Name == copyName);
+        bool healthFixed = !copy.LoadOrder!.TopFirst.Any(e => e.PackageId == "DispatchSelfTest_missing") &&
+                           !vm.Health.Items.First(i => i.Name == copyName).Issues.Any(i => i.Text.Contains("Missing test mod", StringComparison.Ordinal));
+        var original = vm.Health.Items.First(i => i.Name == profileName && !i.Profile.IsCloud);
+        var save = Dispatch.Core.Profiles.SaveReader.Newest(original.Profile.Profile);
+        step($"health: missing mod found ({healthFound}) and fixed ({healthFixed}); {vm.Health.Summary} {profileName}: {original.Status} " +
+             $"[{string.Join("; ", original.Issues.Select(i => i.Title))}]; newest save {save?.Label ?? "none"} with {save?.Mods.Count() ?? 0} mods");
+
         var tidy = new Dispatch.Core.Safety.BackupService(Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dispatch", "backups"));
         tidy.BackupWholeFolder(copy.Profile, Dispatch.Core.Safety.BackupReason.Manual, move: true);
         await vm.RefreshCommand.ExecuteAsync(null);
         Directory.Delete(dir, recursive: true);
 
-        return installed && dupes && filter && notes && searchable && uninstalled && copied;
+        // Uninstall both (to the Recycle Bin); they aren't active anywhere now, so no profile question.
+        vm.Mods.SelectedMods.Clear();
+        vm.Mods.SelectedMods.Add(vm.Mods.ById["DispatchSelfTest_a"]);
+        vm.Mods.SelectedMods.Add(vm.Mods.ById["DispatchSelfTest_b"]);
+        await vm.Mods.UninstallCommand.ExecuteAsync(null);
+        bool uninstalled = !vm.Mods.ById.ContainsKey("DispatchSelfTest_a") && !vm.Mods.ById.ContainsKey("DispatchSelfTest_b");
+        step($"uninstall to Recycle Bin: {uninstalled}");
+
+        // The library folder goes again if the test made it (only the journal is left in it).
+        if (!libraryExisted && Directory.Exists(library) &&
+            Directory.EnumerateFileSystemEntries(library).All(f => Path.GetFileName(f) == Dispatch.Core.Mods.ModLibrary.JournalFile))
+        {
+            Directory.Delete(library, recursive: true);
+        }
+
+        return installed && dupes && filter && notes && searchable && inLibrary && libraryFilter && movedBack && broughtBack && multiplayer &&
+               healthFound && healthFixed && uninstalled && copied;
     }
 
     /// <summary>

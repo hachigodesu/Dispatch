@@ -37,11 +37,13 @@ public partial class App : Application
         if (selfTest)
         {
             settings.ReadOnly = true; // nothing the self-test does may change the user's settings.json
+            settings.AutoRepackCopies = false; // and it never packs the user's real copies (the packing test turns it on for its own)
             settings.Game = Dispatch.Core.Games.GameDefinition.Ets2.Key; // the self-test profile is an ETS2 one
         }
         else if (e.Args.Length >= 5 && e.Args[0] == "--screenshot")
         {
             settings.ReadOnly = true;
+            settings.AutoRepackCopies = false;
             settings.Game = e.Args[4]; // "--screenshot out.png tab profile ats": show that game (not saved)
         }
 

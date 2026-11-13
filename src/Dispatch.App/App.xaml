@@ -11,6 +11,7 @@
         <c:PathToImageConverter x:Key="PathToImage" />
         <c:VisibleWhenConverter x:Key="VisibleWhen" />
         <c:NotConverter x:Key="Not" />
+        <c:BoolToBrushConverter x:Key="BoolToBrush" />
 
         <!-- A small coloured pill used for compatibility and "not installed" badges. -->
         <Style x:Key="Badge" TargetType="Border">
