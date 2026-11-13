@@ -468,6 +468,26 @@ Le jeu ne voit pas les mods qui s'y trouvent : il démarre plus vite et sa liste
   <data name="HealthUnsavedFirst" xml:space="preserve"><value>« {0} » a des modifications non enregistrées dans l'onglet Profils. Enregistrez-les ou annulez-les d'abord.</value></data>
   <data name="HealthFixed" xml:space="preserve"><value>« {0} » modifié (sauvegardé avant).</value></data>
   <data name="HealthFixedVersion" xml:space="preserve"><value>« {0} » démarre de nouveau avec la version automatique.</value></data>
+  <data name="SuggestOrder" xml:space="preserve"><value>Suggérer un ordre…</value></data>
+  <data name="SuggestTitle" xml:space="preserve"><value>Ordre de chargement suggéré</value></data>
+  <data name="SuggestNoChange" xml:space="preserve"><value>L'ordre de chargement suit déjà les règles habituelles.</value></data>
+  <data name="SuggestApplied" xml:space="preserve"><value>L'ordre suggéré est dans l'éditeur. Vérifiez-le, puis enregistrez-le ou annulez-le.</value></data>
+  <data name="SuggestHeader" xml:space="preserve"><value>Ordre de chargement suggéré pour « {0} »</value></data>
+  <data name="SuggestSummary" xml:space="preserve"><value>{0} mods sur {1} sont déplacés. Les autres gardent leur ordre.</value></data>
+  <data name="SuggestSummaryOne" xml:space="preserve"><value>1 mod est déplacé. Les autres gardent leur ordre.</value></data>
+  <data name="SuggestRules" xml:space="preserve"><value>Interface, graphismes, météo et son en haut, puis trafic et physique, puis camions, remorques et autres mods, puis les cartes. Les cartes gardent votre ordre, sauf qu'un correctif ou un connecteur remonte juste au-dessus de la carte qu'il concerne.</value></data>
+  <data name="SuggestOnlyMoved" xml:space="preserve"><value>N'afficher que les mods déplacés</value></data>
+  <data name="SuggestApply" xml:space="preserve"><value>Le mettre dans l'éditeur</value></data>
+  <data name="SuggestNotSaved" xml:space="preserve"><value>Rien n'est enregistré avant que vous cliquiez sur Enregistrer dans l'éditeur.</value></data>
+  <data name="SuggestMove" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="SuggestGroupLook" xml:space="preserve"><value>Apparence et son</value></data>
+  <data name="SuggestGroupTraffic" xml:space="preserve"><value>Trafic et physique</value></data>
+  <data name="SuggestGroupVehicles" xml:space="preserve"><value>Véhicules et autres</value></data>
+  <data name="SuggestGroupMaps" xml:space="preserve"><value>Carte</value></data>
+  <data name="SuggestReasonLook" xml:space="preserve"><value>Les mods d'interface, de graphismes, de météo et de son passent au-dessus du reste.</value></data>
+  <data name="SuggestReasonTraffic" xml:space="preserve"><value>Les mods de trafic et de physique passent au-dessus des véhicules et des cartes.</value></data>
+  <data name="SuggestReasonVehicles" xml:space="preserve"><value>Les mods de camions, de remorques et autres passent au-dessus des cartes.</value></data>
+  <data name="SuggestReasonPatch" xml:space="preserve"><value>Un correctif ou connecteur pour « {0} » : il va juste au-dessus.</value></data>
   <data name="TruckersMpNone" xml:space="preserve"><value>Aucun mod de ce profil n'est pris en charge par TruckersMP.</value></data>
   <data name="TruckersMpAll" xml:space="preserve"><value>Tous les mods de ce profil sont pris en charge par TruckersMP.</value></data>
   <data name="TruckersMpSome" xml:space="preserve"><value>Pris en charge par TruckersMP : {0}. Les {1} autres mods non.</value></data>

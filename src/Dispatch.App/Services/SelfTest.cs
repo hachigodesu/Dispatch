@@ -36,6 +36,15 @@ internal sealed class AutoYesDialogs : IDialogs
 
     public bool? AskYesNoCancel(string title, string message) => YesNoCancelAnswer;
 
+    /// <summary>The last suggested order shown (accepted).</summary>
+    public ViewModels.SuggestionViewModel? LastSuggestion { get; private set; }
+
+    public bool ReviewSuggestion(ViewModels.SuggestionViewModel suggestion)
+    {
+        LastSuggestion = suggestion;
+        return true;
+    }
+
     public IReadOnlyList<ViewModels.ProfileItemViewModel> PickProfiles(string title, string prompt,
                                                                         IReadOnlyList<ViewModels.ProfileItemViewModel> profiles)
     {
@@ -572,6 +581,17 @@ internal static class SelfTest
         copy = vm.Profiles.Items.First(i => i.Name == copyName);
         bool healthFixed = !copy.LoadOrder!.TopFirst.Any(e => e.PackageId == "DispatchSelfTest_missing") &&
                            !vm.Health.Items.First(i => i.Name == copyName).Issues.Any(i => i.Text.Contains("Missing test mod", StringComparison.Ordinal));
+        // Suggested order: the copy has an "other" mod above its sound mods, so the sounds move up; then it's discarded.
+        p.Selected = vm.Profiles.Items.First(i => i.Name == copyName);
+        var before = p.LoadOrder.Select(l => l.PackageId).ToList();
+        p.SuggestOrderCommand.Execute(null);
+        var review = dialogs.LastSuggestion;
+        bool suggested = p.IsDirty && p.LoadOrder[^1].PackageId == "DispatchSelfTest_b" && p.LoadOrder.Count == before.Count &&
+                         review is { OnlyMoved: true } && review.Rows.Count > 0 && review.Rows.All(r => r.IsMoved && r.MovedUp && r.Detail.Length > 0);
+        p.DiscardCommand.Execute(null);
+        bool discarded = !p.IsDirty && p.LoadOrder.Select(l => l.PackageId).SequenceEqual(before);
+        step($"suggested order: applied to the editor ({suggested}), discarded ({discarded}): {string.Join(", ", before)}");
+
         var original = vm.Health.Items.First(i => i.Name == profileName && !i.Profile.IsCloud);
         var save = Dispatch.Core.Profiles.SaveReader.Newest(original.Profile.Profile);
         step($"health: missing mod found ({healthFound}) and fixed ({healthFixed}); {vm.Health.Summary} {profileName}: {original.Status} " +
@@ -599,7 +619,7 @@ internal static class SelfTest
         }
 
         return installed && dupes && filter && notes && searchable && inLibrary && libraryFilter && movedBack && broughtBack && multiplayer &&
-               healthFound && healthFixed && uninstalled && copied;
+               healthFound && healthFixed && suggested && discarded && uninstalled && copied;
     }
 
     /// <summary>

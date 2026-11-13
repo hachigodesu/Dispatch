@@ -580,6 +580,14 @@ installed mods the save needs, launch with the automatic version, open Workshop 
 through the normal safe save (backup, game closed) and are refused while that profile has unsaved edits; Steam Cloud
 profiles are only shown.
 
+**Suggested load order** (editor button "Suggest order…", kept in its own commit so it's easy to drop). A stable sort
+by kind: interface/graphics/weather/sound, then traffic/physics, then trucks, trailers and other mods, then the maps.
+The map section keeps the user's order (combos follow their own instructions); only a patch or connector below a map
+it names (by the first word of the map's name, e.g. "promods", "poland") moves to just above that map. Parts of a pack
+that aren't marked as map ("Poland Rebuilding - Def") stay with it, and unclassifiable mods stay with the mod below.
+The result goes into the editor unsaved, after a confirmation that lists every move. On the real profiles: 9 of 54
+moves in the big map combo (all patches/connectors), 0–2 elsewhere.
+
 ---
 
 ## 7. Risks, unknowns and spikes

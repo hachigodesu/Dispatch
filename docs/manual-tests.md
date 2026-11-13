@@ -149,6 +149,10 @@ and close the game unless a step says otherwise.
 - [ ] **Health** tab: each profile shows its problems; a fix (e.g. remove a missing mod) changes the profile, a backup
   appears in Backups, and the problem is gone after the automatic check. A profile with unsaved edits refuses fixes.
 
+## After 0.7.0: suggested load order
+- [ ] Profiles → **Suggest order…** on a profile with a truck mod below a map: the dialog lists the order with ↑/↓, the
+  truck moves above the maps, the maps keep their order. Apply → the editor is unsaved; **Discard** restores the order.
+
 ## Release
 - [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-<version>-setup.exe`.
 - [ ] Install: no admin prompt, Start-menu entry, the app starts. Uninstall: asks about deleting data; **No** keeps

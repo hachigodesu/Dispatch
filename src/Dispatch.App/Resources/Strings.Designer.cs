@@ -843,6 +843,46 @@ public static class Strings
 
     public static string HealthFixedVersion => Get(nameof(HealthFixedVersion));
 
+    public static string SuggestOrder => Get(nameof(SuggestOrder));
+
+    public static string SuggestTitle => Get(nameof(SuggestTitle));
+
+    public static string SuggestNoChange => Get(nameof(SuggestNoChange));
+
+    public static string SuggestApplied => Get(nameof(SuggestApplied));
+
+    public static string SuggestHeader => Get(nameof(SuggestHeader));
+
+    public static string SuggestSummary => Get(nameof(SuggestSummary));
+
+    public static string SuggestSummaryOne => Get(nameof(SuggestSummaryOne));
+
+    public static string SuggestRules => Get(nameof(SuggestRules));
+
+    public static string SuggestOnlyMoved => Get(nameof(SuggestOnlyMoved));
+
+    public static string SuggestApply => Get(nameof(SuggestApply));
+
+    public static string SuggestNotSaved => Get(nameof(SuggestNotSaved));
+
+    public static string SuggestMove => Get(nameof(SuggestMove));
+
+    public static string SuggestGroupLook => Get(nameof(SuggestGroupLook));
+
+    public static string SuggestGroupTraffic => Get(nameof(SuggestGroupTraffic));
+
+    public static string SuggestGroupVehicles => Get(nameof(SuggestGroupVehicles));
+
+    public static string SuggestGroupMaps => Get(nameof(SuggestGroupMaps));
+
+    public static string SuggestReasonLook => Get(nameof(SuggestReasonLook));
+
+    public static string SuggestReasonTraffic => Get(nameof(SuggestReasonTraffic));
+
+    public static string SuggestReasonVehicles => Get(nameof(SuggestReasonVehicles));
+
+    public static string SuggestReasonPatch => Get(nameof(SuggestReasonPatch));
+
     public static string TruckersMpNone => Get(nameof(TruckersMpNone));
 
     public static string TruckersMpAll => Get(nameof(TruckersMpAll));

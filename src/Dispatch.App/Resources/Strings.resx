@@ -468,6 +468,26 @@ The game doesn't see mods there, so it starts faster and its mod list is shorter
   <data name="HealthUnsavedFirst" xml:space="preserve"><value>"{0}" has unsaved changes in the Profiles tab. Save or discard them first.</value></data>
   <data name="HealthFixed" xml:space="preserve"><value>Changed "{0}" (backed up first).</value></data>
   <data name="HealthFixedVersion" xml:space="preserve"><value>"{0}" launches with the automatic version again.</value></data>
+  <data name="SuggestOrder" xml:space="preserve"><value>Suggest order…</value></data>
+  <data name="SuggestTitle" xml:space="preserve"><value>Suggested load order</value></data>
+  <data name="SuggestNoChange" xml:space="preserve"><value>The load order already follows the usual rules.</value></data>
+  <data name="SuggestApplied" xml:space="preserve"><value>The suggested order is in the editor. Check it, then save or discard it.</value></data>
+  <data name="SuggestHeader" xml:space="preserve"><value>Suggested load order for "{0}"</value></data>
+  <data name="SuggestSummary" xml:space="preserve"><value>{0} of {1} mods move. The others keep their order.</value></data>
+  <data name="SuggestSummaryOne" xml:space="preserve"><value>1 mod moves. The others keep their order.</value></data>
+  <data name="SuggestRules" xml:space="preserve"><value>Interface, graphics, weather and sound mods go to the top, then traffic and physics, then trucks, trailers and other mods, then the maps. The maps keep your order, except that a patch or connector moves up to just above the map it's for.</value></data>
+  <data name="SuggestOnlyMoved" xml:space="preserve"><value>Show only the mods that move</value></data>
+  <data name="SuggestApply" xml:space="preserve"><value>Put it in the editor</value></data>
+  <data name="SuggestNotSaved" xml:space="preserve"><value>Nothing is saved until you press Save in the editor.</value></data>
+  <data name="SuggestMove" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="SuggestGroupLook" xml:space="preserve"><value>Look &amp; sound</value></data>
+  <data name="SuggestGroupTraffic" xml:space="preserve"><value>Traffic &amp; physics</value></data>
+  <data name="SuggestGroupVehicles" xml:space="preserve"><value>Vehicles &amp; other</value></data>
+  <data name="SuggestGroupMaps" xml:space="preserve"><value>Map</value></data>
+  <data name="SuggestReasonLook" xml:space="preserve"><value>Interface, graphics, weather and sound mods go above the rest.</value></data>
+  <data name="SuggestReasonTraffic" xml:space="preserve"><value>Traffic and physics mods go above vehicle mods and maps.</value></data>
+  <data name="SuggestReasonVehicles" xml:space="preserve"><value>Truck, trailer and other mods go above the maps.</value></data>
+  <data name="SuggestReasonPatch" xml:space="preserve"><value>A patch or connector for "{0}": it goes just above it.</value></data>
   <data name="TruckersMpNone" xml:space="preserve"><value>None of this profile's mods are supported on TruckersMP.</value></data>
   <data name="TruckersMpAll" xml:space="preserve"><value>All of this profile's mods are supported on TruckersMP.</value></data>
   <data name="TruckersMpSome" xml:space="preserve"><value>Supported on TruckersMP: {0}. The other {1} mods aren't.</value></data>

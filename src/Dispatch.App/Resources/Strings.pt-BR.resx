@@ -468,6 +468,26 @@ O jogo não vê os mods que estão lá, então ele inicia mais rápido e a lista
   <data name="HealthUnsavedFirst" xml:space="preserve"><value>"{0}" tem alterações não salvas na aba Perfis. Salve ou descarte-as primeiro.</value></data>
   <data name="HealthFixed" xml:space="preserve"><value>"{0}" alterado (com backup antes).</value></data>
   <data name="HealthFixedVersion" xml:space="preserve"><value>"{0}" volta a iniciar com a versão automática.</value></data>
+  <data name="SuggestOrder" xml:space="preserve"><value>Sugerir ordem…</value></data>
+  <data name="SuggestTitle" xml:space="preserve"><value>Ordem de carregamento sugerida</value></data>
+  <data name="SuggestNoChange" xml:space="preserve"><value>A ordem de carregamento já segue as regras usuais.</value></data>
+  <data name="SuggestApplied" xml:space="preserve"><value>A ordem sugerida está no editor. Confira e depois salve ou descarte.</value></data>
+  <data name="SuggestHeader" xml:space="preserve"><value>Ordem de carregamento sugerida para "{0}"</value></data>
+  <data name="SuggestSummary" xml:space="preserve"><value>{0} de {1} mods mudam de lugar. Os outros mantêm a ordem.</value></data>
+  <data name="SuggestSummaryOne" xml:space="preserve"><value>1 mod muda de lugar. Os outros mantêm a ordem.</value></data>
+  <data name="SuggestRules" xml:space="preserve"><value>Interface, gráficos, clima e som vão para o topo, depois tráfego e física, depois caminhões, reboques e outros mods, depois os mapas. Os mapas mantêm a sua ordem, exceto que um patch ou conector sobe para logo acima do mapa a que se refere.</value></data>
+  <data name="SuggestOnlyMoved" xml:space="preserve"><value>Mostrar só os mods que mudam de lugar</value></data>
+  <data name="SuggestApply" xml:space="preserve"><value>Colocar no editor</value></data>
+  <data name="SuggestNotSaved" xml:space="preserve"><value>Nada é salvo até você clicar em Salvar no editor.</value></data>
+  <data name="SuggestMove" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="SuggestGroupLook" xml:space="preserve"><value>Visual e som</value></data>
+  <data name="SuggestGroupTraffic" xml:space="preserve"><value>Tráfego e física</value></data>
+  <data name="SuggestGroupVehicles" xml:space="preserve"><value>Veículos e outros</value></data>
+  <data name="SuggestGroupMaps" xml:space="preserve"><value>Mapa</value></data>
+  <data name="SuggestReasonLook" xml:space="preserve"><value>Mods de interface, gráficos, clima e som ficam acima do resto.</value></data>
+  <data name="SuggestReasonTraffic" xml:space="preserve"><value>Mods de tráfego e física ficam acima dos mods de veículos e dos mapas.</value></data>
+  <data name="SuggestReasonVehicles" xml:space="preserve"><value>Mods de caminhões, reboques e outros ficam acima dos mapas.</value></data>
+  <data name="SuggestReasonPatch" xml:space="preserve"><value>Um patch ou conector para "{0}": fica logo acima dele.</value></data>
   <data name="TruckersMpNone" xml:space="preserve"><value>Nenhum mod deste perfil é suportado no TruckersMP.</value></data>
   <data name="TruckersMpAll" xml:space="preserve"><value>Todos os mods deste perfil são suportados no TruckersMP.</value></data>
   <data name="TruckersMpSome" xml:space="preserve"><value>Suportados no TruckersMP: {0}. Os outros {1} mods não.</value></data>

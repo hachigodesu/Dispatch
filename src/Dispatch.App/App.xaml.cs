@@ -104,6 +104,15 @@ public partial class App : Application
                 Views.MainWindow.SaveScreenshot(dlg, screenshot);
                 dlg.Close();
             }
+            else if (tab == 8 && viewModel.Profiles.BuildSuggestion() is { } review)
+            {
+                // The "Suggest order" review window, rendered without showing it modally.
+                var dlg = new SuggestOrderDialog { DataContext = review, Owner = window, WindowStartupLocation = WindowStartupLocation.Manual };
+                dlg.Show();
+                await Task.Delay(800); // icons
+                Views.MainWindow.SaveScreenshot(dlg, screenshot);
+                dlg.Close();
+            }
             else if (tab == 9)
             {
                 window.SaveScreenshot(screenshot, 0, sidePanel: 3); // the Multiplayer panel

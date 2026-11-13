@@ -89,6 +89,7 @@
                     <Button Content="{x:Static res:Strings.Save}" Command="{Binding SaveCommand}" Margin="0,0,4,4" MinWidth="80"
                             Style="{StaticResource AccentButtonStyle}" />
                     <Button Content="{x:Static res:Strings.Discard}" Command="{Binding DiscardCommand}" Margin="0,0,4,4" />
+                    <Button Content="{x:Static res:Strings.SuggestOrder}" Command="{Binding SuggestOrderCommand}" Margin="0,0,4,4" />
                 </WrapPanel>
                 <TextBlock Text="{x:Static res:Strings.SaveBlockedGameRunning}" Foreground="DarkOrange"
                            Visibility="{Binding IsGameRunning, Converter={StaticResource VisibleWhen}}" />

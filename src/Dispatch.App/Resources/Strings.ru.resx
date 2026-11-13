@@ -468,6 +468,26 @@ Dispatch оставит только данные, которых эта вер�
   <data name="HealthUnsavedFirst" xml:space="preserve"><value>В профиле «{0}» есть несохранённые изменения на вкладке «Профили». Сначала сохраните или отмените их.</value></data>
   <data name="HealthFixed" xml:space="preserve"><value>Профиль «{0}» изменён (резервная копия создана заранее).</value></data>
   <data name="HealthFixedVersion" xml:space="preserve"><value>Профиль «{0}» снова запускается с автоматической версией.</value></data>
+  <data name="SuggestOrder" xml:space="preserve"><value>Предложить порядок…</value></data>
+  <data name="SuggestTitle" xml:space="preserve"><value>Предлагаемый порядок загрузки</value></data>
+  <data name="SuggestNoChange" xml:space="preserve"><value>Порядок загрузки уже соответствует обычным правилам.</value></data>
+  <data name="SuggestApplied" xml:space="preserve"><value>Предлагаемый порядок в редакторе. Проверьте его, затем сохраните или отмените.</value></data>
+  <data name="SuggestHeader" xml:space="preserve"><value>Предлагаемый порядок загрузки для «{0}»</value></data>
+  <data name="SuggestSummary" xml:space="preserve"><value>Перемещаются моды: {0} из {1}. Остальные сохраняют свой порядок.</value></data>
+  <data name="SuggestSummaryOne" xml:space="preserve"><value>Перемещается 1 мод. Остальные сохраняют свой порядок.</value></data>
+  <data name="SuggestRules" xml:space="preserve"><value>Интерфейс, графика, погода и звук идут наверх, затем трафик и физика, затем грузовики, прицепы и другие моды, затем карты. Карты сохраняют ваш порядок, только патч или соединитель поднимается прямо над картой, к которой он относится.</value></data>
+  <data name="SuggestOnlyMoved" xml:space="preserve"><value>Показывать только перемещаемые моды</value></data>
+  <data name="SuggestApply" xml:space="preserve"><value>Перенести в редактор</value></data>
+  <data name="SuggestNotSaved" xml:space="preserve"><value>Ничего не сохраняется, пока вы не нажмёте «Сохранить» в редакторе.</value></data>
+  <data name="SuggestMove" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="SuggestGroupLook" xml:space="preserve"><value>Вид и звук</value></data>
+  <data name="SuggestGroupTraffic" xml:space="preserve"><value>Трафик и физика</value></data>
+  <data name="SuggestGroupVehicles" xml:space="preserve"><value>Транспорт и прочее</value></data>
+  <data name="SuggestGroupMaps" xml:space="preserve"><value>Карта</value></data>
+  <data name="SuggestReasonLook" xml:space="preserve"><value>Моды интерфейса, графики, погоды и звука стоят выше всех остальных.</value></data>
+  <data name="SuggestReasonTraffic" xml:space="preserve"><value>Моды трафика и физики стоят выше модов транспорта и карт.</value></data>
+  <data name="SuggestReasonVehicles" xml:space="preserve"><value>Моды грузовиков, прицепов и прочие стоят выше карт.</value></data>
+  <data name="SuggestReasonPatch" xml:space="preserve"><value>Патч или соединитель для «{0}»: ставится прямо над ней.</value></data>
   <data name="TruckersMpNone" xml:space="preserve"><value>Ни один мод этого профиля не поддерживается в TruckersMP.</value></data>
   <data name="TruckersMpAll" xml:space="preserve"><value>Все моды этого профиля поддерживаются в TruckersMP.</value></data>
   <data name="TruckersMpSome" xml:space="preserve"><value>Поддерживаются в TruckersMP: {0}. Остальные моды ({1}) — нет.</value></data>

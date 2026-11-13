@@ -468,6 +468,26 @@ Das Spiel sieht die Mods dort nicht, startet also schneller und zeigt eine kürz
   <data name="HealthUnsavedFirst" xml:space="preserve"><value>„{0}“ hat ungespeicherte Änderungen im Reiter Profile. Speichere oder verwirf sie zuerst.</value></data>
   <data name="HealthFixed" xml:space="preserve"><value>„{0}“ geändert (vorher gesichert).</value></data>
   <data name="HealthFixedVersion" xml:space="preserve"><value>„{0}“ startet wieder mit der automatischen Version.</value></data>
+  <data name="SuggestOrder" xml:space="preserve"><value>Reihenfolge vorschlagen…</value></data>
+  <data name="SuggestTitle" xml:space="preserve"><value>Vorgeschlagene Ladereihenfolge</value></data>
+  <data name="SuggestNoChange" xml:space="preserve"><value>Die Ladereihenfolge folgt schon den üblichen Regeln.</value></data>
+  <data name="SuggestApplied" xml:space="preserve"><value>Die vorgeschlagene Reihenfolge ist im Editor. Prüfe sie, dann speichere oder verwirf sie.</value></data>
+  <data name="SuggestHeader" xml:space="preserve"><value>Vorgeschlagene Ladereihenfolge für „{0}“</value></data>
+  <data name="SuggestSummary" xml:space="preserve"><value>{0} von {1} Mods werden verschoben. Die anderen behalten ihre Reihenfolge.</value></data>
+  <data name="SuggestSummaryOne" xml:space="preserve"><value>1 Mod wird verschoben. Die anderen behalten ihre Reihenfolge.</value></data>
+  <data name="SuggestRules" xml:space="preserve"><value>Oberfläche, Grafik, Wetter und Sound kommen nach oben, dann Verkehr und Physik, dann Lkw, Anhänger und andere Mods, dann die Karten. Die Karten behalten deine Reihenfolge, nur ein Patch oder Connector rückt direkt über die Karte, für die er ist.</value></data>
+  <data name="SuggestOnlyMoved" xml:space="preserve"><value>Nur die Mods zeigen, die verschoben werden</value></data>
+  <data name="SuggestApply" xml:space="preserve"><value>In den Editor übernehmen</value></data>
+  <data name="SuggestNotSaved" xml:space="preserve"><value>Gespeichert wird erst, wenn du im Editor auf Speichern drückst.</value></data>
+  <data name="SuggestMove" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="SuggestGroupLook" xml:space="preserve"><value>Optik &amp; Sound</value></data>
+  <data name="SuggestGroupTraffic" xml:space="preserve"><value>Verkehr &amp; Physik</value></data>
+  <data name="SuggestGroupVehicles" xml:space="preserve"><value>Fahrzeuge &amp; Sonstiges</value></data>
+  <data name="SuggestGroupMaps" xml:space="preserve"><value>Karte</value></data>
+  <data name="SuggestReasonLook" xml:space="preserve"><value>Oberfläche, Grafik, Wetter und Sound stehen über allem anderen.</value></data>
+  <data name="SuggestReasonTraffic" xml:space="preserve"><value>Verkehr und Physik stehen über Fahrzeug-Mods und Karten.</value></data>
+  <data name="SuggestReasonVehicles" xml:space="preserve"><value>Lkw, Anhänger und andere Mods stehen über den Karten.</value></data>
+  <data name="SuggestReasonPatch" xml:space="preserve"><value>Ein Patch oder Connector für „{0}“: Er kommt direkt darüber.</value></data>
   <data name="TruckersMpNone" xml:space="preserve"><value>Keine der Mods dieses Profils wird auf TruckersMP unterstützt.</value></data>
   <data name="TruckersMpAll" xml:space="preserve"><value>Alle Mods dieses Profils werden auf TruckersMP unterstützt.</value></data>
   <data name="TruckersMpSome" xml:space="preserve"><value>Auf TruckersMP unterstützt: {0}. Die anderen {1} Mods nicht.</value></data>

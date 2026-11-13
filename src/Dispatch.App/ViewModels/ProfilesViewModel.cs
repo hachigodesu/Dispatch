@@ -58,7 +58,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanEdit), nameof(CanSave))]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand), nameof(DiscardCommand), nameof(RestoreBackupCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand), nameof(DiscardCommand), nameof(RestoreBackupCommand), nameof(SuggestOrderCommand))]
     private ProfileItemViewModel? _selected;
 
     [ObservableProperty]

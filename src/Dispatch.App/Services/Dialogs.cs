@@ -34,6 +34,9 @@ public interface IDialogs
 
     IReadOnlyList<ViewModels.ProfileItemViewModel> PickProfiles(string title, string prompt,
                                                                  IReadOnlyList<ViewModels.ProfileItemViewModel> profiles);
+
+    /// <summary>Shows a suggested load order for review; true = put it in the editor.</summary>
+    bool ReviewSuggestion(ViewModels.SuggestionViewModel suggestion);
 }
 
 public sealed class Dialogs : IDialogs
@@ -99,4 +102,7 @@ public sealed class Dialogs : IDialogs
         var d = new Views.PickProfilesDialog(title, prompt, profiles) { Owner = Application.Current.MainWindow };
         return d.ShowDialog() == true ? d.Picked : [];
     }
+
+    public bool ReviewSuggestion(ViewModels.SuggestionViewModel suggestion) =>
+        new Views.SuggestOrderDialog { Owner = Application.Current.MainWindow, DataContext = suggestion }.ShowDialog() == true;
 }

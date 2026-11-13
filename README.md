@@ -45,6 +45,8 @@ something is installed somewhere unusual, you can set the paths in **Settings**.
   The order is shown the same way as in the game: the mod at the top wins.
 - **Conflicts:** shows which active mods contain the same files, and which one the game will use. That's often
   intended (patches, compatibility add-ons), but it shows you why a mod seems to do nothing.
+- **Suggest order:** sorts a load order by the usual rules (looks and sounds on top, maps at the bottom, patches above
+  the maps they fix) and shows you every move first. It goes into the editor, so you check it before saving.
 - **Copy a load order** from one profile to others.
 - **Presets:** save a load order under a name. You can apply it to any profile, or export it as a file to share. When
   you import a preset, Dispatch lists the mods you don't have, with Workshop links where there are any.

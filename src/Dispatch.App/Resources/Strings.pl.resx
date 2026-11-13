@@ -468,6 +468,26 @@ Gra nie widzi modów w bibliotece, więc uruchamia się szybciej, a jej lista mo
   <data name="HealthUnsavedFirst" xml:space="preserve"><value>„{0}” ma niezapisane zmiany na karcie Profile. Najpierw je zapisz lub odrzuć.</value></data>
   <data name="HealthFixed" xml:space="preserve"><value>Zmieniono „{0}” (najpierw zrobiono kopię zapasową).</value></data>
   <data name="HealthFixedVersion" xml:space="preserve"><value>„{0}” znów uruchamia się z wersją automatyczną.</value></data>
+  <data name="SuggestOrder" xml:space="preserve"><value>Zaproponuj kolejność…</value></data>
+  <data name="SuggestTitle" xml:space="preserve"><value>Proponowana kolejność ładowania</value></data>
+  <data name="SuggestNoChange" xml:space="preserve"><value>Kolejność ładowania już jest zgodna ze zwykłymi zasadami.</value></data>
+  <data name="SuggestApplied" xml:space="preserve"><value>Proponowana kolejność jest w edytorze. Sprawdź ją, a potem zapisz lub odrzuć.</value></data>
+  <data name="SuggestHeader" xml:space="preserve"><value>Proponowana kolejność ładowania dla „{0}”</value></data>
+  <data name="SuggestSummary" xml:space="preserve"><value>Przesuwane mody: {0} z {1}. Pozostałe zachowują kolejność.</value></data>
+  <data name="SuggestSummaryOne" xml:space="preserve"><value>Przesuwany jest 1 mod. Pozostałe zachowują kolejność.</value></data>
+  <data name="SuggestRules" xml:space="preserve"><value>Interfejs, grafika, pogoda i dźwięk idą na górę, potem ruch i fizyka, potem ciężarówki, naczepy i inne mody, potem mapy. Mapy zachowują twoją kolejność, tylko łatka lub łącznik przesuwa się tuż nad mapę, której dotyczy.</value></data>
+  <data name="SuggestOnlyMoved" xml:space="preserve"><value>Pokaż tylko przesuwane mody</value></data>
+  <data name="SuggestApply" xml:space="preserve"><value>Przenieś do edytora</value></data>
+  <data name="SuggestNotSaved" xml:space="preserve"><value>Nic nie zostanie zapisane, dopóki nie klikniesz Zapisz w edytorze.</value></data>
+  <data name="SuggestMove" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="SuggestGroupLook" xml:space="preserve"><value>Wygląd i dźwięk</value></data>
+  <data name="SuggestGroupTraffic" xml:space="preserve"><value>Ruch i fizyka</value></data>
+  <data name="SuggestGroupVehicles" xml:space="preserve"><value>Pojazdy i inne</value></data>
+  <data name="SuggestGroupMaps" xml:space="preserve"><value>Mapa</value></data>
+  <data name="SuggestReasonLook" xml:space="preserve"><value>Mody interfejsu, grafiki, pogody i dźwięku idą nad wszystkie inne.</value></data>
+  <data name="SuggestReasonTraffic" xml:space="preserve"><value>Mody ruchu i fizyki idą nad mody pojazdów i mapy.</value></data>
+  <data name="SuggestReasonVehicles" xml:space="preserve"><value>Mody ciężarówek, naczep i inne idą nad mapy.</value></data>
+  <data name="SuggestReasonPatch" xml:space="preserve"><value>Łatka lub łącznik do „{0}”: idzie tuż nad nią.</value></data>
   <data name="TruckersMpNone" xml:space="preserve"><value>Żaden mod tego profilu nie jest obsługiwany w TruckersMP.</value></data>
   <data name="TruckersMpAll" xml:space="preserve"><value>Wszystkie mody tego profilu są obsługiwane w TruckersMP.</value></data>
   <data name="TruckersMpSome" xml:space="preserve"><value>Obsługiwane w TruckersMP: {0}. Pozostałe mody ({1}) nie.</value></data>
