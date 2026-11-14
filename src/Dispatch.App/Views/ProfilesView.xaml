@@ -25,6 +25,8 @@
                 <Button Content="{x:Static res:Strings.Rename}" Command="{Binding RenameCommand}" Margin="0,0,6,6" />
                 <Button Content="{x:Static res:Strings.DeleteProfile}" Command="{Binding DeleteProfileCommand}" Margin="0,0,6,6" />
                 <Button Content="{x:Static res:Strings.CopyLoadOrder}" Command="{Binding CopyLoadOrderCommand}" Margin="0,0,6,6" />
+                <Button Content="{x:Static res:Strings.ProfileMapButton}" Command="{Binding ShowProfileMapCommand}" Margin="0,0,6,6"
+                        ToolTip="{x:Static res:Strings.ProfileMapButtonHint}" />
             </WrapPanel>
             <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}">
                 <ListBox.ItemTemplate>

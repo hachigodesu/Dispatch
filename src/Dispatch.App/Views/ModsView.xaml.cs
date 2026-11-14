@@ -18,6 +18,7 @@ public partial class ModsView : UserControl
 
         Fill(AddMenu, vm.AddTargets, vm.AddToProfileCommand);
         Fill(RemoveMenu, vm.RemoveTargets, vm.RemoveFromProfileCommand);
+        Fill(MapInProfileMenu, vm.Selected is null ? [] : vm.MapTargets, vm.ShowOnMapInProfileCommand, Strings.NoReadableProfiles);
     }
 
     /// <summary>Shows a "copy" cursor only when files are dragged in.</summary>
@@ -39,7 +40,7 @@ public partial class ModsView : UserControl
         }
     }
 
-    private static void Fill(MenuItem menu, IEnumerable<ProfileItemViewModel> targets, System.Windows.Input.ICommand command)
+    private static void Fill(MenuItem menu, IEnumerable<ProfileItemViewModel> targets, System.Windows.Input.ICommand command, string? empty = null)
     {
         menu.Items.Clear();
         foreach (var profile in targets)
@@ -50,7 +51,7 @@ public partial class ModsView : UserControl
         menu.IsEnabled = menu.Items.Count > 0;
         if (menu.Items.Count == 0)
         {
-            menu.Items.Add(new MenuItem { Header = Strings.NoEditableProfiles, IsEnabled = false });
+            menu.Items.Add(new MenuItem { Header = empty ?? Strings.NoEditableProfiles, IsEnabled = false });
         }
     }
 }

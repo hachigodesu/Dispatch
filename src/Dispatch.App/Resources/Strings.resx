@@ -494,4 +494,56 @@ The game doesn't see mods there, so it starts faster and its mod list is shorter
   <data name="TruckersMpNoMods" xml:space="preserve"><value>No mods, so nothing to check.</value></data>
   <data name="TruckersMpProModsPart" xml:space="preserve"><value>ProMods ({0} files, on its ProMods servers)</value></data>
   <data name="TruckersMpWeatherPart" xml:space="preserve"><value>Grimes' seasonal weather ({0} files)</value></data>
+  <data name="ShowOnMap" xml:space="preserve"><value>Show on map</value></data>
+  <data name="ShowOnMapHint" xml:space="preserve"><value>See the roads this mod adds and removes. Opened from a profile, it's compared with the mods below it there.</value></data>
+  <data name="MapTitle" xml:space="preserve"><value>Map: {0}</value></data>
+  <data name="MapComparedProfile" xml:space="preserve"><value>Compared with the game, your DLCs and the mods below it in “{1}” ({0:N0}).</value></data>
+  <data name="MapComparedBase" xml:space="preserve"><value>Compared with the game and your DLCs. Open it from a profile's load order to include the mods below it there.</value></data>
+  <data name="MapLoading" xml:space="preserve"><value>Reading the map… {0} of {1}</value></data>
+  <data name="MapError" xml:space="preserve"><value>The map couldn't be read: {0}</value></data>
+  <data name="MapDlc" xml:space="preserve"><value>DLC {0}</value></data>
+  <data name="MapBaseGame" xml:space="preserve"><value>Base game</value></data>
+  <data name="MapModUnreadable" xml:space="preserve"><value>This mod is protected or damaged, so Dispatch can't read its roads.</value></data>
+  <data name="MapNoMap" xml:space="preserve"><value>This mod has no map sectors, so it doesn't change any roads.</value></data>
+  <data name="MapNoChanges" xml:space="preserve"><value>Its map sectors don't add or remove any roads.</value></data>
+  <data name="MapAdds" xml:space="preserve"><value>Roads added: {0:N0} ({1:N0} km). New cities: {2:N0}.</value></data>
+  <data name="MapSectors" xml:space="preserve"><value>Map sectors: {0:N0} ({1:N0} new, {2:N0} replacing existing ones).</value></data>
+  <data name="MapRemoves" xml:space="preserve"><value>Roads removed: {0:N0}, from {1}. Its sectors replace the ones below it, and these roads aren't in its version.</value></data>
+  <data name="MapHidden" xml:space="preserve"><value>Sectors replaced by mods above it: {0:N0}, by {1}. There the game shows their version, not this mod's.</value></data>
+  <data name="MapUnreadableSectors" xml:space="preserve"><value>Sector files that couldn't be read: {0:N0} (an older map format, or protected).</value></data>
+  <data name="MapUnreadableOthers" xml:space="preserve"><value>Protected mods in the comparison: {0:N0}. Their roads can't be shown.</value></data>
+  <data name="MapNoGame" xml:space="preserve"><value>The game's folder wasn't found, so the game's own roads aren't shown.</value></data>
+  <data name="MapZoomChanges" xml:space="preserve"><value>Zoom to changes</value></data>
+  <data name="MapWholeMap" xml:space="preserve"><value>Whole map</value></data>
+  <data name="MapLegendAdded" xml:space="preserve"><value>Roads it adds</value></data>
+  <data name="MapLegendRemoved" xml:space="preserve"><value>Roads it removes</value></data>
+  <data name="MapLegendHidden" xml:space="preserve"><value>Replaced by a mod above</value></data>
+  <data name="MapLegendOther" xml:space="preserve"><value>Other roads</value></data>
+  <data name="MapHint" xml:space="preserve"><value>Scroll to zoom, drag to move, double-click to zoom in. Junctions are drawn simplified.</value></data>
+  <data name="MapClose" xml:space="preserve"><value>Close</value></data>
+  <data name="MapSeparate" xml:space="preserve"><value>This is a separate map (“{0}”) that a profile plays instead of the game's map, so it's compared only with mods for that map.</value></data>
+  <data name="MapMore" xml:space="preserve"><value>{0:N0} more</value></data>
+  <data name="ShowOnMapInProfile" xml:space="preserve"><value>Show on map in profile</value></data>
+  <data name="NoReadableProfiles" xml:space="preserve"><value>No profiles could be read</value></data>
+  <data name="MapComparedProfileTop" xml:space="preserve"><value>Compared with the game, your DLCs and the mods in “{1}” ({0:N0}), as if it were added at the top of the load order (where “Add to profile” puts it).</value></data>
+  <data name="MapOtherMap" xml:space="preserve"><value>This mod is for the map “{0}”, but “{1}” plays “{2}”, so it doesn't change that profile's roads.</value></data>
+  <data name="ProfileMapTitle" xml:space="preserve"><value>Road map: {0}</value></data>
+  <data name="ProfileMapButton" xml:space="preserve"><value>Road map…</value></data>
+  <data name="ProfileMapButtonHint" xml:space="preserve"><value>Every road this profile's game and mods give, coloured by the mod that adds it.</value></data>
+  <data name="ProfileMapSubtitle" xml:space="preserve"><value>The game, your DLCs and the installed mods in the load order ({0:N0}). Each road is coloured by the mod that adds it.</value></data>
+  <data name="ProfileMapSeparate" xml:space="preserve"><value>This profile plays the map “{0}”.</value></data>
+  <data name="ProfileMapTotals" xml:space="preserve"><value>Roads: {0:N0} ({1:N0} km). From mods: {2:N0} ({3:N0} km).</value></data>
+  <data name="ProfileMapNoMapMods" xml:space="preserve"><value>Mods that don't change the map: {0:N0}.</value></data>
+  <data name="ProfileMapMissing" xml:space="preserve"><value>Mods in the load order that aren't installed: {0:N0}. Their roads are missing here.</value></data>
+  <data name="ProfileMapHint" xml:space="preserve"><value>Untick a mod to hide its roads; click its name to zoom to it. Scroll to zoom, drag to move.</value></data>
+  <data name="LegendHeader" xml:space="preserve"><value>Mods that change the map</value></data>
+  <data name="LegendShowAll" xml:space="preserve"><value>Show all</value></data>
+  <data name="LegendModsOnly" xml:space="preserve"><value>Mods only</value></data>
+  <data name="LegendToggle" xml:space="preserve"><value>Show or hide its roads</value></data>
+  <data name="LegendZoom" xml:space="preserve"><value>Zoom to its roads</value></data>
+  <data name="LegendRoads" xml:space="preserve"><value>{0:N0} roads · {1:N0} km</value></data>
+  <data name="LegendRoadsCovered" xml:space="preserve"><value>{0:N0} roads · {1:N0} km · {2:N0} of its {3:N0} sectors replaced by mods above</value></data>
+  <data name="LegendCovered" xml:space="preserve"><value>All its sectors are replaced by mods above</value></data>
+  <data name="LegendProtected" xml:space="preserve"><value>Protected, so its roads can't be read</value></data>
+  <data name="LegendGame" xml:space="preserve"><value>Game and DLCs</value></data>
 </root>

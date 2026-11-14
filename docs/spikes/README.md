@@ -39,3 +39,4 @@ comparisons against SII_Decrypt and Extractor. S11 (drag & drop on .NET 10) runs
 | S9 | `AEM!` / `MZ` packages | ✅ Closed: no decryption; names from profiles' `active_mods` (2 of 6), the game's log verdicts, else the file name. The game keeps no mod-info cache | [S8-mod-scan.md](S8-mod-scan.md#opaque-packages-s9-preview) |
 | S10 | HashFS v2 details | ✅ Layout confirmed on 10 real archives; all real archives use salt 0 (oracle comparison optional) | [S8-mod-scan.md](S8-mod-scan.md#hashfs-v2) |
 | S11 | gong-wpf-dragdrop on .NET 10 | ✅ Builds and renders (M2); real mouse drag in the manual checklist | [manual-tests.md](../manual-tests.md) |
+| S12 | Map view: roads a map mod adds/removes | ✅ Feasible (2026-11-14, after 0.8.0); not built | [S12-map-view.md](S12-map-view.md) |

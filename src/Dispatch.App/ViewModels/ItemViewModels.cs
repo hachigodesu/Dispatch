@@ -11,12 +11,15 @@ namespace Dispatch.App.ViewModels;
 public sealed partial class ModItemViewModel : ObservableObject
 {
     private readonly Action<ModItemViewModel>? _saveNote;
+    private readonly Action<ModItemViewModel>? _showOnMap;
     private bool _loadingNote;
 
     public ModItemViewModel(ModInfo mod, Compatibility compatibility, string? nameFromProfiles, IReadOnlyList<string> usedIn,
                             ModNote? note = null, Action<ModItemViewModel>? saveNote = null, DuplicateInfo? duplicate = null,
-                            IReadOnlyList<ModIssue>? gameMessages = null, DateTime? gameLogUtc = null)
+                            IReadOnlyList<ModIssue>? gameMessages = null, DateTime? gameLogUtc = null,
+                            Action<ModItemViewModel>? showOnMap = null)
     {
+        _showOnMap = showOnMap;
         GameMessages = gameMessages ?? [];
         GameMessagesHeader = gameLogUtc is { } when
             ? string.Format(CultureInfo.CurrentCulture, Strings.GameSaysHeader, when.ToLocalTime().ToString("g", CultureInfo.CurrentCulture))
@@ -55,6 +58,22 @@ public sealed partial class ModItemViewModel : ObservableObject
     public string Author => Mod.Manifest?.Author ?? "";
 
     public string Categories => string.Join(", ", Mod.Manifest?.Categories ?? []);
+
+    private static readonly HashSet<string> MapWords = new(["map", "maps", "connector", "promods", "rusmap"], StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Shows the "Show on map" button: a map or prefab mod, or one named like a map part, connector or fix
+    /// ("ProMods + RusMap connector"). Any other mod can still be opened from the Mods tab's menu.
+    /// </summary>
+    public bool LooksLikeMap => _showOnMap is not null &&
+                                ((Mod.Manifest?.Categories ?? []).Any(c => ModCategories.Canonical(c) is "map" or "prefabs") ||
+                                 DisplayName.Split([' ', '-', '_', '.', '+', '(', ')', '[', ']'], StringSplitOptions.RemoveEmptyEntries).Any(MapWords.Contains));
+
+    /// <summary>Opens the Map window for this mod (compared with the open profile's load order when it's in it).</summary>
+    [CommunityToolkit.Mvvm.Input.RelayCommand(CanExecute = nameof(CanShowOnMap))]
+    private void ShowOnMap() => _showOnMap?.Invoke(this);
+
+    private bool CanShowOnMap() => _showOnMap is not null;
 
     /// <summary>The official categories, named in the UI language (resource keys "Type_&lt;category&gt;").</summary>
     private static readonly Dictionary<string, string> TypeNames = new[]

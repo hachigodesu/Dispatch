@@ -47,6 +47,12 @@ something is installed somewhere unusual, you can set the paths in **Settings**.
   intended (patches, compatibility add-ons), but it shows you why a mod seems to do nothing.
 - **Suggest order:** sorts a load order by the usual rules (looks and sounds on top, maps at the bottom, patches above
   the maps they fix) and shows you every move first. It goes into the editor, so you check it before saving.
+- **Show on map:** see the roads a map mod adds, and the roads it takes away, drawn over the map you already have. Opened
+  from a profile, it's compared with the mods below it there, so you can see where a connector or an outdated add-on
+  replaces another map's roads, and which of its parts a mod above it covers up. From the Mods tab you can also see
+  how a mod would change any profile's roads before you add it.
+- **Road map:** a profile's whole road network, each road coloured by the mod that adds it, with a legend to hide mods
+  or jump to them.
 - **Copy a load order** from one profile to others.
 - **Presets:** save a load order under a name. You can apply it to any profile, or export it as a file to share. When
   you import a preset, Dispatch lists the mods you don't have, with Workshop links where there are any.
@@ -120,6 +126,7 @@ Dispatch doesn't collect anything. The only network request is the optional upda
 - Windows only. Linux, Steam Deck and macOS aren't supported.
 - A few mods use packaging Dispatch can't read. They're listed by file name, but without details, and conflicts
   can't be checked for them.
+- The map shows roads and city names only, with junctions simplified. Protected map mods can't be shown.
 - Steam Cloud profiles can't be edited directly. To edit one, turn off Steam Cloud for it in the game, edit it, then
   turn Steam Cloud back on.
 - A profile that has been saved in a newer game version can't be loaded in an older one. Dispatch warns you before

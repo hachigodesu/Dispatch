@@ -45,6 +45,15 @@ internal sealed class AutoYesDialogs : IDialogs
         return true;
     }
 
+    /// <summary>Map windows that would have opened (not shown; the self-test loads them itself).</summary>
+    public List<ViewModels.MapViewModel> Maps { get; } = [];
+
+    public void ShowMap(ViewModels.MapViewModel map) => Maps.Add(map);
+
+    public List<ViewModels.ProfileMapViewModel> ProfileMaps { get; } = [];
+
+    public void ShowProfileMap(ViewModels.ProfileMapViewModel map) => ProfileMaps.Add(map);
+
     public IReadOnlyList<ViewModels.ProfileItemViewModel> PickProfiles(string title, string prompt,
                                                                         IReadOnlyList<ViewModels.ProfileItemViewModel> profiles)
     {
@@ -121,7 +130,8 @@ internal static class SelfTest
             bool v1 = await V1Async(vm, dialogs, profileName, resultFile, Step);
             bool v2 = await ConflictsAsync(vm, profileName, resultFile, Step) && await SwitchGameAsync(vm, profileName, Step);
             bool versions = await VersionsAsync(vm, dialogs, profileName, Step);
-            m4 = m4 && bulk && v1 && v2 && versions;
+            bool map = await MapAsync(vm, dialogs, profileName, Step);
+            m4 = m4 && bulk && v1 && v2 && versions && map;
             Step($"dialog errors: {(dialogs.Errors.Count == 0 ? "none" : string.Join(" / ", dialogs.Errors))}");
             ok = saved && restored && m3 && m4 && !vm.Mods.TypeOptions.Contains("Maps") && dialogs.Errors.Count == 0;
         }
@@ -133,6 +143,83 @@ internal static class SelfTest
         Step(ok ? "RESULT: PASS" : "RESULT: FAIL");
         await File.WriteAllTextAsync(resultFile, log.ToString());
         return ok;
+    }
+
+    /// <summary>
+    /// "Show on map" (read-only): from the profile's load order the mod is compared with the mods below and above it;
+    /// from the Mods tab only with the game. Reads the real game's map (through Dispatch's own cache).
+    /// </summary>
+    private static async Task<bool> MapAsync(MainViewModel vm, AutoYesDialogs dialogs, string profileName, Action<string> step)
+    {
+        var p = vm.Profiles;
+        p.Selected = p.Items.First(i => i.Name == profileName && !i.IsCloud);
+        var entry = p.LoadOrder.Where(l => l.Mod is not null).OrderByDescending(l => l.Mod!.LooksLikeMap).FirstOrDefault();
+        if (entry is null)
+        {
+            step("map: skipped (no installed mod in the profile)");
+            return true;
+        }
+
+        int index = p.LoadOrder.IndexOf(entry);
+        int installed = p.LoadOrder.Count(l => l.Mod is not null);
+        vm.SelectedTab = 0;
+        dialogs.Maps.Clear();
+        entry.Mod!.ShowOnMapCommand.Execute(null);
+        var fromProfile = dialogs.Maps.Single();
+        await fromProfile.LoadAsync();
+        var c = fromProfile.Comparison;
+        bool stack = fromProfile.Request.ProfileName == profileName &&
+                     fromProfile.Request.Below.Count + fromProfile.Request.Above.Count == installed - 1 &&
+                     fromProfile.Request.Above.Count == p.LoadOrder.Take(index).Count(l => l.Mod is not null);
+        bool read = c is not null && !fromProfile.Failed && (fromProfile.Request.InstallDir is null || c.Extent is not null);
+        step($"map from profile: {entry.PackageId} (looks like a map: {entry.Mod.LooksLikeMap}), {fromProfile.Request.Below.Count} below, " +
+             $"{fromProfile.Request.Above.Count} above; +{c?.AddedRoads.Count} −{c?.RemovedRoads.Count} roads, " +
+             $"{c?.BackgroundRoads.Count} others; notes: {string.Join(" / ", fromProfile.Notes.Select(n => n.Text))}; stack ok: {stack}; read: {read}");
+
+        vm.SelectedTab = 1;
+        dialogs.Maps.Clear();
+        entry.Mod.ShowOnMapCommand.Execute(null);
+        var fromMods = dialogs.Maps.Single();
+        bool gameOnly = fromMods.Request.ProfileName is null && fromMods.Request.Below.Count == 0 && fromMods.Request.Above.Count == 0;
+        step($"map from Mods tab: compared with the game only: {gameOnly}");
+
+        // Mods tab → "Show on map in profile" with a mod that isn't in the profile: as if added at the top.
+        var outside = vm.Mods.Items.FirstOrDefault(m => p.LoadOrder.All(l => l.PackageId != m.PackageId));
+        bool inProfile = true;
+        if (outside is not null)
+        {
+            dialogs.Maps.Clear();
+            vm.Mods.Selected = outside;
+            vm.Mods.ShowOnMapInProfileCommand.Execute(p.Selected);
+            var r = dialogs.Maps.Single().Request;
+            inProfile = r.AddedOnTop && r.ProfileName == profileName && r.Below.Count == installed && r.Above.Count == 0;
+            step($"map in profile from Mods tab ({outside.PackageId}): added on top, {r.Below.Count} below: {inProfile}");
+        }
+
+        // "Road map…": the whole network, one legend row per map mod plus the game; hiding a row redraws without it.
+        vm.SelectedTab = 0;
+        dialogs.ProfileMaps.Clear();
+        p.ShowProfileMapCommand.Execute(null);
+        var network = dialogs.ProfileMaps.Single();
+        await network.LoadAsync();
+        var n = network.Network;
+        var game = network.Legend.LastOrDefault();
+        int gameArchives = network.Request.InstallDir is { } dir ? Dispatch.Core.Maps.MapArchiveReader.GameArchives(dir).Count : 0;
+        bool layered = n is not null && !network.Failed && n.Layers.Count == gameArchives + network.Request.Mods.Count &&
+                       game is { IsGame: true } && (network.Request.InstallDir is null || network.HasMap);
+        var before = network.Scene;
+        int layersBefore = before?.Layers.Count ?? 0;
+        if (game is not null)
+        {
+            game.IsVisible = false;
+        }
+
+        bool toggled = game is null || !game.HasRoads || (network.Scene != before && network.Scene!.Layers.Count == layersBefore - 1);
+        network.ShowAllCommand.Execute(null);
+        toggled = toggled && (network.Scene?.Layers.Count ?? 0) == layersBefore;
+        step($"road map: {n?.RoadsByLayer.Sum(l => l.Count)} roads, legend rows {network.Legend.Count}, map {network.Request.MapName}: " +
+             $"layers ok: {layered}; hiding the game and showing all again: {toggled}");
+        return stack && read && gameOnly && inProfile && layered && toggled;
     }
 
     /// <summary>

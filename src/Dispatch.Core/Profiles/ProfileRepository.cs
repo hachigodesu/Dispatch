@@ -29,8 +29,13 @@ public sealed record ProfileInfo(
 
 /// <summary>A profile's load order, top of the in-game list (highest priority) first.</summary>
 /// <param name="SourceHash">SHA-256 of profile.sii as read; saving is refused if the file no longer matches.</param>
+/// <param name="MapPath">The map the profile plays ("/map/europe.mbd"), or null when profile.sii doesn't say.</param>
 public sealed record LoadOrderRead(IReadOnlyList<ActiveModEntry> TopFirst, IReadOnlyList<SiiFormat> Layers, DateTime FileWriteUtc,
-                                   byte[] SourceHash);
+                                   byte[] SourceHash, string? MapPath = null)
+{
+    /// <summary>The map's name ("europe", "grandutopia"), or null when unknown.</summary>
+    public string? MapName => MapPath is { Length: > 0 } p ? Path.GetFileNameWithoutExtension(p.Replace('\\', '/').Split('/')[^1]) : null;
+}
 
 public static class ProfileRepository
 {
@@ -70,7 +75,7 @@ public static class ProfileRepository
 
         // active_mods[0] is the BOTTOM of the in-game list (spike S3), so reverse for top-first.
         return new LoadOrderRead(fileOrder.Reverse().ToList(), decoded.Layers, File.GetLastWriteTimeUtc(profile.ProfileSiiPath),
-                                 System.Security.Cryptography.SHA256.HashData(data));
+                                 System.Security.Cryptography.SHA256.HashData(data), ProfileText.ReadMapPath(decoded.Text));
     }
 
     /// <summary>Only folders whose name is valid hex-encoded UTF-8 and that contain profile.sii are profiles.</summary>

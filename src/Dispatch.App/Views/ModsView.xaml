@@ -65,6 +65,9 @@
                         <MenuItem x:Name="AddMenu" Header="{x:Static res:Strings.AddToProfile}" />
                         <MenuItem x:Name="RemoveMenu" Header="{x:Static res:Strings.RemoveFromProfile}" />
                         <Separator />
+                        <MenuItem Header="{x:Static res:Strings.ShowOnMap}" Command="{Binding Selected.ShowOnMapCommand}" />
+                        <MenuItem x:Name="MapInProfileMenu" Header="{x:Static res:Strings.ShowOnMapInProfile}" />
+                        <Separator />
                         <MenuItem Header="{x:Static res:Strings.LibraryMoveSelected}" Command="{Binding MoveToLibraryCommand}" />
                         <MenuItem Header="{x:Static res:Strings.LibraryMoveSelectedBack}" Command="{Binding MoveBackCommand}" />
                         <Separator />

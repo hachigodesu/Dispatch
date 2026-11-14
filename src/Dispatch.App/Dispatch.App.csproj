@@ -6,7 +6,7 @@
     <RootNamespace>Dispatch.App</RootNamespace>
     <Product>Dispatch</Product>
     <Description>A mod manager for Euro Truck Simulator 2 and American Truck Simulator</Description>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
     <ApplicationIcon>Assets\dispatch.ico</ApplicationIcon>
     <!-- WPF0001: the Fluent theme (ThemeMode) is marked experimental. CA1001/CA1515/CA1822: noisy for view models. -->
     <NoWarn>$(NoWarn);WPF0001;CA1515;CA1822;CA1001;CA1863</NoWarn>

@@ -894,4 +894,108 @@ public static class Strings
     public static string TruckersMpProModsPart => Get(nameof(TruckersMpProModsPart));
 
     public static string TruckersMpWeatherPart => Get(nameof(TruckersMpWeatherPart));
+
+    public static string ShowOnMap => Get(nameof(ShowOnMap));
+
+    public static string ShowOnMapHint => Get(nameof(ShowOnMapHint));
+
+    public static string MapTitle => Get(nameof(MapTitle));
+
+    public static string MapComparedProfile => Get(nameof(MapComparedProfile));
+
+    public static string MapComparedBase => Get(nameof(MapComparedBase));
+
+    public static string MapLoading => Get(nameof(MapLoading));
+
+    public static string MapError => Get(nameof(MapError));
+
+    public static string MapDlc => Get(nameof(MapDlc));
+
+    public static string MapBaseGame => Get(nameof(MapBaseGame));
+
+    public static string MapModUnreadable => Get(nameof(MapModUnreadable));
+
+    public static string MapNoMap => Get(nameof(MapNoMap));
+
+    public static string MapNoChanges => Get(nameof(MapNoChanges));
+
+    public static string MapAdds => Get(nameof(MapAdds));
+
+    public static string MapSectors => Get(nameof(MapSectors));
+
+    public static string MapRemoves => Get(nameof(MapRemoves));
+
+    public static string MapHidden => Get(nameof(MapHidden));
+
+    public static string MapUnreadableSectors => Get(nameof(MapUnreadableSectors));
+
+    public static string MapUnreadableOthers => Get(nameof(MapUnreadableOthers));
+
+    public static string MapNoGame => Get(nameof(MapNoGame));
+
+    public static string MapZoomChanges => Get(nameof(MapZoomChanges));
+
+    public static string MapWholeMap => Get(nameof(MapWholeMap));
+
+    public static string MapLegendAdded => Get(nameof(MapLegendAdded));
+
+    public static string MapLegendRemoved => Get(nameof(MapLegendRemoved));
+
+    public static string MapLegendHidden => Get(nameof(MapLegendHidden));
+
+    public static string MapLegendOther => Get(nameof(MapLegendOther));
+
+    public static string MapHint => Get(nameof(MapHint));
+
+    public static string MapClose => Get(nameof(MapClose));
+
+    public static string MapSeparate => Get(nameof(MapSeparate));
+
+    public static string MapMore => Get(nameof(MapMore));
+
+    public static string ShowOnMapInProfile => Get(nameof(ShowOnMapInProfile));
+
+    public static string NoReadableProfiles => Get(nameof(NoReadableProfiles));
+
+    public static string MapComparedProfileTop => Get(nameof(MapComparedProfileTop));
+
+    public static string MapOtherMap => Get(nameof(MapOtherMap));
+
+    public static string ProfileMapTitle => Get(nameof(ProfileMapTitle));
+
+    public static string ProfileMapButton => Get(nameof(ProfileMapButton));
+
+    public static string ProfileMapButtonHint => Get(nameof(ProfileMapButtonHint));
+
+    public static string ProfileMapSubtitle => Get(nameof(ProfileMapSubtitle));
+
+    public static string ProfileMapSeparate => Get(nameof(ProfileMapSeparate));
+
+    public static string ProfileMapTotals => Get(nameof(ProfileMapTotals));
+
+    public static string ProfileMapNoMapMods => Get(nameof(ProfileMapNoMapMods));
+
+    public static string ProfileMapMissing => Get(nameof(ProfileMapMissing));
+
+    public static string ProfileMapHint => Get(nameof(ProfileMapHint));
+
+    public static string LegendHeader => Get(nameof(LegendHeader));
+
+    public static string LegendShowAll => Get(nameof(LegendShowAll));
+
+    public static string LegendModsOnly => Get(nameof(LegendModsOnly));
+
+    public static string LegendToggle => Get(nameof(LegendToggle));
+
+    public static string LegendZoom => Get(nameof(LegendZoom));
+
+    public static string LegendRoads => Get(nameof(LegendRoads));
+
+    public static string LegendRoadsCovered => Get(nameof(LegendRoadsCovered));
+
+    public static string LegendCovered => Get(nameof(LegendCovered));
+
+    public static string LegendProtected => Get(nameof(LegendProtected));
+
+    public static string LegendGame => Get(nameof(LegendGame));
 }

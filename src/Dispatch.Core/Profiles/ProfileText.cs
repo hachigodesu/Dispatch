@@ -35,6 +35,14 @@ public static partial class ProfileText
         return m.Success ? SiiString.Unquote(m.Groups["value"].Value) : null;
     }
 
+    /// <summary>The map the profile plays, e.g. "/map/europe.mbd" or a separate map ("/map/grandutopia.mbd"); null if absent.</summary>
+    public static string? ReadMapPath(string text)
+    {
+        var (start, end) = UserProfileBody(text);
+        var m = MapPathRegex().Match(text, start, end - start);
+        return m.Success ? SiiString.Unquote(m.Groups["value"].Value) : null;
+    }
+
     /// <summary>Entries in file order (index 0 = bottom of the in-game list).</summary>
     public static IReadOnlyList<ActiveModEntry> ReadActiveMods(string text)
     {
@@ -161,6 +169,9 @@ public static partial class ProfileText
 
     [GeneratedRegex(@"^[ \t]*profile_name[ \t]*:[ \t]*(?<value>""(?:[^""\\]|\\.)*""|[^\r\n]*?)[ \t]*\r?$", RegexOptions.Multiline)]
     private static partial Regex ProfileNameRegex();
+
+    [GeneratedRegex(@"^[ \t]*map_path[ \t]*:[ \t]*(?<value>""(?:[^""\\]|\\.)*""|[^\r\n]*?)[ \t]*\r?$", RegexOptions.Multiline)]
+    private static partial Regex MapPathRegex();
 
     [GeneratedRegex(@"^(?<indent>[ \t]*)active_mods[ \t]*:[ \t]*\d+[ \t]*(?=\r?$)", RegexOptions.Multiline)]
     private static partial Regex ActiveModCountRegex();

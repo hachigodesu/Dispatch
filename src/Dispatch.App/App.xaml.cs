@@ -72,7 +72,7 @@ public partial class App : Application
         if (screenshot is not null)
         {
             int tab = e.Args.Length >= 3 && int.TryParse(e.Args[2], out int t) ? t : 0;
-            if (e.Args.Length >= 7)
+            if (e.Args.Length >= 7 && tab is not (10 or 12))
             {
                 viewModel.Versions.AddCopyFrom(e.Args[6]); // a 7th argument lists a game copy for this run only (not saved)
             }
@@ -112,6 +112,74 @@ public partial class App : Application
                 await Task.Delay(800); // icons
                 Views.MainWindow.SaveScreenshot(dlg, screenshot);
                 dlg.Close();
+            }
+            else if (tab == 10)
+            {
+                // The Map window for a mod in the profile's load order: the 7th argument picks it by name (part of
+                // the display name or package ID), otherwise the first one that looks like a map.
+                string? pick = e.Args.Length >= 7 ? e.Args[6] : null;
+                var entry = viewModel.Profiles.LoadOrder.FirstOrDefault(l => l.Mod is not null && pick is not null &&
+                                (l.DisplayName.Contains(pick, StringComparison.OrdinalIgnoreCase) || l.PackageId.Contains(pick, StringComparison.OrdinalIgnoreCase)))
+                            ?? viewModel.Profiles.LoadOrder.FirstOrDefault(l => l.Mod?.LooksLikeMap == true);
+                if (entry?.Mod is { } mod)
+                {
+                    // First the main window with that mod selected (its details show the "Show on map" button).
+                    viewModel.SelectedTab = 0;
+                    viewModel.Profiles.SelectedEntry = entry;
+                    await Task.Delay(500);
+                    window.SaveScreenshot(Path.ChangeExtension(screenshot, null) + "-details.png", 0);
+                    var map = new MapWindow { DataContext = viewModel.CreateMap(mod), Owner = window, WindowStartupLocation = WindowStartupLocation.Manual };
+                    map.Show();
+                    await map.StartLoading();
+                    for (int i = 0; i < 600 && !map.MapControl.HasRendered && ((MapViewModel)map.DataContext).HasMap; i++)
+                    {
+                        await Task.Delay(100);
+                    }
+
+                    Views.MainWindow.SaveScreenshot(map, screenshot);
+                    map.Close();
+                }
+            }
+            else if (tab is 11 or 12 && viewModel.Profiles.Selected is { } shown)
+            {
+                // 11: the profile's road map. 12: a mod from the Mods tab (7th argument: part of its name) shown in that profile.
+                Window map;
+                Func<MapCanvas> canvas;
+                Func<bool> hasMap;
+                Task loading;
+                if (tab == 11)
+                {
+                    var w = new ProfileMapWindow { DataContext = viewModel.CreateProfileMap(shown), Owner = window, WindowStartupLocation = WindowStartupLocation.Manual };
+                    w.Show();
+                    loading = w.StartLoading();
+                    (map, canvas, hasMap) = (w, () => w.MapControl, () => ((ProfileMapViewModel)w.DataContext).HasMap);
+                }
+                else
+                {
+                    string pick = e.Args.Length >= 7 ? e.Args[6] : "map";
+                    var mod = viewModel.Mods.Items.FirstOrDefault(m => m.DisplayName.Contains(pick, StringComparison.OrdinalIgnoreCase) ||
+                                                                       m.PackageId.Contains(pick, StringComparison.OrdinalIgnoreCase));
+                    if (mod is null)
+                    {
+                        Log.Warning("Screenshot: no mod matches {Pick}", pick);
+                        Shutdown(1);
+                        return;
+                    }
+
+                    var w = new MapWindow { DataContext = viewModel.CreateMapInProfile(mod, shown), Owner = window, WindowStartupLocation = WindowStartupLocation.Manual };
+                    w.Show();
+                    loading = w.StartLoading();
+                    (map, canvas, hasMap) = (w, () => w.MapControl, () => ((MapViewModel)w.DataContext).HasMap);
+                }
+
+                await loading;
+                for (int i = 0; i < 600 && !canvas().HasRendered && hasMap(); i++)
+                {
+                    await Task.Delay(100);
+                }
+
+                Views.MainWindow.SaveScreenshot(map, screenshot);
+                map.Close();
             }
             else if (tab == 9)
             {

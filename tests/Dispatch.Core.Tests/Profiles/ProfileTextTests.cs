@@ -28,6 +28,16 @@ public class ProfileTextTests
         ProfileText.ReadProfileName(Sample()).ShouldBe("日本");
 
     [Fact]
+    public void Reads_the_map_path()
+    {
+        ProfileText.ReadMapPath(Sample()).ShouldBeNull();
+        string text = Sample().Replace(" profile_name:", " map_path: \"/map/grandutopia.mbd\"\r\n profile_name:", StringComparison.Ordinal);
+        ProfileText.ReadMapPath(text).ShouldBe("/map/grandutopia.mbd");
+        new LoadOrderRead([], [], default, [], "/map/grandutopia.mbd").MapName.ShouldBe("grandutopia");
+        new LoadOrderRead([], [], default, []).MapName.ShouldBeNull();
+    }
+
+    [Fact]
     public void Reads_active_mods_in_file_order()
     {
         var mods = ProfileText.ReadActiveMods(Sample());

@@ -31,6 +31,10 @@
                     <TextBlock Text="{Binding DuplicateText}" TextWrapping="Wrap" />
                 </Border>
 
+                <Button Content="{x:Static res:Strings.ShowOnMap}" Command="{Binding ShowOnMapCommand}" HorizontalAlignment="Left"
+                        Margin="0,6,0,0" ToolTip="{x:Static res:Strings.ShowOnMapHint}"
+                        Visibility="{Binding LooksLikeMap, Converter={StaticResource VisibleWhen}}" />
+
                 <TextBlock Text="{x:Static res:Strings.TagsLabel}" Style="{StaticResource Muted}" Margin="0,10,0,2" />
                 <TextBox Text="{Binding TagsText, UpdateSourceTrigger=PropertyChanged, Delay=600}" ToolTip="{x:Static res:Strings.TagsHint}" />
                 <TextBlock Text="{x:Static res:Strings.NoteLabel}" Style="{StaticResource Muted}" Margin="0,6,0,2" />

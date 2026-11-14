@@ -1,6 +1,6 @@
 # Manual test checklist (MVP)
 
-Automated coverage: 178 unit tests (`dotnet test`) plus the end-to-end self-test, which drives the real view models on
+Automated coverage: 242 unit tests (`dotnet test`) plus the end-to-end self-test, which drives the real view models on
 the throwaway profile `DispatchTest`:
 
 ```
@@ -8,7 +8,9 @@ Dispatch.exe --selftest DispatchTest result.txt
 ```
 
 It covers save, restore, duplicate, rename, undoing the rename, presets, bulk moves, adding/removing mods from the Mods tab,
-and deleting/restoring a profile, and leaves `DispatchTest` unchanged.
+deleting/restoring a profile, conflicts, ATS switching, game versions (keeping, sharing, packing, automatic repacking,
+on small fake installs), the mod library (with its own two test mods), the Multiplayer panel, a Health fix and the
+suggested order (discarded), and leaves `DispatchTest` unchanged.
 
 The items below need a person: real mouse and keyboard, real dialogs, the running game. Use **`DispatchTest` only**,
 and close the game unless a step says otherwise.
@@ -152,6 +154,26 @@ and close the game unless a step says otherwise.
 ## After 0.7.0: suggested load order
 - [ ] Profiles → **Suggest order…** on a profile with a truck mod below a map: the dialog lists the order with ↑/↓, the
   truck moves above the maps, the maps keep their order. Apply → the editor is unsaved; **Discard** restores the order.
+
+## After 0.8.0: map view
+- [ ] Profiles → select a map mod in a load order → details → **Show on map**: a window opens, shows "Reading the
+  map…" with progress the first time (about 20 s for a big combo), then the map. Opening it again is about a second.
+- [ ] Scroll to zoom (around the mouse), drag to move, double-click to zoom in: smooth, and the roads sharpen a moment
+  after you stop. **Zoom to changes** and **Whole map** work. City labels don't overlap.
+- [ ] A connector or patch: red roads where it adds, blue dashed where roads from the map below disappear; the orange
+  text names the mods they came from. Move a mod above it that replaces some of its sectors → purple cells, and the
+  summary says which mod hides them.
+- [ ] Mods tab → right-click any mod → **Show on map**: compared with the game and DLCs only (the subtitle says so).
+  A truck mod says it has no map sectors; a protected map (e.g. one with an `AEM!` header) says it can't be read.
+- [ ] A separate map (Grand Utopia): the note says it's a separate map, and only its own roads are shown.
+- [ ] Close a Map window while it's still reading: no error, and Dispatch stays responsive. Two Map windows at once work.
+- [ ] Profiles → **Road map…**: the whole network, each mod in its own colour, the game grey; the legend lists the map
+  mods top of the load order first. Untick a mod → its roads disappear a moment later; **Mods only** hides the game;
+  **Show all** brings everything back; clicking a mod's name zooms to it. A mod whose sectors are all replaced by mods
+  above is greyed and says so. The Grand Utopia profile shows its own map.
+- [ ] Mods tab → right-click a map mod that isn't in a profile → **Show on map in profile ▸** → that profile: the
+  subtitle says "as if it were added at the top"; with one that is in it, it's compared at its real place. A Europe
+  mod in the Grand Utopia profile says it doesn't change that profile's roads.
 
 ## Release
 - [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-<version>-setup.exe`.

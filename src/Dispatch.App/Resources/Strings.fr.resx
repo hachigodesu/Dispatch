@@ -494,4 +494,56 @@ Le jeu ne voit pas les mods qui s'y trouvent : il démarre plus vite et sa liste
   <data name="TruckersMpNoMods" xml:space="preserve"><value>Aucun mod, donc rien à vérifier.</value></data>
   <data name="TruckersMpProModsPart" xml:space="preserve"><value>ProMods ({0} fichiers, sur ses serveurs ProMods)</value></data>
   <data name="TruckersMpWeatherPart" xml:space="preserve"><value>la météo saisonnière de Grimes ({0} fichiers)</value></data>
+  <data name="ShowOnMap" xml:space="preserve"><value>Voir sur la carte</value></data>
+  <data name="ShowOnMapHint" xml:space="preserve"><value>Montre les routes que ce mod ajoute et supprime. Ouvert depuis un profil, il est comparé aux mods placés en dessous.</value></data>
+  <data name="MapTitle" xml:space="preserve"><value>Carte : {0}</value></data>
+  <data name="MapComparedProfile" xml:space="preserve"><value>Comparé au jeu, à vos DLC et aux mods placés en dessous dans « {1} » ({0:N0}).</value></data>
+  <data name="MapComparedBase" xml:space="preserve"><value>Comparé au jeu et à vos DLC. Ouvrez-le depuis l'ordre de chargement d'un profil pour inclure les mods placés en dessous.</value></data>
+  <data name="MapLoading" xml:space="preserve"><value>Lecture de la carte… {0} sur {1}</value></data>
+  <data name="MapError" xml:space="preserve"><value>Impossible de lire la carte : {0}</value></data>
+  <data name="MapDlc" xml:space="preserve"><value>DLC {0}</value></data>
+  <data name="MapBaseGame" xml:space="preserve"><value>Jeu de base</value></data>
+  <data name="MapModUnreadable" xml:space="preserve"><value>Ce mod est protégé ou endommagé, Dispatch ne peut donc pas lire ses routes.</value></data>
+  <data name="MapNoMap" xml:space="preserve"><value>Ce mod n'a pas de secteurs de carte, il ne change donc aucune route.</value></data>
+  <data name="MapNoChanges" xml:space="preserve"><value>Ses secteurs de carte n'ajoutent ni ne suppriment aucune route.</value></data>
+  <data name="MapAdds" xml:space="preserve"><value>Routes ajoutées : {0:N0} ({1:N0} km). Nouvelles villes : {2:N0}.</value></data>
+  <data name="MapSectors" xml:space="preserve"><value>Secteurs de carte : {0:N0} ({1:N0} nouveaux, {2:N0} remplaçant des secteurs existants).</value></data>
+  <data name="MapRemoves" xml:space="preserve"><value>Routes supprimées : {0:N0}, de {1}. Ses secteurs remplacent ceux du dessous, et ces routes n'existent pas dans sa version.</value></data>
+  <data name="MapHidden" xml:space="preserve"><value>Secteurs remplacés par des mods placés au-dessus : {0:N0}, par {1}. Là, le jeu affiche leur version, pas celle de ce mod.</value></data>
+  <data name="MapUnreadableSectors" xml:space="preserve"><value>Fichiers de secteur illisibles : {0:N0} (ancien format de carte, ou protégés).</value></data>
+  <data name="MapUnreadableOthers" xml:space="preserve"><value>Mods protégés dans la comparaison : {0:N0}. Leurs routes ne peuvent pas être affichées.</value></data>
+  <data name="MapNoGame" xml:space="preserve"><value>Le dossier du jeu est introuvable, les routes du jeu lui-même ne sont donc pas affichées.</value></data>
+  <data name="MapZoomChanges" xml:space="preserve"><value>Zoomer sur les changements</value></data>
+  <data name="MapWholeMap" xml:space="preserve"><value>Carte entière</value></data>
+  <data name="MapLegendAdded" xml:space="preserve"><value>Routes ajoutées</value></data>
+  <data name="MapLegendRemoved" xml:space="preserve"><value>Routes supprimées</value></data>
+  <data name="MapLegendHidden" xml:space="preserve"><value>Remplacé par un mod au-dessus</value></data>
+  <data name="MapLegendOther" xml:space="preserve"><value>Autres routes</value></data>
+  <data name="MapHint" xml:space="preserve"><value>Molette pour zoomer, glisser pour déplacer, double-clic pour agrandir. Les carrefours sont dessinés de façon simplifiée.</value></data>
+  <data name="MapClose" xml:space="preserve"><value>Fermer</value></data>
+  <data name="MapSeparate" xml:space="preserve"><value>C'est une carte à part (« {0} ») qu'un profil utilise à la place de la carte du jeu ; elle n'est donc comparée qu'aux mods pour cette carte.</value></data>
+  <data name="MapMore" xml:space="preserve"><value>{0:N0} autres</value></data>
+  <data name="ShowOnMapInProfile" xml:space="preserve"><value>Voir sur la carte d'un profil</value></data>
+  <data name="NoReadableProfiles" xml:space="preserve"><value>Aucun profil lisible</value></data>
+  <data name="MapComparedProfileTop" xml:space="preserve"><value>Comparé au jeu, à vos DLC et aux mods de « {1} » ({0:N0}), comme s'il était ajouté tout en haut de l'ordre de chargement (là où « Ajouter au profil » le place).</value></data>
+  <data name="MapOtherMap" xml:space="preserve"><value>Ce mod est pour la carte « {0} », mais « {1} » utilise « {2} » ; il ne change donc pas les routes de ce profil.</value></data>
+  <data name="ProfileMapTitle" xml:space="preserve"><value>Carte routière : {0}</value></data>
+  <data name="ProfileMapButton" xml:space="preserve"><value>Carte routière…</value></data>
+  <data name="ProfileMapButtonHint" xml:space="preserve"><value>Toutes les routes que donnent le jeu et les mods de ce profil, colorées selon le mod qui les ajoute.</value></data>
+  <data name="ProfileMapSubtitle" xml:space="preserve"><value>Le jeu, vos DLC et les mods installés de l'ordre de chargement ({0:N0}). Chaque route a la couleur du mod qui l'ajoute.</value></data>
+  <data name="ProfileMapSeparate" xml:space="preserve"><value>Ce profil utilise la carte « {0} ».</value></data>
+  <data name="ProfileMapTotals" xml:space="preserve"><value>Routes : {0:N0} ({1:N0} km). Venant de mods : {2:N0} ({3:N0} km).</value></data>
+  <data name="ProfileMapNoMapMods" xml:space="preserve"><value>Mods qui ne changent pas la carte : {0:N0}.</value></data>
+  <data name="ProfileMapMissing" xml:space="preserve"><value>Mods de l'ordre de chargement non installés : {0:N0}. Leurs routes manquent ici.</value></data>
+  <data name="ProfileMapHint" xml:space="preserve"><value>Décochez un mod pour masquer ses routes ; cliquez sur son nom pour zoomer dessus. Molette pour zoomer, glisser pour déplacer.</value></data>
+  <data name="LegendHeader" xml:space="preserve"><value>Mods qui changent la carte</value></data>
+  <data name="LegendShowAll" xml:space="preserve"><value>Tout afficher</value></data>
+  <data name="LegendModsOnly" xml:space="preserve"><value>Mods seulement</value></data>
+  <data name="LegendToggle" xml:space="preserve"><value>Afficher ou masquer ses routes</value></data>
+  <data name="LegendZoom" xml:space="preserve"><value>Zoomer sur ses routes</value></data>
+  <data name="LegendRoads" xml:space="preserve"><value>{0:N0} routes · {1:N0} km</value></data>
+  <data name="LegendRoadsCovered" xml:space="preserve"><value>{0:N0} routes · {1:N0} km · {2:N0} de ses {3:N0} secteurs remplacés par des mods au-dessus</value></data>
+  <data name="LegendCovered" xml:space="preserve"><value>Tous ses secteurs sont remplacés par des mods au-dessus</value></data>
+  <data name="LegendProtected" xml:space="preserve"><value>Protégé : ses routes ne peuvent pas être lues</value></data>
+  <data name="LegendGame" xml:space="preserve"><value>Jeu et DLC</value></data>
 </root>

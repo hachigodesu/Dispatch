@@ -134,7 +134,8 @@ public sealed partial class ModsViewModel : ObservableObject
                                           snapshot.NamesFromProfiles.GetValueOrDefault(mod.PackageId),
                                           usedIn.GetValueOrDefault(mod.PackageId) ?? [],
                                           _notes.Get(mod.PackageId), SaveNote, duplicates.GetValueOrDefault(mod),
-                                          snapshot.GameLog?.MessagesFor(mod.PackageId) ?? [], snapshot.GameLog?.LastWriteUtc);
+                                          snapshot.GameLog?.MessagesFor(mod.PackageId) ?? [], snapshot.GameLog?.LastWriteUtc,
+                                          m => MapRequested?.Invoke(m));
             _all.Add(vm);
             byId.TryAdd(mod.PackageId, vm);
         }
@@ -204,6 +205,25 @@ public sealed partial class ModsViewModel : ObservableObject
         : Show == Strings.ShowGameWarnings ? m.HasGameMessages
         : Show == Strings.ShowInLibrary ? m.InLibrary
         : Show != Strings.ShowProblems || m.CompatStatus is CompatStatus.VersionMismatch or CompatStatus.MissingDlc or CompatStatus.Unreadable;
+
+    /// <summary>Set by the main window: opens the Map window for a mod ("Show on map").</summary>
+    public Action<ModItemViewModel>? MapRequested { get; set; }
+
+    /// <summary>Set by the main window: opens the Map window for a mod as it would be in a profile.</summary>
+    public Action<ModItemViewModel, ProfileItemViewModel>? MapInProfileRequested { get; set; }
+
+    /// <summary>Profiles offered under "Show on map in profile": every profile that could be read (Steam Cloud ones too: it only reads).</summary>
+    public IReadOnlyList<ProfileItemViewModel> MapTargets => _profiles.Items.Where(p => p.LoadOrder is not null).ToList();
+
+    /// <summary>How the selected mod would change a profile's roads: where it is in that load order, or added at the top.</summary>
+    [CommunityToolkit.Mvvm.Input.RelayCommand]
+    private void ShowOnMapInProfile(ProfileItemViewModel? profile)
+    {
+        if (Selected is { } mod && profile is not null)
+        {
+            MapInProfileRequested?.Invoke(mod, profile);
+        }
+    }
 
     private void SaveNote(ModItemViewModel mod)
     {

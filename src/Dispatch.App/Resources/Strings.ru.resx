@@ -494,4 +494,56 @@ Dispatch оставит только данные, которых эта вер�
   <data name="TruckersMpNoMods" xml:space="preserve"><value>Модов нет, проверять нечего.</value></data>
   <data name="TruckersMpProModsPart" xml:space="preserve"><value>ProMods (файлов: {0}, на серверах ProMods)</value></data>
   <data name="TruckersMpWeatherPart" xml:space="preserve"><value>сезонная погода от Grimes (файлов: {0})</value></data>
+  <data name="ShowOnMap" xml:space="preserve"><value>Показать на карте</value></data>
+  <data name="ShowOnMapHint" xml:space="preserve"><value>Показывает дороги, которые этот мод добавляет и удаляет. Если открыть из профиля, сравнивается с модами ниже него.</value></data>
+  <data name="MapTitle" xml:space="preserve"><value>Карта: {0}</value></data>
+  <data name="MapComparedProfile" xml:space="preserve"><value>Сравнение с игрой, вашими DLC и модами ниже него в «{1}» ({0:N0}).</value></data>
+  <data name="MapComparedBase" xml:space="preserve"><value>Сравнение с игрой и вашими DLC. Откройте из порядка загрузки профиля, чтобы учесть моды ниже него.</value></data>
+  <data name="MapLoading" xml:space="preserve"><value>Чтение карты… {0} из {1}</value></data>
+  <data name="MapError" xml:space="preserve"><value>Не удалось прочитать карту: {0}</value></data>
+  <data name="MapDlc" xml:space="preserve"><value>DLC {0}</value></data>
+  <data name="MapBaseGame" xml:space="preserve"><value>Базовая игра</value></data>
+  <data name="MapModUnreadable" xml:space="preserve"><value>Этот мод защищён или повреждён, поэтому Dispatch не может прочитать его дороги.</value></data>
+  <data name="MapNoMap" xml:space="preserve"><value>У этого мода нет секторов карты, поэтому он не меняет дороги.</value></data>
+  <data name="MapNoChanges" xml:space="preserve"><value>Его секторы карты не добавляют и не удаляют дороги.</value></data>
+  <data name="MapAdds" xml:space="preserve"><value>Добавлено дорог: {0:N0} ({1:N0} км). Новых городов: {2:N0}.</value></data>
+  <data name="MapSectors" xml:space="preserve"><value>Секторов карты: {0:N0} ({1:N0} новых, {2:N0} заменяют существующие).</value></data>
+  <data name="MapRemoves" xml:space="preserve"><value>Удалено дорог: {0:N0}, из: {1}. Его секторы заменяют нижележащие, а в его версии этих дорог нет.</value></data>
+  <data name="MapHidden" xml:space="preserve"><value>Секторов, заменённых модами выше: {0:N0}, кем: {1}. Там игра показывает их версию, а не версию этого мода.</value></data>
+  <data name="MapUnreadableSectors" xml:space="preserve"><value>Не удалось прочитать файлов секторов: {0:N0} (старый формат карты или защита).</value></data>
+  <data name="MapUnreadableOthers" xml:space="preserve"><value>Защищённых модов в сравнении: {0:N0}. Их дороги показать нельзя.</value></data>
+  <data name="MapNoGame" xml:space="preserve"><value>Папка игры не найдена, поэтому дороги самой игры не показаны.</value></data>
+  <data name="MapZoomChanges" xml:space="preserve"><value>К изменениям</value></data>
+  <data name="MapWholeMap" xml:space="preserve"><value>Вся карта</value></data>
+  <data name="MapLegendAdded" xml:space="preserve"><value>Добавленные дороги</value></data>
+  <data name="MapLegendRemoved" xml:space="preserve"><value>Удалённые дороги</value></data>
+  <data name="MapLegendHidden" xml:space="preserve"><value>Заменено модом выше</value></data>
+  <data name="MapLegendOther" xml:space="preserve"><value>Другие дороги</value></data>
+  <data name="MapHint" xml:space="preserve"><value>Колесо — масштаб, перетаскивание — перемещение, двойной щелчок — приблизить. Перекрёстки нарисованы упрощённо.</value></data>
+  <data name="MapClose" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="MapSeparate" xml:space="preserve"><value>Это отдельная карта («{0}»), которую профиль использует вместо карты игры, поэтому она сравнивается только с модами для этой карты.</value></data>
+  <data name="MapMore" xml:space="preserve"><value>ещё {0:N0}</value></data>
+  <data name="ShowOnMapInProfile" xml:space="preserve"><value>Показать на карте профиля</value></data>
+  <data name="NoReadableProfiles" xml:space="preserve"><value>Не удалось прочитать ни одного профиля</value></data>
+  <data name="MapComparedProfileTop" xml:space="preserve"><value>Сравнение с игрой, вашими DLC и модами в «{1}» ({0:N0}), как если бы он был добавлен в самый верх порядка загрузки (куда его ставит «Добавить в профиль»).</value></data>
+  <data name="MapOtherMap" xml:space="preserve"><value>Этот мод для карты «{0}», а «{1}» использует «{2}», поэтому он не меняет дороги этого профиля.</value></data>
+  <data name="ProfileMapTitle" xml:space="preserve"><value>Карта дорог: {0}</value></data>
+  <data name="ProfileMapButton" xml:space="preserve"><value>Карта дорог…</value></data>
+  <data name="ProfileMapButtonHint" xml:space="preserve"><value>Все дороги, которые дают игра и моды этого профиля, окрашенные по моду, который их добавляет.</value></data>
+  <data name="ProfileMapSubtitle" xml:space="preserve"><value>Игра, ваши DLC и установленные моды из порядка загрузки ({0:N0}). Каждая дорога окрашена в цвет мода, который её добавляет.</value></data>
+  <data name="ProfileMapSeparate" xml:space="preserve"><value>Этот профиль использует карту «{0}».</value></data>
+  <data name="ProfileMapTotals" xml:space="preserve"><value>Дорог: {0:N0} ({1:N0} км). Из модов: {2:N0} ({3:N0} км).</value></data>
+  <data name="ProfileMapNoMapMods" xml:space="preserve"><value>Модов, не меняющих карту: {0:N0}.</value></data>
+  <data name="ProfileMapMissing" xml:space="preserve"><value>Неустановленных модов в порядке загрузки: {0:N0}. Их дорог здесь нет.</value></data>
+  <data name="ProfileMapHint" xml:space="preserve"><value>Снимите флажок, чтобы скрыть дороги мода; щёлкните по названию, чтобы приблизить их. Колесо — масштаб, перетаскивание — перемещение.</value></data>
+  <data name="LegendHeader" xml:space="preserve"><value>Моды, меняющие карту</value></data>
+  <data name="LegendShowAll" xml:space="preserve"><value>Показать все</value></data>
+  <data name="LegendModsOnly" xml:space="preserve"><value>Только моды</value></data>
+  <data name="LegendToggle" xml:space="preserve"><value>Показать или скрыть его дороги</value></data>
+  <data name="LegendZoom" xml:space="preserve"><value>Приблизить его дороги</value></data>
+  <data name="LegendRoads" xml:space="preserve"><value>Дорог: {0:N0} · {1:N0} км</value></data>
+  <data name="LegendRoadsCovered" xml:space="preserve"><value>Дорог: {0:N0} · {1:N0} км · {2:N0} из {3:N0} секторов заменены модами выше</value></data>
+  <data name="LegendCovered" xml:space="preserve"><value>Все его секторы заменены модами выше</value></data>
+  <data name="LegendProtected" xml:space="preserve"><value>Защищён, поэтому его дороги не прочитать</value></data>
+  <data name="LegendGame" xml:space="preserve"><value>Игра и DLC</value></data>
 </root>

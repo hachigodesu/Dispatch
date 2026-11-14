@@ -55,6 +55,9 @@ public sealed partial class MainViewModel : ObservableObject
             Profiles.SidePanelIndex = sidePanel;
         });
         Profiles.ConfigureVersions(Versions, settings, paths.SettingsFile);
+        Mods.MapRequested = mod => _dialogs.ShowMap(CreateMap(mod));
+        Mods.MapInProfileRequested = (mod, profile) => _dialogs.ShowMap(CreateMapInProfile(mod, profile));
+        Profiles.ProfileMapRequested = profile => _dialogs.ShowProfileMap(CreateProfileMap(profile));
         Profiles.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(ProfilesViewModel.LaunchInstallation) or nameof(ProfilesViewModel.HasVersionChoice))
@@ -288,6 +291,69 @@ public sealed partial class MainViewModel : ObservableObject
     public ObservableCollection<string> Problems { get; } = [];
 
     private GameSnapshot? _snapshot;
+
+    /// <summary>
+    /// What the Map window compares a mod with. On the Profiles tab, with the mod in the open load order (including
+    /// unsaved edits): the game version that profile starts with, the mods below it and the mods above it. Otherwise:
+    /// the game and its DLCs only.
+    /// </summary>
+    internal MapViewModel CreateMap(ModItemViewModel mod) =>
+        SelectedTab == 0 && Profiles.Selected is { } open && Profiles.LoadOrder.Any(l => l.PackageId == mod.PackageId)
+            ? CreateMapInProfile(mod, open)
+            : CreateMapView(mod, null, [], [], _snapshot?.Environment.InstallDir, null, addedOnTop: false);
+
+    /// <summary>
+    /// The mod as it is (or would be) in a profile: where it is in that load order, otherwise as if added at the top
+    /// (where "Add to profile" puts it). The open profile's order includes unsaved edits.
+    /// </summary>
+    internal MapViewModel CreateMapInProfile(ModItemViewModel mod, ProfileItemViewModel profile)
+    {
+        var order = TopFirstOrder(profile);
+        int index = order.FindIndex(m => m.PackageId == mod.PackageId);
+        var others = order.Where(m => m.PackageId != mod.PackageId).ToList();
+        var below = (index >= 0 ? order.Skip(index + 1) : others).Reverse().Select(Source).ToList();
+        var above = index >= 0 ? order.Take(index).Select(Source).ToList() : [];
+        return CreateMapView(mod, profile, below, above, InstallDirFor(profile), profile.LoadOrder?.MapName, addedOnTop: index < 0);
+    }
+
+    private MapViewModel CreateMapView(ModItemViewModel mod, ProfileItemViewModel? profile, List<MapSource> below, List<MapSource> above,
+                                       string? installDir, string? profileMap, bool addedOnTop)
+    {
+        var request = new MapRequest(new MapSource(mod.DisplayName, mod.Mod.PackagePath), profile?.Name, below, above, installDir,
+                                     Dispatch.Core.Maps.MapArchiveReader.MapName(_game.Id), _paths.ForGame(_game).Cache, profileMap, addedOnTop);
+        Log.Information("Map requested for {Mod} ({Below} below, {Above} above, profile: {Profile}, added on top: {Top})",
+                        mod.PackageId, below.Count, above.Count, profile is not null, addedOnTop);
+        return new MapViewModel(request);
+    }
+
+    /// <summary>"Road map…": the profile's whole road network.</summary>
+    internal ProfileMapViewModel CreateProfileMap(ProfileItemViewModel profile)
+    {
+        var all = profile == Profiles.Selected
+            ? Profiles.LoadOrder.Select(l => l.PackageId).ToList()
+            : (profile.LoadOrder?.TopFirst ?? []).Select(e => e.PackageId).ToList();
+        var installed = TopFirstOrder(profile);
+        string defaultMap = Dispatch.Core.Maps.MapArchiveReader.MapName(_game.Id);
+        var request = new ProfileMapRequest(profile.Name, Enumerable.Reverse(installed).Select(Source).ToList(), InstallDirFor(profile),
+                                            profile.LoadOrder?.MapName ?? defaultMap, defaultMap, _paths.ForGame(_game).Cache,
+                                            all.Count - installed.Count);
+        Log.Information("Profile map requested ({Mods} mods, {Missing} not installed, map {Map})", installed.Count, request.NotInstalled, request.MapName);
+        return new ProfileMapViewModel(request);
+    }
+
+    private static MapSource Source(ModItemViewModel m) => new(m.DisplayName, m.Mod.PackagePath);
+
+    /// <summary>The profile's installed mods, top first; for the open profile, the editor's (possibly unsaved) order.</summary>
+    private List<ModItemViewModel> TopFirstOrder(ProfileItemViewModel profile) => profile == Profiles.Selected
+        ? Profiles.LoadOrder.Where(l => l.Mod is not null).Select(l => l.Mod!).ToList()
+        : (profile.LoadOrder?.TopFirst ?? []).Select(e => Mods.ById.GetValueOrDefault(e.PackageId)).OfType<ModItemViewModel>().ToList();
+
+    /// <summary>The game the profile starts with when that's a playable copy (the open profile only), else the Steam install.</summary>
+    private string? InstallDirFor(ProfileItemViewModel profile) =>
+        profile == Profiles.Selected && Profiles.LaunchInstallation?.GameFolder is { } folder &&
+        (File.Exists(Path.Combine(folder, "base_map.scs")) || File.Exists(Path.Combine(folder, "base.scs")))
+            ? folder
+            : _snapshot?.Environment.InstallDir;
 
     /// <summary>
     /// Mods in the library that a profile uses go back to mod\, so the game can load them. Runs after every refresh

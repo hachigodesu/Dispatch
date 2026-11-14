@@ -173,6 +173,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
         DuplicateCommand.NotifyCanExecuteChanged();
         RenameCommand.NotifyCanExecuteChanged();
         DeleteProfileCommand.NotifyCanExecuteChanged();
+        ShowProfileMapCommand.NotifyCanExecuteChanged();
         CopyLoadOrderCommand.NotifyCanExecuteChanged();
         if (_selectingProgrammatically || newValue == _shown)
         {

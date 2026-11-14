@@ -494,4 +494,56 @@ O jogo não vê os mods que estão lá, então ele inicia mais rápido e a lista
   <data name="TruckersMpNoMods" xml:space="preserve"><value>Sem mods, então não há nada para verificar.</value></data>
   <data name="TruckersMpProModsPart" xml:space="preserve"><value>ProMods ({0} arquivos, nos servidores ProMods)</value></data>
   <data name="TruckersMpWeatherPart" xml:space="preserve"><value>o clima sazonal do Grimes ({0} arquivos)</value></data>
+  <data name="ShowOnMap" xml:space="preserve"><value>Ver no mapa</value></data>
+  <data name="ShowOnMapHint" xml:space="preserve"><value>Mostra as estradas que este mod adiciona e remove. Aberto a partir de um perfil, é comparado com os mods abaixo dele ali.</value></data>
+  <data name="MapTitle" xml:space="preserve"><value>Mapa: {0}</value></data>
+  <data name="MapComparedProfile" xml:space="preserve"><value>Comparado com o jogo, suas DLCs e os mods abaixo dele em “{1}” ({0:N0}).</value></data>
+  <data name="MapComparedBase" xml:space="preserve"><value>Comparado com o jogo e suas DLCs. Abra a partir da ordem de carregamento de um perfil para incluir os mods abaixo dele.</value></data>
+  <data name="MapLoading" xml:space="preserve"><value>Lendo o mapa… {0} de {1}</value></data>
+  <data name="MapError" xml:space="preserve"><value>Não foi possível ler o mapa: {0}</value></data>
+  <data name="MapDlc" xml:space="preserve"><value>DLC {0}</value></data>
+  <data name="MapBaseGame" xml:space="preserve"><value>Jogo base</value></data>
+  <data name="MapModUnreadable" xml:space="preserve"><value>Este mod está protegido ou danificado, então o Dispatch não consegue ler as estradas dele.</value></data>
+  <data name="MapNoMap" xml:space="preserve"><value>Este mod não tem setores de mapa, então não muda nenhuma estrada.</value></data>
+  <data name="MapNoChanges" xml:space="preserve"><value>Os setores de mapa dele não adicionam nem removem estradas.</value></data>
+  <data name="MapAdds" xml:space="preserve"><value>Estradas adicionadas: {0:N0} ({1:N0} km). Cidades novas: {2:N0}.</value></data>
+  <data name="MapSectors" xml:space="preserve"><value>Setores de mapa: {0:N0} ({1:N0} novos, {2:N0} substituindo existentes).</value></data>
+  <data name="MapRemoves" xml:space="preserve"><value>Estradas removidas: {0:N0}, de {1}. Os setores dele substituem os de baixo, e essas estradas não estão na versão dele.</value></data>
+  <data name="MapHidden" xml:space="preserve"><value>Setores substituídos por mods acima dele: {0:N0}, por {1}. Ali o jogo mostra a versão deles, não a deste mod.</value></data>
+  <data name="MapUnreadableSectors" xml:space="preserve"><value>Arquivos de setor que não puderam ser lidos: {0:N0} (formato de mapa antigo, ou protegidos).</value></data>
+  <data name="MapUnreadableOthers" xml:space="preserve"><value>Mods protegidos na comparação: {0:N0}. As estradas deles não podem ser mostradas.</value></data>
+  <data name="MapNoGame" xml:space="preserve"><value>A pasta do jogo não foi encontrada, então as estradas do próprio jogo não aparecem.</value></data>
+  <data name="MapZoomChanges" xml:space="preserve"><value>Aproximar das mudanças</value></data>
+  <data name="MapWholeMap" xml:space="preserve"><value>Mapa inteiro</value></data>
+  <data name="MapLegendAdded" xml:space="preserve"><value>Estradas que adiciona</value></data>
+  <data name="MapLegendRemoved" xml:space="preserve"><value>Estradas que remove</value></data>
+  <data name="MapLegendHidden" xml:space="preserve"><value>Substituído por um mod acima</value></data>
+  <data name="MapLegendOther" xml:space="preserve"><value>Outras estradas</value></data>
+  <data name="MapHint" xml:space="preserve"><value>Role para dar zoom, arraste para mover, clique duplo para aproximar. Os cruzamentos são desenhados de forma simplificada.</value></data>
+  <data name="MapClose" xml:space="preserve"><value>Fechar</value></data>
+  <data name="MapSeparate" xml:space="preserve"><value>Este é um mapa separado (“{0}”) que um perfil usa no lugar do mapa do jogo, então ele só é comparado com mods para esse mapa.</value></data>
+  <data name="MapMore" xml:space="preserve"><value>mais {0:N0}</value></data>
+  <data name="ShowOnMapInProfile" xml:space="preserve"><value>Ver no mapa de um perfil</value></data>
+  <data name="NoReadableProfiles" xml:space="preserve"><value>Nenhum perfil pôde ser lido</value></data>
+  <data name="MapComparedProfileTop" xml:space="preserve"><value>Comparado com o jogo, suas DLCs e os mods em “{1}” ({0:N0}), como se fosse adicionado no topo da ordem de carregamento (onde “Adicionar ao perfil” o coloca).</value></data>
+  <data name="MapOtherMap" xml:space="preserve"><value>Este mod é para o mapa “{0}”, mas “{1}” usa “{2}”, então ele não muda as estradas desse perfil.</value></data>
+  <data name="ProfileMapTitle" xml:space="preserve"><value>Mapa de estradas: {0}</value></data>
+  <data name="ProfileMapButton" xml:space="preserve"><value>Mapa de estradas…</value></data>
+  <data name="ProfileMapButtonHint" xml:space="preserve"><value>Todas as estradas que o jogo e os mods deste perfil dão, coloridas pelo mod que as adiciona.</value></data>
+  <data name="ProfileMapSubtitle" xml:space="preserve"><value>O jogo, suas DLCs e os mods instalados da ordem de carregamento ({0:N0}). Cada estrada tem a cor do mod que a adiciona.</value></data>
+  <data name="ProfileMapSeparate" xml:space="preserve"><value>Este perfil usa o mapa “{0}”.</value></data>
+  <data name="ProfileMapTotals" xml:space="preserve"><value>Estradas: {0:N0} ({1:N0} km). De mods: {2:N0} ({3:N0} km).</value></data>
+  <data name="ProfileMapNoMapMods" xml:space="preserve"><value>Mods que não mudam o mapa: {0:N0}.</value></data>
+  <data name="ProfileMapMissing" xml:space="preserve"><value>Mods da ordem de carregamento que não estão instalados: {0:N0}. As estradas deles faltam aqui.</value></data>
+  <data name="ProfileMapHint" xml:space="preserve"><value>Desmarque um mod para ocultar as estradas dele; clique no nome para aproximar. Role para dar zoom, arraste para mover.</value></data>
+  <data name="LegendHeader" xml:space="preserve"><value>Mods que mudam o mapa</value></data>
+  <data name="LegendShowAll" xml:space="preserve"><value>Mostrar tudo</value></data>
+  <data name="LegendModsOnly" xml:space="preserve"><value>Só mods</value></data>
+  <data name="LegendToggle" xml:space="preserve"><value>Mostrar ou ocultar as estradas dele</value></data>
+  <data name="LegendZoom" xml:space="preserve"><value>Aproximar das estradas dele</value></data>
+  <data name="LegendRoads" xml:space="preserve"><value>{0:N0} estradas · {1:N0} km</value></data>
+  <data name="LegendRoadsCovered" xml:space="preserve"><value>{0:N0} estradas · {1:N0} km · {2:N0} de {3:N0} setores substituídos por mods acima</value></data>
+  <data name="LegendCovered" xml:space="preserve"><value>Todos os setores dele são substituídos por mods acima</value></data>
+  <data name="LegendProtected" xml:space="preserve"><value>Protegido, então as estradas dele não podem ser lidas</value></data>
+  <data name="LegendGame" xml:space="preserve"><value>Jogo e DLCs</value></data>
 </root>

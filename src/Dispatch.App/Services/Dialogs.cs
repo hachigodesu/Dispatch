@@ -37,6 +37,12 @@ public interface IDialogs
 
     /// <summary>Shows a suggested load order for review; true = put it in the editor.</summary>
     bool ReviewSuggestion(ViewModels.SuggestionViewModel suggestion);
+
+    /// <summary>Opens a Map window (not modal) and starts reading the map.</summary>
+    void ShowMap(ViewModels.MapViewModel map);
+
+    /// <summary>Opens a Profile map window (not modal) and starts reading the map.</summary>
+    void ShowProfileMap(ViewModels.ProfileMapViewModel map);
 }
 
 public sealed class Dialogs : IDialogs
@@ -105,4 +111,18 @@ public sealed class Dialogs : IDialogs
 
     public bool ReviewSuggestion(ViewModels.SuggestionViewModel suggestion) =>
         new Views.SuggestOrderDialog { Owner = Application.Current.MainWindow, DataContext = suggestion }.ShowDialog() == true;
+
+    public void ShowMap(ViewModels.MapViewModel map)
+    {
+        var window = new Views.MapWindow { Owner = Application.Current.MainWindow, DataContext = map };
+        window.Show();
+        _ = window.StartLoading();
+    }
+
+    public void ShowProfileMap(ViewModels.ProfileMapViewModel map)
+    {
+        var window = new Views.ProfileMapWindow { Owner = Application.Current.MainWindow, DataContext = map };
+        window.Show();
+        _ = window.StartLoading();
+    }
 }

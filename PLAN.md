@@ -588,6 +588,28 @@ that aren't marked as map ("Poland Rebuilding - Def") stay with it, and unclassi
 The result goes into the editor unsaved, after a confirmation that lists every move. On the real profiles: 9 of 54
 moves in the big map combo (all patches/connectors), 0–2 elsewhere.
 
+### After 0.8.0 (2026-11-14, requested): map view
+
+**Show on map** (mod details for map-like mods; any mod from the Mods tab's right-click menu) opens a window with the
+roads the mod adds (red), the roads below it that its sector files remove (blue, dashed), its sectors that a mod above
+it replaces (purple cells), the other roads (grey) and city names. From a profile's load order (including unsaved
+edits) the mod is compared with the game version that profile starts with, its DLCs and the mods below it; from the
+Mods tab with the game and DLCs only. A mod whose sectors aren't for the game's map (`map/europe`, ATS `map/usa`) is a
+separate map (Grand Utopia) and is compared only with mods for that map. Read-only; parsed sectors are cached per
+archive (path + size + time), so the base game is read once per update (5 s cold, under 1 s cached for its 110 archives).
+How sectors are read without knowing every item layout, and what can't be read (map format ≤ 889, protected
+packages): [docs/spikes/S12-map-view.md](docs/spikes/S12-map-view.md). Junctions are drawn as spokes; their real
+shapes (`.ppd`) and road classes are open.
+
+**Road map…** (Profiles, any readable profile): the profile's whole network on the map it plays (`map_path` in
+profile.sii, e.g. `/map/grandutopia.mbd`), each road coloured by the layer that added it, i.e. the lowest layer whose
+sectors have that road's UID (`MapNetwork`), so a mod that copies a sector keeps no credit for roads it didn't add. The
+legend lists the mods with map sectors (top of the load order first, then "Game and DLCs" in grey) with roads, km and
+how many of their sectors mods above replace; rows can be hidden and clicked to zoom. Colours go to the biggest
+contributors first (16 hand-picked, then golden-angle hues). **Show on map in profile ▸** (Mods tab menu): the mod at
+its place in that profile, or as if added at the top when it isn't in it (where "Add to profile" puts it); a mod for
+another map than the profile's says it doesn't change that profile.
+
 ---
 
 ## 7. Risks, unknowns and spikes
