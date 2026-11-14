@@ -7,7 +7,11 @@ public partial class MapWindow : Window
 {
     private readonly CancellationTokenSource _cancel = new();
 
-    public MapWindow() => InitializeComponent();
+    public MapWindow()
+    {
+        InitializeComponent();
+        Map.RoadClicked += (_, e) => (DataContext as ViewModels.MapViewModel)?.OnRoadClicked(e.Road);
+    }
 
     /// <summary>The map control (screenshots wait for its first render).</summary>
     public MapCanvas MapControl => Map;

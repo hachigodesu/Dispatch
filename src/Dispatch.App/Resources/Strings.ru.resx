@@ -70,7 +70,7 @@
   <data name="Save" xml:space="preserve"><value>Сохранить</value></data>
   <data name="Discard" xml:space="preserve"><value>Отменить изменения</value></data>
   <data name="UnsavedChanges" xml:space="preserve"><value>Не сохранено</value></data>
-  <data name="EditHint" xml:space="preserve"><value>Перетаскивайте, чтобы изменить порядок, или используйте кнопки (Alt+↑/↓). Моды добавляются на панели «Добавить моды».</value></data>
+  <data name="EditHint" xml:space="preserve"><value>Перетаскивайте, чтобы изменить порядок, используйте кнопки (Alt+↑/↓) или вырезайте и вставляйте (Ctrl+X, Ctrl+V). Моды добавляются на панели «Добавить моды».</value></data>
   <data name="SaveBlockedGameRunning" xml:space="preserve"><value>Закройте игру, чтобы сохранить.</value></data>
   <data name="PanelDetails" xml:space="preserve"><value>Детали</value></data>
   <data name="PanelAdd" xml:space="preserve"><value>Добавить</value></data>
@@ -519,7 +519,7 @@ Dispatch оставит только данные, которых эта вер�
   <data name="MapLegendRemoved" xml:space="preserve"><value>Удалённые дороги</value></data>
   <data name="MapLegendHidden" xml:space="preserve"><value>Заменено модом выше</value></data>
   <data name="MapLegendOther" xml:space="preserve"><value>Другие дороги</value></data>
-  <data name="MapHint" xml:space="preserve"><value>Колесо — масштаб, перетаскивание — перемещение, двойной щелчок — приблизить. Перекрёстки нарисованы упрощённо.</value></data>
+  <data name="MapHint" xml:space="preserve"><value>Колесо — масштаб, перетаскивание — перемещение, двойной щелчок — приблизить. Щёлкните по дороге, чтобы узнать, какой мод её добавляет. Перекрёстки нарисованы упрощённо.</value></data>
   <data name="MapClose" xml:space="preserve"><value>Закрыть</value></data>
   <data name="MapSeparate" xml:space="preserve"><value>Это отдельная карта («{0}»), которую профиль использует вместо карты игры, поэтому она сравнивается только с модами для этой карты.</value></data>
   <data name="MapMore" xml:space="preserve"><value>ещё {0:N0}</value></data>
@@ -535,7 +535,7 @@ Dispatch оставит только данные, которых эта вер�
   <data name="ProfileMapTotals" xml:space="preserve"><value>Дорог: {0:N0} ({1:N0} км). Из модов: {2:N0} ({3:N0} км).</value></data>
   <data name="ProfileMapNoMapMods" xml:space="preserve"><value>Модов, не меняющих карту: {0:N0}.</value></data>
   <data name="ProfileMapMissing" xml:space="preserve"><value>Неустановленных модов в порядке загрузки: {0:N0}. Их дорог здесь нет.</value></data>
-  <data name="ProfileMapHint" xml:space="preserve"><value>Снимите флажок, чтобы скрыть дороги мода; щёлкните по названию, чтобы приблизить их. Колесо — масштаб, перетаскивание — перемещение.</value></data>
+  <data name="ProfileMapHint" xml:space="preserve"><value>Щёлкните по дороге, чтобы найти мод, который её добавляет. Снимите флажок, чтобы скрыть дороги мода; щёлкните по названию, чтобы приблизить их. Колесо — масштаб, перетаскивание — перемещение.</value></data>
   <data name="LegendHeader" xml:space="preserve"><value>Моды, меняющие карту</value></data>
   <data name="LegendShowAll" xml:space="preserve"><value>Показать все</value></data>
   <data name="LegendModsOnly" xml:space="preserve"><value>Только моды</value></data>
@@ -546,4 +546,102 @@ Dispatch оставит только данные, которых эта вер�
   <data name="LegendCovered" xml:space="preserve"><value>Все его секторы заменены модами выше</value></data>
   <data name="LegendProtected" xml:space="preserve"><value>Защищён, поэтому его дороги не прочитать</value></data>
   <data name="LegendGame" xml:space="preserve"><value>Игра и DLC</value></data>
+  <data name="MapRoadFrom" xml:space="preserve"><value>Дорогу добавляет</value></data>
+  <data name="MapShowInLoadOrder" xml:space="preserve"><value>Показать в порядке загрузки</value></data>
+  <data name="CutMods" xml:space="preserve"><value>Вырезать</value></data>
+  <data name="PasteAbove" xml:space="preserve"><value>Вставить выше</value></data>
+  <data name="PasteBelow" xml:space="preserve"><value>Вставить ниже</value></data>
+  <data name="CancelCut" xml:space="preserve"><value>Отменить вырезание</value></data>
+  <data name="CutBadge" xml:space="preserve"><value>Вырезан</value></data>
+  <data name="CutDone" xml:space="preserve"><value>Вырезано модов: {0:N0}. Выберите мод и нажмите Ctrl+V, чтобы поставить их выше (Ctrl+Shift+V — ниже), или Esc для отмены.</value></data>
+  <data name="PasteDone" xml:space="preserve"><value>Перемещено модов: {0:N0}. Сохраните, чтобы оставить новый порядок.</value></data>
+  <data name="StatsButton" xml:space="preserve"><value>Статистика…</value></data>
+  <data name="StatsButtonHint" xml:space="preserve"><value>Компания, деньги, автопарк, гаражи и водители из последнего сохранения этого профиля.</value></data>
+  <data name="StatsTitle" xml:space="preserve"><value>Статистика: {0}</value></data>
+  <data name="StatsLoading" xml:space="preserve"><value>Чтение последнего сохранения…</value></data>
+  <data name="StatsNoSave" xml:space="preserve"><value>У этого профиля пока нет сохранений.</value></data>
+  <data name="StatsError" xml:space="preserve"><value>Не удалось прочитать последнее сохранение: {0}</value></data>
+  <data name="StatsFromSave" xml:space="preserve"><value>Из сохранения «{0}», {1}.</value></data>
+  <data name="StatsNote" xml:space="preserve"><value>Прочитано из последнего сохранения; ничего не меняется. Доходы — только за дни, которые хранит игра.</value></data>
+  <data name="StatMoney" xml:space="preserve"><value>Деньги</value></data>
+  <data name="StatLoansDetail" xml:space="preserve"><value>Кредитов: {0:N0} ({1})</value></data>
+  <data name="StatLevel" xml:space="preserve"><value>Уровень</value></data>
+  <data name="StatXp" xml:space="preserve"><value>{0:N0} опыта</value></data>
+  <data name="StatDistance" xml:space="preserve"><value>Проехано вами</value></data>
+  <data name="StatFleetKm" xml:space="preserve"><value>Пробег автопарка</value></data>
+  <data name="StatTrucks" xml:space="preserve"><value>Грузовики</value></data>
+  <data name="StatTrailersDetail" xml:space="preserve"><value>Прицепов: {0:N0}</value></data>
+  <data name="StatGarages" xml:space="preserve"><value>Гаражи</value></data>
+  <data name="StatGaragesDetail" xml:space="preserve"><value>Мест для грузовиков: {0:N0}</value></data>
+  <data name="StatDrivers" xml:space="preserve"><value>Нанятые водители</value></data>
+  <data name="StatHq" xml:space="preserve"><value>Штаб-квартира</value></data>
+  <data name="StatDays" xml:space="preserve"><value>Игровых дней</value></data>
+  <data name="StatCities" xml:space="preserve"><value>Посещено городов</value></data>
+  <data name="StatExploredDetail" xml:space="preserve"><value>Исследовано дорог: {0:P0}</value></data>
+  <data name="StatDealers" xml:space="preserve"><value>Найдено дилеров</value></data>
+  <data name="StatRecruitDetail" xml:space="preserve"><value>Кадровых агентств: {0:N0}</value></data>
+  <data name="StatFines" xml:space="preserve"><value>Штрафы</value></data>
+  <data name="StatFinesDetail" xml:space="preserve"><value>Штрафов: {0:N0}</value></data>
+  <data name="StatFerries" xml:space="preserve"><value>Поездок на пароме и поезде</value></data>
+  <data name="StatCreated" xml:space="preserve"><value>Профиль создан</value></data>
+  <data name="StatsIncomeHeader" xml:space="preserve"><value>Доходы компании за последние игровые дни: {0:N0}</value></data>
+  <data name="StatRevenue" xml:space="preserve"><value>Выручка</value></data>
+  <data name="StatCosts" xml:space="preserve"><value>Расходы</value></data>
+  <data name="StatCostsDetail" xml:space="preserve"><value>Зарплаты {0}, обслуживание {1}, топливо {2}</value></data>
+  <data name="StatProfit" xml:space="preserve"><value>Прибыль</value></data>
+  <data name="StatsDayTooltip" xml:space="preserve"><value>День {0:N0}: выручка {1}, прибыль {2}, {3:N0} км</value></data>
+  <data name="StatsDayAxis" xml:space="preserve"><value>(игровой день)</value></data>
+  <data name="StatsSkillsHeader" xml:space="preserve"><value>Ваши навыки</value></data>
+  <data name="SkillAdr" xml:space="preserve"><value>ADR</value></data>
+  <data name="SkillLongDistance" xml:space="preserve"><value>Дальние рейсы</value></data>
+  <data name="SkillHighValue" xml:space="preserve"><value>Ценный груз</value></data>
+  <data name="SkillFragile" xml:space="preserve"><value>Хрупкий груз</value></data>
+  <data name="SkillJustInTime" xml:space="preserve"><value>Срочная доставка</value></data>
+  <data name="SkillEco" xml:space="preserve"><value>Экономичное вождение</value></data>
+  <data name="StatsTrucksTab" xml:space="preserve"><value>Грузовики ({0:N0})</value></data>
+  <data name="StatsGaragesTab" xml:space="preserve"><value>Гаражи ({0:N0})</value></data>
+  <data name="StatsDriversTab" xml:space="preserve"><value>Водители ({0:N0})</value></data>
+  <data name="ColModel" xml:space="preserve"><value>Модель</value></data>
+  <data name="ColPlate" xml:space="preserve"><value>Номер</value></data>
+  <data name="ColOdometer" xml:space="preserve"><value>Пробег (км)</value></data>
+  <data name="ColWear" xml:space="preserve"><value>Износ</value></data>
+  <data name="ColGarage" xml:space="preserve"><value>Гараж</value></data>
+  <data name="ColDriver" xml:space="preserve"><value>Водитель из</value></data>
+  <data name="ColCity" xml:space="preserve"><value>Город</value></data>
+  <data name="ColSlots" xml:space="preserve"><value>Места</value></data>
+  <data name="ColTrucks" xml:space="preserve"><value>Грузовики</value></data>
+  <data name="ColDrivers" xml:space="preserve"><value>Водители</value></data>
+  <data name="ColRevenue" xml:space="preserve"><value>Выручка</value></data>
+  <data name="ColProfit" xml:space="preserve"><value>Прибыль</value></data>
+  <data name="ColProductivity" xml:space="preserve"><value>Производительность</value></data>
+  <data name="ColLevel" xml:space="preserve"><value>Уровень</value></data>
+  <data name="ColXp" xml:space="preserve"><value>Опыт</value></data>
+  <data name="ColSkills" xml:space="preserve"><value>Навыки (ADR · дальн. · ценн. · хрупк. · срочн. · эко)</value></data>
+  <data name="JobsTab" xml:space="preserve"><value>Ваши рейсы ({0:N0})</value></data>
+  <data name="JobsNone" xml:space="preserve"><value>В этом сохранении пока нет завершённых рейсов.</value></data>
+  <data name="JobsCount" xml:space="preserve"><value>Завершено рейсов</value></data>
+  <data name="JobsDistance" xml:space="preserve"><value>Пробег в рейсах</value></data>
+  <data name="JobsEarned" xml:space="preserve"><value>Заработано</value></data>
+  <data name="JobsPerKm" xml:space="preserve"><value>В среднем {0} за км</value></data>
+  <data name="JobsXp" xml:space="preserve"><value>Опыт за рейсы</value></data>
+  <data name="JobsClean" xml:space="preserve"><value>Доставлено без повреждений</value></data>
+  <data name="JobsLongest" xml:space="preserve"><value>Самый длинный рейс</value></data>
+  <data name="JobsTopCargo" xml:space="preserve"><value>Самый частый груз</value></data>
+  <data name="JobsTopRoute" xml:space="preserve"><value>Самый частый маршрут</value></data>
+  <data name="JobsTimes" xml:space="preserve"><value>Раз: {0:N0}</value></data>
+  <data name="JobsDay" xml:space="preserve"><value>День {0:N0}, {1}</value></data>
+  <data name="JobKindQuick" xml:space="preserve"><value>Быстрый заказ</value></data>
+  <data name="JobKindSpecial" xml:space="preserve"><value>Спецперевозка</value></data>
+  <data name="ColFinished" xml:space="preserve"><value>Завершён</value></data>
+  <data name="ColFrom" xml:space="preserve"><value>Откуда</value></data>
+  <data name="ColTo" xml:space="preserve"><value>Куда</value></data>
+  <data name="ColCargo" xml:space="preserve"><value>Груз</value></data>
+  <data name="ColMass" xml:space="preserve"><value>Масса (т)</value></data>
+  <data name="ColKm" xml:space="preserve"><value>км</value></data>
+  <data name="ColPayment" xml:space="preserve"><value>Оплата</value></data>
+  <data name="ColPerKm" xml:space="preserve"><value>За км</value></data>
+  <data name="ColDamage" xml:space="preserve"><value>Повреждения</value></data>
+  <data name="ColTruck" xml:space="preserve"><value>Грузовик</value></data>
+  <data name="ColKind" xml:space="preserve"><value>Рейс</value></data>
+  <data name="JobKindCargo" xml:space="preserve"><value>Рынок грузов</value></data>
 </root>

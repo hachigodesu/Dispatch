@@ -6,8 +6,19 @@ namespace Dispatch.App.ViewModels;
 /// <summary>Roads drawn in one style.</summary>
 /// <param name="Width">Line width zoomed out; <paramref name="ZoomWidth"/> is added when zoomed in to single roads.</param>
 /// <param name="AlwaysShow">Draw even roads shorter than a pixel (changes must never disappear when zoomed out).</param>
+/// <param name="Tag">Whatever the owner wants back when one of these roads is clicked (e.g. a legend row).</param>
+/// <param name="Dim">Draw faded, so another layer stands out.</param>
 public sealed record MapSceneLayer(IReadOnlyList<MapRoad> Roads, IReadOnlyList<MapPrefab> Prefabs, Color Color, double Width,
-                                   double ZoomWidth, bool Dashed = false, bool AlwaysShow = false);
+                                   double ZoomWidth, bool Dashed = false, bool AlwaysShow = false, object? Tag = null, bool Dim = false);
+
+/// <summary>A clicked road and the scene layer it was drawn in.</summary>
+public sealed class MapRoadClickedEventArgs(MapSceneLayer? layer, MapRoad? road) : EventArgs
+{
+    /// <summary>Null when the click hit no road (clears a highlight).</summary>
+    public MapSceneLayer? Layer { get; } = layer;
+
+    public MapRoad? Road { get; } = road;
+}
 
 /// <summary>A city label. Strong labels are bold, placed first and drawn in their colour.</summary>
 public readonly record struct MapLabel(string Name, MapPoint Position, bool Strong, Color Color);

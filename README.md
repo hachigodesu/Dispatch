@@ -52,7 +52,8 @@ something is installed somewhere unusual, you can set the paths in **Settings**.
   replaces another map's roads, and which of its parts a mod above it covers up. From the Mods tab you can also see
   how a mod would change any profile's roads before you add it.
 - **Road map:** a profile's whole road network, each road coloured by the mod that adds it, with a legend to hide mods
-  or jump to them.
+  or jump to them. Click any road to find the mod that adds it and jump to it in the load order.
+- **Cut and paste** mods in a load order (Ctrl+X, Ctrl+V, or right-click).
 - **Copy a load order** from one profile to others.
 - **Presets:** save a load order under a name. You can apply it to any profile, or export it as a file to share. When
   you import a preset, Dispatch lists the mods you don't have, with Workshop links where there are any.
@@ -64,6 +65,9 @@ something is installed somewhere unusual, you can set the paths in **Settings**.
 - The **Multiplayer** panel shows which active mods everyone in your **Convoy** needs too, and which are optional.
   Copy the list to send to the people you drive with. It also hints which mods **TruckersMP** supports (only ProMods
   and the seasonal weather mods).
+- **Stats** shows a profile's company from its newest save: money, level, distance driven, trucks, garages and
+  drivers (with sortable tables), cities visited, fines, your skills, the company's income for the last days of play,
+  and every job you've finished (cargo, route, payment, damage, truck) with totals. It only reads the save.
 
 ### Manage profiles
 - **Duplicate** a profile as a full copy, or as a fresh start that has its settings and mods but no saves. You can

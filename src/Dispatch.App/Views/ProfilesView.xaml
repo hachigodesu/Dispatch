@@ -11,14 +11,19 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance vm:ProfilesViewModel}">
     <Grid Margin="8">
+        <!-- Three areas with drag handles between them (widths remembered, see PaneLayout). -->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" />
-            <ColumnDefinition Width="*" MinWidth="360" />
-            <ColumnDefinition Width="390" />
+            <ColumnDefinition x:Name="ListColumn" Width="250" MinWidth="170" MaxWidth="520" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" MinWidth="320" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition x:Name="SideColumn" Width="390" MinWidth="280" MaxWidth="900" />
         </Grid.ColumnDefinitions>
+        <GridSplitter x:Name="ListSplitter" Grid.Column="1" Style="{StaticResource PaneSplitter}" />
+        <GridSplitter x:Name="SideSplitter" Grid.Column="3" Style="{StaticResource PaneSplitter}" />
 
         <!-- Left: profiles -->
-        <DockPanel Margin="0,0,12,0">
+        <DockPanel>
             <TextBlock DockPanel.Dock="Top" Text="{Binding Summary}" Style="{StaticResource Muted}" Margin="4,0,0,6" />
             <WrapPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
                 <Button Content="{x:Static res:Strings.Duplicate}" Command="{Binding DuplicateCommand}" Margin="0,0,6,6" />
@@ -27,6 +32,8 @@
                 <Button Content="{x:Static res:Strings.CopyLoadOrder}" Command="{Binding CopyLoadOrderCommand}" Margin="0,0,6,6" />
                 <Button Content="{x:Static res:Strings.ProfileMapButton}" Command="{Binding ShowProfileMapCommand}" Margin="0,0,6,6"
                         ToolTip="{x:Static res:Strings.ProfileMapButtonHint}" />
+                <Button Content="{x:Static res:Strings.StatsButton}" Command="{Binding ShowStatsCommand}" Margin="0,0,6,6"
+                        ToolTip="{x:Static res:Strings.StatsButtonHint}" />
             </WrapPanel>
             <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}">
                 <ListBox.ItemTemplate>
@@ -42,16 +49,16 @@
         </DockPanel>
 
         <!-- Middle: editable load order -->
-        <DockPanel Grid.Column="1" Margin="0,0,12,0">
+        <DockPanel Grid.Column="2">
             <StackPanel DockPanel.Dock="Top" Margin="4,0,0,6">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Selected.Name}" Style="{StaticResource SectionHeader}" Margin="0" />
-                    <Border Style="{StaticResource Badge}" Background="#B25E00" Margin="10,0,0,0"
+                <WrapPanel>
+                    <TextBlock Text="{Binding Selected.Name}" Style="{StaticResource SectionHeader}" Margin="0,0,10,0" />
+                    <Border Style="{StaticResource Badge}" Background="#B25E00" VerticalAlignment="Center"
                             Visibility="{Binding IsDirty, Converter={StaticResource VisibleWhen}}">
                         <TextBlock Text="{x:Static res:Strings.UnsavedChanges}" Style="{StaticResource BadgeText}" />
                     </Border>
-                </StackPanel>
-                <TextBlock Text="{x:Static res:Strings.LoadOrderHint}" Style="{StaticResource Muted}" />
+                </WrapPanel>
+                <TextBlock Text="{x:Static res:Strings.LoadOrderHint}" Style="{StaticResource Muted}" TextWrapping="Wrap" />
                 <Border Background="#220078D4" BorderBrush="#0078D4" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,6,0,0"
                         Visibility="{Binding Selected.IsCloud, Converter={StaticResource VisibleWhen}}">
                     <TextBlock Text="{x:Static res:Strings.CloudReadOnly}" TextWrapping="Wrap" />
@@ -60,11 +67,11 @@
                            Visibility="{Binding Selected.Error, Converter={StaticResource VisibleWhen}}" />
                 <!-- Game version this profile launches with (only when kept copies of other versions exist). -->
                 <StackPanel Margin="0,6,0,0" Visibility="{Binding HasVersionChoice, Converter={StaticResource VisibleWhen}}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{x:Static res:Strings.LaunchWith}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <WrapPanel>
+                        <TextBlock Text="{x:Static res:Strings.LaunchWith}" VerticalAlignment="Center" Margin="0,0,8,4" />
                         <ComboBox ItemsSource="{Binding LaunchChoices}" SelectedItem="{Binding SelectedLaunchChoice}"
-                                  DisplayMemberPath="Label" MinWidth="280" />
-                    </StackPanel>
+                                  DisplayMemberPath="Label" MinWidth="220" Margin="0,0,0,4" />
+                    </WrapPanel>
                     <TextBlock Text="{Binding LaunchHint}" TextWrapping="Wrap" FontSize="11" Margin="0,4,0,0"
                                Visibility="{Binding LaunchHint, Converter={StaticResource VisibleWhen}}">
                         <TextBlock.Style>
@@ -114,10 +121,37 @@
                         <KeyBinding Modifiers="Alt" Key="Up" Command="{Binding MoveUpCommand}" />
                         <KeyBinding Modifiers="Alt" Key="Down" Command="{Binding MoveDownCommand}" />
                         <KeyBinding Key="Delete" Command="{Binding RemoveCommand}" />
+                        <KeyBinding Modifiers="Ctrl" Key="X" Command="{Binding CutCommand}" />
+                        <KeyBinding Modifiers="Ctrl" Key="V" Command="{Binding PasteAboveCommand}" />
+                        <KeyBinding Modifiers="Ctrl+Shift" Key="V" Command="{Binding PasteBelowCommand}" />
+                        <KeyBinding Key="Escape" Command="{Binding CancelCutCommand}" />
                     </ListBox.InputBindings>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{x:Static res:Strings.CutMods}" Command="{Binding CutCommand}" InputGestureText="Ctrl+X" />
+                            <MenuItem Header="{x:Static res:Strings.PasteAbove}" Command="{Binding PasteAboveCommand}" InputGestureText="Ctrl+V" />
+                            <MenuItem Header="{x:Static res:Strings.PasteBelow}" Command="{Binding PasteBelowCommand}" InputGestureText="Ctrl+Shift+V" />
+                            <MenuItem Header="{x:Static res:Strings.CancelCut}" Command="{Binding CancelCutCommand}" InputGestureText="Esc" />
+                            <Separator />
+                            <MenuItem Header="{x:Static res:Strings.MoveTop}" Command="{Binding MoveTopCommand}" />
+                            <MenuItem Header="{x:Static res:Strings.MoveBottom}" Command="{Binding MoveBottomCommand}" />
+                            <MenuItem Header="{x:Static res:Strings.Remove}" Command="{Binding RemoveCommand}" InputGestureText="Del" />
+                            <Separator />
+                            <MenuItem Header="{x:Static res:Strings.ShowOnMap}" Command="{Binding SelectedEntryMod.ShowOnMapCommand}" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="vm:LoadOrderItemViewModel">
-                            <Grid Margin="0,2">
+                            <Grid Margin="0,2" HorizontalAlignment="Left" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListBox}, Converter={StaticResource Ratio}, ConverterParameter='1 -36'}">
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsCut}" Value="True">
+                                                <Setter Property="Opacity" Value="0.4" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="32" />
                                     <ColumnDefinition Width="72" />
@@ -132,7 +166,11 @@
                                     <TextBlock Text="{Binding PackageId}" Style="{StaticResource Muted}" FontSize="11"
                                                TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                                <WrapPanel Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListBox}, Converter={StaticResource Ratio}, ConverterParameter=0.42}">
+                                    <Border Style="{StaticResource Badge}" Background="#5A5A5A" Margin="0,0,6,0"
+                                            Visibility="{Binding IsCut, Converter={StaticResource VisibleWhen}}">
+                                        <TextBlock Text="{x:Static res:Strings.CutBadge}" Style="{StaticResource BadgeText}" />
+                                    </Border>
                                     <Border Style="{StaticResource Badge}" Background="#6B4FA0" Margin="0,0,6,0"
                                             ToolTip="{Binding ConflictTooltip}"
                                             Visibility="{Binding HasConflicts, Converter={StaticResource VisibleWhen}}">
@@ -146,7 +184,7 @@
                                             Background="{Binding CompatStatus, Converter={StaticResource CompatToBrush}}">
                                         <TextBlock Text="{Binding StatusLabel}" Style="{StaticResource BadgeText}" />
                                     </Border>
-                                </StackPanel>
+                                </WrapPanel>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -155,7 +193,7 @@
         </DockPanel>
 
         <!-- Right: details / add mods / backups -->
-        <TabControl x:Name="SidePanel" Grid.Column="2" SelectedIndex="{Binding SidePanelIndex}">
+        <TabControl x:Name="SidePanel" Grid.Column="4" SelectedIndex="{Binding SidePanelIndex}">
             <!-- Six tabs in 390 px: compact headers that wrap in place (the theme's panel stretches them and moves the
                  selected row to the bottom). -->
             <TabControl.Template>
@@ -333,10 +371,10 @@
             <TabItem Header="{x:Static res:Strings.PanelBackups}">
                 <DockPanel Margin="0,8,0,0">
                     <TextBlock DockPanel.Dock="Top" Text="{x:Static res:Strings.BackupsHint}" Style="{StaticResource Muted}" Margin="0,0,0,6" />
-                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
-                        <Button Content="{x:Static res:Strings.RestoreBackup}" Command="{Binding RestoreBackupCommand}" />
-                        <Button Content="{x:Static res:Strings.OpenBackupFolder}" Command="{Binding OpenBackupFolderCommand}" Margin="6,0,0,0" />
-                    </StackPanel>
+                    <WrapPanel DockPanel.Dock="Bottom" Margin="0,6,0,0">
+                        <Button Content="{x:Static res:Strings.RestoreBackup}" Command="{Binding RestoreBackupCommand}" Margin="0,0,6,6" />
+                        <Button Content="{x:Static res:Strings.OpenBackupFolder}" Command="{Binding OpenBackupFolderCommand}" Margin="0,0,6,6" />
+                    </WrapPanel>
                     <Grid>
                         <TextBlock Text="{x:Static res:Strings.NoBackups}" Style="{StaticResource Muted}"
                                    Visibility="{Binding Backups.Count, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />

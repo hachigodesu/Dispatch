@@ -174,6 +174,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
         RenameCommand.NotifyCanExecuteChanged();
         DeleteProfileCommand.NotifyCanExecuteChanged();
         ShowProfileMapCommand.NotifyCanExecuteChanged();
+        ShowStatsCommand.NotifyCanExecuteChanged();
         CopyLoadOrderCommand.NotifyCanExecuteChanged();
         if (_selectingProgrammatically || newValue == _shown)
         {
@@ -197,6 +198,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
 
     private void ShowProfile(ProfileItemViewModel? profile)
     {
+        ClearCut();
         _shown = profile;
         _suppressDirty = true;
         LoadOrder.Clear();
@@ -426,6 +428,9 @@ public sealed partial class ProfilesViewModel : ObservableObject
         MoveBottomCommand.NotifyCanExecuteChanged();
         RemoveCommand.NotifyCanExecuteChanged();
         AddSelectedCommand.NotifyCanExecuteChanged();
+        CutCommand.NotifyCanExecuteChanged();
+        PasteAboveCommand.NotifyCanExecuteChanged();
+        PasteBelowCommand.NotifyCanExecuteChanged();
         OnPropertyChanged(nameof(SelectionCount));
     }
 

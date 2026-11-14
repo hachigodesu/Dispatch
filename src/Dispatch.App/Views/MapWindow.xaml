@@ -67,6 +67,18 @@
         <Border BorderBrush="#40808080" BorderThickness="1" CornerRadius="6" ClipToBounds="True">
             <Grid>
                 <v:MapCanvas x:Name="Map" Scene="{Binding Scene}" />
+                <!-- The clicked road's mod -->
+                <Border HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10" Padding="10,6" CornerRadius="6"
+                        Background="#F2FFFFFF" BorderBrush="#40808080" BorderThickness="1" MaxWidth="460"
+                        Visibility="{Binding ClickedRoadFrom, Converter={StaticResource VisibleWhen}}">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static res:Strings.MapRoadFrom}" Foreground="#555555" FontSize="11" />
+                        <TextBlock Text="{Binding ClickedRoadFrom}" Foreground="#111111" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <Button Content="{x:Static res:Strings.MapShowInLoadOrder}" Command="{Binding ShowInLoadOrderCommand}"
+                                HorizontalAlignment="Left" Margin="0,6,0,0"
+                                Visibility="{Binding ClickedPackageId, Converter={StaticResource VisibleWhen}}" />
+                    </StackPanel>
+                </Border>
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="320"
                             Visibility="{Binding IsLoading, Converter={StaticResource VisibleWhen}}">
                     <TextBlock Text="{Binding ProgressText}" HorizontalAlignment="Center" Foreground="#333333" Margin="0,0,0,8" />

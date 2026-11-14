@@ -123,5 +123,50 @@ public sealed class MapNetwork
         return new MapNetwork(layers, roads, prefabs, cities, extent);
     }
 
+    /// <summary>
+    /// For every road UID in any layer: the index of the layer that added it (the lowest one that has it). Used to say
+    /// which mod a clicked road comes from, including roads a mod above removed.
+    /// </summary>
+    public static Dictionary<ulong, int> FirstOwners(IReadOnlyList<MapLayer> bottomFirst)
+    {
+        var owners = new Dictionary<ulong, int>();
+        for (int i = 0; i < bottomFirst.Count; i++)
+        {
+            foreach (var s in bottomFirst[i].Map.Sectors.Values)
+            {
+                foreach (var r in s.Roads)
+                {
+                    owners.TryAdd(r.Uid, i);
+                }
+            }
+        }
+
+        return owners;
+    }
+
+    /// <summary>The shortest distance (metres) from a point to the road's curve, sampled finely enough for clicking.</summary>
+    public static float DistanceTo(MapRoad road, MapPoint p)
+    {
+        int steps = Math.Clamp((int)(road.Length / 25), 4, 64);
+        float best = float.MaxValue;
+        var prev = road.A;
+        for (int k = 1; k <= steps; k++)
+        {
+            var next = road.At((float)k / steps);
+            best = Math.Min(best, SegmentDistance(prev, next, p));
+            prev = next;
+        }
+
+        return best;
+    }
+
+    private static float SegmentDistance(MapPoint a, MapPoint b, MapPoint p)
+    {
+        var ab = b - a;
+        float len2 = ab.Dot(ab);
+        float t = len2 < 1e-6f ? 0 : Math.Clamp((p - a).Dot(ab) / len2, 0, 1);
+        return (p - (a + (ab * t))).Length;
+    }
+
     private static MapRect? Bounds(List<MapRoad> roads) => roads.Count == 0 ? null : roads.Select(r => r.Bounds).Aggregate((a, b) => a.Union(b));
 }

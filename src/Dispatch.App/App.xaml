@@ -10,6 +10,7 @@
         <c:SeverityToBrushConverter x:Key="SeverityToBrush" />
         <c:PathToImageConverter x:Key="PathToImage" />
         <c:VisibleWhenConverter x:Key="VisibleWhen" />
+        <c:RatioConverter x:Key="Ratio" />
         <c:NotConverter x:Key="Not" />
         <c:BoolToBrushConverter x:Key="BoolToBrush" />
 
@@ -49,6 +50,38 @@
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0,6,0,0" />
             <Setter Property="MinHeight" Value="0" />
+        </Style>
+
+        <!-- A drag handle between two side-by-side areas: put it in its own Auto column between them. It shows a thin
+             grip line that lights up on hover and while dragging. -->
+        <Style x:Key="PaneSplitter" TargetType="GridSplitter">
+            <Setter Property="Width" Value="12" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="ResizeBehavior" Value="PreviousAndNext" />
+            <Setter Property="ResizeDirection" Value="Columns" />
+            <Setter Property="Cursor" Value="SizeWE" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="ShowsPreview" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridSplitter">
+                        <Border Background="Transparent">
+                            <Rectangle x:Name="Grip" Width="2" RadiusX="1" RadiusY="1" Margin="0,24" Fill="#30808080" HorizontalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Grip" Property="Fill" Value="#A00078D4" />
+                                <Setter TargetName="Grip" Property="Width" Value="3" />
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="True">
+                                <Setter TargetName="Grip" Property="Fill" Value="#FF0078D4" />
+                                <Setter TargetName="Grip" Property="Width" Value="3" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Application.Resources>
 </Application>

@@ -54,6 +54,10 @@ internal sealed class AutoYesDialogs : IDialogs
 
     public void ShowProfileMap(ViewModels.ProfileMapViewModel map) => ProfileMaps.Add(map);
 
+    public List<ViewModels.StatsViewModel> StatsWindows { get; } = [];
+
+    public void ShowStats(ViewModels.StatsViewModel stats) => StatsWindows.Add(stats);
+
     public IReadOnlyList<ViewModels.ProfileItemViewModel> PickProfiles(string title, string prompt,
                                                                         IReadOnlyList<ViewModels.ProfileItemViewModel> profiles)
     {
@@ -131,7 +135,9 @@ internal static class SelfTest
             bool v2 = await ConflictsAsync(vm, profileName, resultFile, Step) && await SwitchGameAsync(vm, profileName, Step);
             bool versions = await VersionsAsync(vm, dialogs, profileName, Step);
             bool map = await MapAsync(vm, dialogs, profileName, Step);
-            m4 = m4 && bulk && v1 && v2 && versions && map;
+            bool cut = CutPaste(vm, profileName, Step);
+            bool stats = await StatsAsync(vm, dialogs, profileName, Step);
+            m4 = m4 && bulk && v1 && v2 && versions && map && cut && stats;
             Step($"dialog errors: {(dialogs.Errors.Count == 0 ? "none" : string.Join(" / ", dialogs.Errors))}");
             ok = saved && restored && m3 && m4 && !vm.Mods.TypeOptions.Contains("Maps") && dialogs.Errors.Count == 0;
         }
@@ -219,7 +225,78 @@ internal static class SelfTest
         toggled = toggled && (network.Scene?.Layers.Count ?? 0) == layersBefore;
         step($"road map: {n?.RoadsByLayer.Sum(l => l.Count)} roads, legend rows {network.Legend.Count}, map {network.Request.MapName}: " +
              $"layers ok: {layered}; hiding the game and showing all again: {toggled}");
-        return stack && read && gameOnly && inProfile && layered && toggled;
+
+        // Clicking a road: the road map selects (and fades all but) the layer it was drawn in; the single-mod map
+        // names the layer that added it.
+        bool clicked = true;
+        if (network.Scene?.Layers.FirstOrDefault(l => l.Roads.Count > 0) is { } clickedLayer)
+        {
+            network.OnRoadClicked(clickedLayer);
+            clicked = network.SelectedLegendItem == clickedLayer.Tag && network.Scene!.Layers.Count(l => !l.Dim) == 1;
+            network.OnRoadClicked(null);
+            clicked = clicked && network.SelectedLegendItem is null && network.Scene!.Layers.All(l => !l.Dim);
+        }
+
+        if (c is { BackgroundRoads.Count: > 0 })
+        {
+            fromProfile.OnRoadClicked(c.BackgroundRoads[0]);
+            clicked = clicked && fromProfile.ClickedRoadFrom is not null;
+            fromProfile.OnRoadClicked(null);
+            clicked = clicked && fromProfile.ClickedRoadFrom is null;
+        }
+
+        // "Show in load order" selects that mod in the editor.
+        bool shown = vm.SelectInLoadOrder(p.Selected, entry.PackageId) && p.SelectedEntry?.PackageId == entry.PackageId && vm.SelectedTab == 0;
+        step($"click a road: road map selects its mod and fades the rest, Map window names its layer: {clicked}; show in load order: {shown}");
+        return stack && read && gameOnly && inProfile && layered && toggled && clicked && shown;
+    }
+
+    /// <summary>Cut the top mod, paste it below the last one: an unsaved move (then discarded). Nothing is saved.</summary>
+    private static bool CutPaste(MainViewModel vm, string profileName, Action<string> step)
+    {
+        var p = vm.Profiles;
+        p.Selected = p.Items.First(i => i.Name == profileName && !i.IsCloud);
+        var before = p.LoadOrder.Select(l => l.PackageId).ToList();
+        p.SelectedEntries.Clear();
+        p.SelectedEntry = p.LoadOrder[0];
+        p.CutCommand.Execute(null);
+        bool marked = p.HasCut && p.LoadOrder[0].IsCut && !p.PasteAboveCommand.CanExecute(null); // can't paste onto itself
+        p.SelectedEntry = p.LoadOrder[^1];
+        p.PasteBelowCommand.Execute(null);
+        var after = p.LoadOrder.Select(l => l.PackageId).ToList();
+        bool moved = after.SequenceEqual(before.Skip(1).Append(before[0])) && p.IsDirty && !p.HasCut && p.LoadOrder.All(l => !l.IsCut);
+
+        p.SelectedEntry = p.LoadOrder[1];
+        p.CutCommand.Execute(null);
+        p.CancelCutCommand.Execute(null);
+        bool cancelled = !p.HasCut && p.LoadOrder.All(l => !l.IsCut);
+        p.DiscardCommand.Execute(null);
+        bool discarded = p.LoadOrder.Select(l => l.PackageId).SequenceEqual(before) && !p.IsDirty;
+        step($"cut and paste: marked {marked}, pasted below the last mod (unsaved) {moved}, cancel {cancelled}, discarded {discarded}");
+        return marked && moved && cancelled && discarded;
+    }
+
+    /// <summary>Stats from DispatchTest's newest save (read-only).</summary>
+    private static async Task<bool> StatsAsync(MainViewModel vm, AutoYesDialogs dialogs, string profileName, Action<string> step)
+    {
+        var p = vm.Profiles;
+        p.Selected = p.Items.First(i => i.Name == profileName && !i.IsCloud);
+        if (!p.ShowStatsCommand.CanExecute(null))
+        {
+            step($"stats: skipped ({p.Selected.Profile.SaveCount} saves)");
+            return p.Selected.Profile.SaveCount == 0;
+        }
+
+        dialogs.StatsWindows.Clear();
+        p.ShowStatsCommand.Execute(null);
+        var stats = dialogs.StatsWindows.Single();
+        await stats.LoadAsync();
+        var s = stats.Stats;
+        bool ok = stats.HasStats && s is not null && stats.Tiles.Count >= 10 && stats.Skills.Count == 6 && s.Level >= 0 &&
+                  stats.Jobs.Count == s.Jobs.Count && stats.HasJobs == (s.Jobs.Count > 0) && (s.Jobs.Count == 0 || stats.JobTiles.Count >= 6);
+        step($"stats: level {s?.Level}, {s?.Trucks.Count} trucks, {s?.Garages.Count} garages, {s?.Drivers.Count} drivers, " +
+             $"{s?.Days.Count} days of income, {s?.Jobs.Count} jobs; tiles {stats.Tiles.Count}: {ok}");
+        return ok;
     }
 
     /// <summary>

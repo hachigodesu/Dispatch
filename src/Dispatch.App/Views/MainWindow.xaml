@@ -100,7 +100,7 @@
                 <v:ProfilesView x:Name="ProfilesPage" DataContext="{Binding Profiles}" />
             </TabItem>
             <TabItem Header="{x:Static res:Strings.TabMods}">
-                <v:ModsView DataContext="{Binding Mods}" />
+                <v:ModsView x:Name="ModsPage" DataContext="{Binding Mods}" />
             </TabItem>
             <TabItem Header="{x:Static res:Strings.TabHealth}">
                 <v:HealthView DataContext="{Binding Health}" />

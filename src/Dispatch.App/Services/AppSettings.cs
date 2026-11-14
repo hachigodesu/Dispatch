@@ -88,6 +88,9 @@ public sealed class AppSettings
     [System.Text.Json.Serialization.JsonIgnore]
     public bool ReadOnly { get; set; }
 
+    /// <summary>Widths of resizable areas the user dragged (e.g. "profiles.list"), in DIPs. See PaneLayout.</summary>
+    public Dictionary<string, double> PaneWidths { get; set; } = [];
+
     public int BackupRetentionSmall { get; set; } = 20;
 
     public int BackupRetentionFull { get; set; } = 5;

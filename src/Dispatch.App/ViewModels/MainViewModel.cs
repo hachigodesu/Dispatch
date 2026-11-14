@@ -58,6 +58,7 @@ public sealed partial class MainViewModel : ObservableObject
         Mods.MapRequested = mod => _dialogs.ShowMap(CreateMap(mod));
         Mods.MapInProfileRequested = (mod, profile) => _dialogs.ShowMap(CreateMapInProfile(mod, profile));
         Profiles.ProfileMapRequested = profile => _dialogs.ShowProfileMap(CreateProfileMap(profile));
+        Profiles.StatsRequested = profile => _dialogs.ShowStats(CreateStats(profile));
         Profiles.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(ProfilesViewModel.LaunchInstallation) or nameof(ProfilesViewModel.HasVersionChoice))
@@ -319,11 +320,36 @@ public sealed partial class MainViewModel : ObservableObject
     private MapViewModel CreateMapView(ModItemViewModel mod, ProfileItemViewModel? profile, List<MapSource> below, List<MapSource> above,
                                        string? installDir, string? profileMap, bool addedOnTop)
     {
-        var request = new MapRequest(new MapSource(mod.DisplayName, mod.Mod.PackagePath), profile?.Name, below, above, installDir,
+        var request = new MapRequest(Source(mod), profile?.Name, below, above, installDir,
                                      Dispatch.Core.Maps.MapArchiveReader.MapName(_game.Id), _paths.ForGame(_game).Cache, profileMap, addedOnTop);
         Log.Information("Map requested for {Mod} ({Below} below, {Above} above, profile: {Profile}, added on top: {Top})",
                         mod.PackageId, below.Count, above.Count, profile is not null, addedOnTop);
-        return new MapViewModel(request);
+        return new MapViewModel(request) { ShowInLoadOrderRequested = id => SelectInLoadOrder(profile, id) };
+    }
+
+    /// <summary>
+    /// "Show in load order" from a map: the Profiles tab with that profile (the open one when none is given) and the mod
+    /// selected. Switching profiles asks about unsaved changes first, like a click.
+    /// </summary>
+    internal bool SelectInLoadOrder(ProfileItemViewModel? profile, string packageId)
+    {
+        SelectedTab = 0;
+        if (profile is not null && Profiles.Selected != profile)
+        {
+            Profiles.Selected = Profiles.Items.FirstOrDefault(p => p.Profile.MainDir == profile.Profile.MainDir) ?? Profiles.Selected;
+        }
+
+        var entry = Profiles.LoadOrder.FirstOrDefault(l => l.PackageId == packageId);
+        if (entry is null)
+        {
+            return false;
+        }
+
+        Profiles.SelectedEntries.Clear();
+        Profiles.SelectedEntry = entry;
+        Profiles.SidePanelIndex = 0; // Details
+        System.Windows.Application.Current?.MainWindow?.Activate();
+        return true;
     }
 
     /// <summary>"Road map…": the profile's whole road network.</summary>
@@ -338,10 +364,20 @@ public sealed partial class MainViewModel : ObservableObject
                                             profile.LoadOrder?.MapName ?? defaultMap, defaultMap, _paths.ForGame(_game).Cache,
                                             all.Count - installed.Count);
         Log.Information("Profile map requested ({Mods} mods, {Missing} not installed, map {Map})", installed.Count, request.NotInstalled, request.MapName);
-        return new ProfileMapViewModel(request);
+        return new ProfileMapViewModel(request) { ShowInLoadOrderRequested = id => SelectInLoadOrder(profile, id) };
     }
 
-    private static MapSource Source(ModItemViewModel m) => new(m.DisplayName, m.Mod.PackagePath);
+    /// <summary>"Stats…": the profile's newest save. City names come from the game and the profile's mods (map cache).</summary>
+    internal StatsViewModel CreateStats(ProfileItemViewModel profile)
+    {
+        string defaultMap = Dispatch.Core.Maps.MapArchiveReader.MapName(_game.Id);
+        var request = new StatsRequest(profile.Profile, _game.Id, InstallDirFor(profile), Enumerable.Reverse(TopFirstOrder(profile)).Select(Source).ToList(),
+                                       profile.LoadOrder?.MapName ?? defaultMap, _paths.ForGame(_game).Cache);
+        Log.Information("Stats requested ({Saves} saves)", profile.Profile.SaveCount);
+        return new StatsViewModel(request);
+    }
+
+    private static MapSource Source(ModItemViewModel m) => new(m.DisplayName, m.Mod.PackagePath, m.PackageId);
 
     /// <summary>The profile's installed mods, top first; for the open profile, the editor's (possibly unsaved) order.</summary>
     private List<ModItemViewModel> TopFirstOrder(ProfileItemViewModel profile) => profile == Profiles.Selected

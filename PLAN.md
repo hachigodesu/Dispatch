@@ -610,6 +610,45 @@ contributors first (16 hand-picked, then golden-angle hues). **Show on map in pr
 its place in that profile, or as if added at the top when it isn't in it (where "Add to profile" puts it); a mod for
 another map than the profile's says it doesn't change that profile.
 
+### After 0.9.0 (2026-11-15, requested for 0.10.0)
+
+**Resizable areas.** Drag handles between the profiles list, the load order editor and the side panel; between the mod
+list and its details; between the road map and its legend; between the Stats chart and the skills. Each area has a
+minimum and maximum width, and the widths are remembered in settings.json (`PaneWidths`). Button rows, filters and
+hints wrap to the width of their area, and list rows keep to the list's width so their badges wrap.
+
+**Click a road** on any map: the nearest road within 6 px (faded layers count 1.5× farther) is outlined. On the Road
+map its legend row is selected, scrolled into view and every other mod is faded; on the single-mod map a box names the
+layer that added it (`MapNetwork.FirstOwners`: the lowest layer with that road's UID, so removed roads name the mod
+they came from). Both offer **Show in load order**, which opens that profile in the editor with the mod selected.
+
+**Cut and paste** in the load order editor: Ctrl+X (or right-click → Cut) marks the selection (faded, "Cut" badge),
+Ctrl+V pastes it above the selected mod, Ctrl+Shift+V below, Esc cancels; the result is an unsaved edit like any move.
+The editor's right-click menu also has Move to top/bottom, Remove and Show on map.
+
+**Stats…** (Profiles, profiles with saves): read-only figures from the newest save (`game.sii`, `info.sii`,
+`profile.sii`): money and loans, level (from the game's own `def/economy_data_xp.sii`; past its 30 entries the last
+step repeats), distance the player drove, fleet odometers, trucks/trailers, garages and slots, hired drivers, HQ,
+in-game days, cities visited and roads explored, dealers and recruitment agencies found, fines, ferry/train trips, the
+player's skills, and the company's revenue/costs/profit per day for the days the game keeps (garage profit logs, about
+two weeks). Tables of trucks (model from the internal name, plate without the game's layout tags, odometer, wear,
+garage, driver), garages (slots, revenue, profit, productivity) and drivers (garage, level, XP, skills). Driver names
+aren't shown: the save keeps only `driver.<n>`, and no game archive's definitions or translations hold a name list (the
+game seems to generate them in the executable). City names come from
+the map cache. Not shown because the save's meaning is unclear: `game_progress` counters; the player's and drivers'
+distance counters are zero in real saves.
+
+**Your jobs** (first tab of the Stats tables): every job the player finished, from the save's `delivery_log`, which keeps
+them all from the first job (its job entries match `cached_jobs_count`). Each `delivery_log_entry` has 24 unnamed
+`params[]`, identified by matching entries against named profit-log entries: 0 end minute, 1/2
+`company.volatile.<company>.<city>`, 3 `cargo.<cargo>`, 4 XP, 5 payment, 6 planned km, 7 damage (0–1), 13 offered
+payment, 15 start minute, 16 `vehicle.<truck>`, 17 driven km, 18 market (`compn` cargo market, confirmed by the owner in-game; `quick`
+quick job; `spec_oversize` special transport; other codes are shown as they are; `freerm` entries are free roaming, not
+jobs), 22 mass (kg), 23 units. Unknown and not
+shown: 8–12, 14, 19–21. Totals: jobs, km, earned and €/km, XP, share without damage, longest job, most hauled cargo,
+most driven route. Cargo and company names come from the game and the profile's mods (`GameNames`:
+`def/cargo/*.sui` → `@@key@@` → `locale/<lang>/` translations; `def/company/*.sui` names), in the UI language.
+
 ---
 
 ## 7. Risks, unknowns and spikes

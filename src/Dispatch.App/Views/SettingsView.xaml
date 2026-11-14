@@ -68,11 +68,11 @@
                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Settings.UserDataOverride, UpdateSourceTrigger=PropertyChanged}" Margin="0,4" />
                 <Button Grid.Row="1" Grid.Column="2" Content="{x:Static res:Strings.Browse}" Command="{Binding Settings.BrowseUserDataCommand}" Margin="8,4,0,4" />
             </Grid>
-            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                <Button Content="{x:Static res:Strings.SaveAndRedetect}" Command="{Binding Settings.SaveCommand}" IsEnabled="{Binding IsIdle}" />
-                <Button Content="{x:Static res:Strings.OpenDataFolder}" Command="{Binding OpenDataFolderCommand}" Margin="8,0,0,0" />
-                <Button Content="{x:Static res:Strings.OpenLogFolder}" Command="{Binding OpenLogFolderCommand}" Margin="8,0,0,0" />
-            </StackPanel>
+            <WrapPanel Margin="0,12,0,0">
+                <Button Content="{x:Static res:Strings.SaveAndRedetect}" Command="{Binding Settings.SaveCommand}" IsEnabled="{Binding IsIdle}" Margin="0,0,8,6" />
+                <Button Content="{x:Static res:Strings.OpenDataFolder}" Command="{Binding OpenDataFolderCommand}" Margin="0,0,8,6" />
+                <Button Content="{x:Static res:Strings.OpenLogFolder}" Command="{Binding OpenLogFolderCommand}" Margin="0,0,8,6" />
+            </WrapPanel>
             <TextBlock Text="{Binding Settings.DataFolder}" Style="{StaticResource Muted}" FontSize="11" Margin="0,6,0,0" />
 
             <TextBlock x:Name="VersionsSection" Text="{Binding Versions.Header}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
@@ -134,30 +134,30 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                <Button Content="{x:Static res:Strings.RestoreFolder}" Command="{Binding Profiles.RestoreFolderCommand}" />
-                <Button Content="{x:Static res:Strings.RecycleBackup}" Command="{Binding Profiles.RecycleFullBackupCommand}" Margin="8,0,0,0" />
-            </StackPanel>
+            <WrapPanel Margin="0,8,0,0">
+                <Button Content="{x:Static res:Strings.RestoreFolder}" Command="{Binding Profiles.RestoreFolderCommand}" Margin="0,0,8,6" />
+                <Button Content="{x:Static res:Strings.RecycleBackup}" Command="{Binding Profiles.RecycleFullBackupCommand}" Margin="0,0,8,6" />
+            </WrapPanel>
 
             <TextBlock Text="{x:Static res:Strings.LanguageHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
-            <StackPanel Orientation="Horizontal">
+            <WrapPanel>
                 <ComboBox ItemsSource="{Binding Settings.Languages}" SelectedItem="{Binding Settings.SelectedLanguage}"
-                          DisplayMemberPath="Name" MinWidth="220" />
-                <TextBlock Text="{x:Static res:Strings.LanguageRestartHint}" VerticalAlignment="Center" Margin="12,0,8,0"
+                          DisplayMemberPath="Name" MinWidth="220" Margin="0,0,12,6" />
+                <TextBlock Text="{x:Static res:Strings.LanguageRestartHint}" VerticalAlignment="Center" Margin="0,0,8,6"
                            Visibility="{Binding Settings.RestartNeeded, Converter={StaticResource VisibleWhen}}" />
-                <Button Content="{x:Static res:Strings.LanguageRestart}" Command="{Binding RestartCommand}"
+                <Button Content="{x:Static res:Strings.LanguageRestart}" Command="{Binding RestartCommand}" Margin="0,0,0,6"
                         Visibility="{Binding Settings.RestartNeeded, Converter={StaticResource VisibleWhen}}" />
-            </StackPanel>
+            </WrapPanel>
             <TextBlock Text="{x:Static res:Strings.LanguageNote}" Style="{StaticResource Muted}" FontSize="11" Margin="0,6,0,0" />
 
             <TextBlock Text="{x:Static res:Strings.UpdatesHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
             <CheckBox IsChecked="{Binding Updates.AutoCheck}">
                 <TextBlock Text="{x:Static res:Strings.UpdateAutoCheck}" TextWrapping="Wrap" />
             </CheckBox>
-            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                <Button Content="{x:Static res:Strings.UpdateCheckNow}" Command="{Binding Updates.CheckNowCommand}" />
+            <DockPanel Margin="0,8,0,0">
+                <Button Content="{x:Static res:Strings.UpdateCheckNow}" Command="{Binding Updates.CheckNowCommand}" VerticalAlignment="Top" />
                 <TextBlock Text="{Binding Updates.Status}" VerticalAlignment="Center" Margin="12,0,0,0" TextWrapping="Wrap" />
-            </StackPanel>
+            </DockPanel>
 
             <TextBlock Text="{x:Static res:Strings.AboutHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
             <StackPanel Orientation="Horizontal">

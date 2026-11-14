@@ -291,6 +291,10 @@ public sealed partial class LoadOrderItemViewModel(ActiveModEntry entry, ModItem
     [ObservableProperty]
     private int _position;
 
+    /// <summary>Cut (Ctrl+X) and waiting to be pasted somewhere else: drawn faded.</summary>
+    [ObservableProperty]
+    private bool _isCut;
+
     public string DisplayName { get; } = entry.DisplayName;
 
     public string PackageId { get; } = entry.PackageId;

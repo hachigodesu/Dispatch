@@ -41,10 +41,13 @@
         </DockPanel>
 
         <Grid>
+            <!-- Map and legend, with a drag handle between them (width remembered, see PaneLayout). -->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="320" />
+                <ColumnDefinition Width="*" MinWidth="320" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition x:Name="LegendColumn" Width="320" MinWidth="220" MaxWidth="700" />
             </Grid.ColumnDefinitions>
+            <GridSplitter x:Name="LegendSplitter" Grid.Column="1" Style="{StaticResource PaneSplitter}" />
 
             <Border BorderBrush="#40808080" BorderThickness="1" CornerRadius="6" ClipToBounds="True">
                 <Grid>
@@ -58,7 +61,7 @@
             </Border>
 
             <!-- Legend: one row per mod that changes the map, top of the load order first, the game last. -->
-            <DockPanel Grid.Column="1" Margin="12,0,0,0">
+            <DockPanel Grid.Column="2">
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
                     <TextBlock Text="{x:Static res:Strings.LegendHeader}" FontWeight="SemiBold" VerticalAlignment="Center" />
                 </DockPanel>
@@ -66,10 +69,21 @@
                     <Button Content="{x:Static res:Strings.LegendShowAll}" Command="{Binding ShowAllCommand}" Margin="0,0,6,0" />
                     <Button Content="{x:Static res:Strings.LegendModsOnly}" Command="{Binding ModsOnlyCommand}" />
                 </WrapPanel>
+                <!-- The selected mod (a clicked road's, or a clicked row's) -->
+                <Border DockPanel.Dock="Bottom" Margin="0,8,0,0" Padding="8,6" CornerRadius="6" Background="#22808080"
+                        Visibility="{Binding SelectedLegendItem, Converter={StaticResource VisibleWhen}}">
+                    <StackPanel>
+                        <TextBlock Text="{x:Static res:Strings.MapRoadFrom}" Style="{StaticResource Muted}" FontSize="11" />
+                        <TextBlock Text="{Binding SelectedLegendItem.Name}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <Button Content="{x:Static res:Strings.MapShowInLoadOrder}" Command="{Binding ShowInLoadOrderCommand}"
+                                HorizontalAlignment="Left" Margin="0,6,0,0" />
+                    </StackPanel>
+                </Border>
                 <Border BorderBrush="#40808080" BorderThickness="1" CornerRadius="6">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <ItemsControl ItemsSource="{Binding Legend}" Margin="6">
-                            <ItemsControl.ItemTemplate>
+                        <ListBox x:Name="LegendList" ItemsSource="{Binding Legend}" SelectedItem="{Binding SelectedLegendItem}"
+                                 HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" Padding="2"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="OnLegendSelectionChanged">
+                            <ListBox.ItemTemplate>
                                 <DataTemplate DataType="vm:ProfileMapLegendItem">
                                     <Grid Margin="0,3">
                                         <Grid.ColumnDefinitions>
@@ -100,9 +114,8 @@
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                 </Border>
             </DockPanel>
         </Grid>

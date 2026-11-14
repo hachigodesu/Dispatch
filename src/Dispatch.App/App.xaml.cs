@@ -47,6 +47,7 @@ public partial class App : Application
             settings.Game = e.Args[4]; // "--screenshot out.png tab profile ats": show that game (not saved)
         }
 
+        PaneLayout.Use(settings, paths.SettingsFile);
         var viewModel = new MainViewModel(platform, paths, settings, selfTest ? autoDialogs : new Dialogs());
         var window = new MainWindow { DataContext = viewModel };
         MainWindow = window;
@@ -72,7 +73,7 @@ public partial class App : Application
         if (screenshot is not null)
         {
             int tab = e.Args.Length >= 3 && int.TryParse(e.Args[2], out int t) ? t : 0;
-            if (e.Args.Length >= 7 && tab is not (10 or 12))
+            if (e.Args.Length >= 7 && tab is not (10 or 11 or 12 or 13)) // for these the 7th argument is a mod name or a window size
             {
                 viewModel.Versions.AddCopyFrom(e.Args[6]); // a 7th argument lists a game copy for this run only (not saved)
             }
@@ -178,8 +179,69 @@ public partial class App : Application
                     await Task.Delay(100);
                 }
 
+                // 11 with a 7th argument: click a road of that mod (as a user would), then zoom to it.
+                if (tab == 11 && e.Args.Length >= 7 && map.DataContext is ProfileMapViewModel pm &&
+                    pm.Legend.FirstOrDefault(l => l.HasRoads && l.Name.Contains(e.Args[6], StringComparison.OrdinalIgnoreCase)) is { } item &&
+                    pm.Network?.RoadsByLayer[item.Layers[0]] is { Count: > 0 } roads)
+                {
+                    var road = roads.OrderByDescending(r => r.Length).First();
+                    canvas().FitTo(road.Bounds.Inflate(6000));
+                    await Task.Delay(300);
+                    canvas().HighlightedRoad = road;
+                    pm.OnRoadClicked(pm.Scene!.Layers.First(l => l.Tag == item));
+                    await Task.Delay(1500);
+                }
+
                 Views.MainWindow.SaveScreenshot(map, screenshot);
                 map.Close();
+            }
+            else if (tab == 13 && viewModel.Profiles.Selected is { } statsProfile)
+            {
+                // The Stats window for the profile's newest save.
+                var w = new StatsWindow { DataContext = viewModel.CreateStats(statsProfile), Owner = window, WindowStartupLocation = WindowStartupLocation.Manual };
+                if (e.Args.Length >= 7 && e.Args[6].Split('x') is [var sw, var sh] && double.TryParse(sw, out double ww) && double.TryParse(sh, out double wh))
+                {
+                    (w.Width, w.Height) = (ww, wh); // a 7th argument "1920x1040" checks wide windows
+                }
+
+                w.Show();
+                await w.StartLoading();
+                if (e.Args.Length >= 8 && int.TryParse(e.Args[7], out int tableTab))
+                {
+                    w.Tables.SelectedIndex = tableTab; // an 8th argument picks the table: 0 jobs, 1 trucks, 2 garages, 3 drivers
+                }
+
+                await Task.Delay(800);
+                Views.MainWindow.SaveScreenshot(w, screenshot);
+                w.Close();
+            }
+            else if (tab is 15 or 16)
+            {
+                // Narrow areas (nothing saved): 15 = profiles list at its minimum, a wide side panel squeezing the load
+                // order to its minimum; 16 = a wide details panel squeezing the mod list.
+                var profiles = window.ProfilesPage;
+                profiles.ListColumn.Width = new GridLength(profiles.ListColumn.MinWidth);
+                profiles.SideColumn.Width = new GridLength(620);
+                window.ModsPage.DetailsColumn.Width = new GridLength(860);
+                await Task.Delay(500);
+                window.SaveScreenshot(screenshot, tab == 15 ? 0 : 1);
+                var list = profiles.LoadOrderList;
+                var item = list.ItemContainerGenerator.ContainerFromIndex(1) as FrameworkElement;
+                Log.Information("Screenshot: load order list {List:F0} wide, column {Column:F0}, row {Row:F0}",
+                                list.ActualWidth, profiles.ListColumn.ActualWidth, item?.ActualWidth ?? -1);
+            }
+            else if (tab == 14 && viewModel.Profiles.LoadOrder.Count >= 4)
+            {
+                // Cut and paste: rows 2 and 3 cut (faded), row 1 selected as the paste target. Nothing is saved.
+                var p = viewModel.Profiles;
+                p.SelectedEntries.Clear();
+                p.SelectedEntries.Add(p.LoadOrder[1]);
+                p.SelectedEntries.Add(p.LoadOrder[2]);
+                p.CutCommand.Execute(null);
+                p.SelectedEntries.Clear();
+                p.SelectedEntry = p.LoadOrder[0];
+                await Task.Delay(500);
+                window.SaveScreenshot(screenshot, 0);
             }
             else if (tab == 9)
             {

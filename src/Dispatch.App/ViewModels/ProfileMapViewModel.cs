@@ -19,9 +19,12 @@ public sealed record ProfileMapRequest(string ProfileName, IReadOnlyList<MapSour
 
 /// <summary>One row of the legend: a mod (or the game and its DLCs) with its colour.</summary>
 public sealed partial class ProfileMapLegendItem(string name, Color color, string detail, MapRect? bounds, bool isGame,
-                                                 IReadOnlyList<int> layers, bool hasRoads) : ObservableObject
+                                                 IReadOnlyList<int> layers, bool hasRoads, string? packageId = null) : ObservableObject
 {
     public string Name { get; } = name;
+
+    /// <summary>The mod's package ID (null for the game's row).</summary>
+    public string? PackageId { get; } = packageId;
 
     public Color Color { get; } = color;
 
@@ -95,6 +98,39 @@ public sealed partial class ProfileMapViewModel(ProfileMapRequest request) : Obs
     public bool HasMap => Scene is { Extent: not null };
 
     partial void OnSceneChanged(MapScene? value) => OnPropertyChanged(nameof(HasMap));
+
+    /// <summary>The highlighted legend row (from a click on one of its roads, or on the row): the others are faded.</summary>
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ShowInLoadOrderCommand))]
+    private ProfileMapLegendItem? _selectedLegendItem;
+
+    partial void OnSelectedLegendItemChanged(ProfileMapLegendItem? value)
+    {
+        if (value is not null && !value.IsVisible)
+        {
+            value.IsVisible = true; // rebuilds the scene
+            return;
+        }
+
+        Scene = BuildScene();
+    }
+
+    /// <summary>Set by the main window: selects a mod in the Profiles editor (package ID).</summary>
+    public Action<string>? ShowInLoadOrderRequested { get; set; }
+
+    /// <summary>A click on the map: the clicked road's mod becomes the selected row; a click on nothing clears it.</summary>
+    public void OnRoadClicked(MapSceneLayer? layer) => SelectedLegendItem = layer?.Tag as ProfileMapLegendItem;
+
+    private bool CanShowInLoadOrder() => SelectedLegendItem?.PackageId is not null && ShowInLoadOrderRequested is not null;
+
+    [RelayCommand(CanExecute = nameof(CanShowInLoadOrder))]
+    private void ShowInLoadOrder()
+    {
+        if (SelectedLegendItem?.PackageId is { } id)
+        {
+            ShowInLoadOrderRequested?.Invoke(id);
+        }
+    }
 
     public async Task LoadAsync(CancellationToken cancel = default)
     {
@@ -212,7 +248,8 @@ public sealed partial class ProfileMapViewModel(ProfileMapRequest request) : Obs
                 _ => string.Format(culture, Strings.LegendRoads, l.Roads, l.Km),
             };
             var color = colours.TryGetValue(l.Index, out var c) ? c : Color.FromRgb(0xB0, 0xB0, 0xB0);
-            Legend.Add(Watch(new ProfileMapLegendItem(l.Name, color, detail, l.Bounds, false, [l.Index], l.Roads > 0)));
+            string? packageId = l.Index - gameLayers < Request.Mods.Count ? Request.Mods[l.Index - gameLayers].PackageId : null;
+            Legend.Add(Watch(new ProfileMapLegendItem(l.Name, color, detail, l.Bounds, false, [l.Index], l.Roads > 0, packageId)));
         }
 
         MapRect? gameBounds = null;
@@ -235,6 +272,12 @@ public sealed partial class ProfileMapViewModel(ProfileMapRequest request) : Obs
         {
             if (e.PropertyName == nameof(ProfileMapLegendItem.IsVisible))
             {
+                if (!item.IsVisible && SelectedLegendItem == item)
+                {
+                    SelectedLegendItem = null; // rebuilds the scene
+                    return;
+                }
+
                 Scene = BuildScene();
             }
         };
@@ -265,9 +308,18 @@ public sealed partial class ProfileMapViewModel(ProfileMapRequest request) : Obs
 
             var roads = item.Layers.SelectMany(i => n.RoadsByLayer[i]).ToList();
             var prefabs = item.Layers.SelectMany(i => n.PrefabsByLayer[i]).ToList();
+            bool dim = SelectedLegendItem is not null && SelectedLegendItem != item;
             layers.Add(item.IsGame
-                ? new MapSceneLayer(roads, prefabs, item.Color, 1.0, 1.2)
-                : new MapSceneLayer(roads, prefabs, item.Color, 1.7, 1.6));
+                ? new MapSceneLayer(roads, prefabs, item.Color, 1.0, 1.2, Tag: item, Dim: dim)
+                : new MapSceneLayer(roads, prefabs, item.Color, 1.7, 1.6, Tag: item, Dim: dim));
+        }
+
+        // The highlighted mod is drawn last, on top of the faded ones.
+        if (layers.FindIndex(l => l.Tag == SelectedLegendItem && SelectedLegendItem is not null) is int sel and >= 0)
+        {
+            var top = layers[sel];
+            layers.RemoveAt(sel);
+            layers.Add(top with { Width = top.Width + 0.6 });
         }
 
         var labels = n.Cities.Select(c => owners.TryGetValue(c.Owner, out var o) && !o.IsGame && o.IsVisible

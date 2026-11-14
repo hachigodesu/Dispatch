@@ -70,7 +70,7 @@
   <data name="Save" xml:space="preserve"><value>Speichern</value></data>
   <data name="Discard" xml:space="preserve"><value>Änderungen verwerfen</value></data>
   <data name="UnsavedChanges" xml:space="preserve"><value>Nicht gespeichert</value></data>
-  <data name="EditHint" xml:space="preserve"><value>Zum Umsortieren ziehen oder die Schaltflächen nutzen (Alt+↑/↓). Mods fügst du im Bereich „Mods hinzufügen“ hinzu.</value></data>
+  <data name="EditHint" xml:space="preserve"><value>Zum Umsortieren ziehen, die Schaltflächen nutzen (Alt+↑/↓) oder ausschneiden und einfügen (Strg+X, Strg+V). Mods fügst du im Bereich „Mods hinzufügen“ hinzu.</value></data>
   <data name="SaveBlockedGameRunning" xml:space="preserve"><value>Beende das Spiel, um zu speichern.</value></data>
   <data name="PanelDetails" xml:space="preserve"><value>Details</value></data>
   <data name="PanelAdd" xml:space="preserve"><value>Hinzufügen</value></data>
@@ -519,7 +519,7 @@ Das Spiel sieht die Mods dort nicht, startet also schneller und zeigt eine kürz
   <data name="MapLegendRemoved" xml:space="preserve"><value>Entfernte Straßen</value></data>
   <data name="MapLegendHidden" xml:space="preserve"><value>Von einem Mod darüber ersetzt</value></data>
   <data name="MapLegendOther" xml:space="preserve"><value>Andere Straßen</value></data>
-  <data name="MapHint" xml:space="preserve"><value>Mausrad zum Zoomen, Ziehen zum Verschieben, Doppelklick zum Hineinzoomen. Kreuzungen sind vereinfacht dargestellt.</value></data>
+  <data name="MapHint" xml:space="preserve"><value>Mausrad zum Zoomen, Ziehen zum Verschieben, Doppelklick zum Hineinzoomen. Klicke auf eine Straße, um zu sehen, welcher Mod sie hinzufügt. Kreuzungen sind vereinfacht dargestellt.</value></data>
   <data name="MapClose" xml:space="preserve"><value>Schließen</value></data>
   <data name="MapSeparate" xml:space="preserve"><value>Das ist eine eigene Karte („{0}“), die ein Profil statt der Karte des Spiels nutzt. Sie wird daher nur mit Mods für diese Karte verglichen.</value></data>
   <data name="MapMore" xml:space="preserve"><value>{0:N0} weitere</value></data>
@@ -535,7 +535,7 @@ Das Spiel sieht die Mods dort nicht, startet also schneller und zeigt eine kürz
   <data name="ProfileMapTotals" xml:space="preserve"><value>Straßen: {0:N0} ({1:N0} km). Aus Mods: {2:N0} ({3:N0} km).</value></data>
   <data name="ProfileMapNoMapMods" xml:space="preserve"><value>Mods, die die Karte nicht ändern: {0:N0}.</value></data>
   <data name="ProfileMapMissing" xml:space="preserve"><value>Nicht installierte Mods in der Ladereihenfolge: {0:N0}. Ihre Straßen fehlen hier.</value></data>
-  <data name="ProfileMapHint" xml:space="preserve"><value>Häkchen entfernen blendet die Straßen eines Mods aus; ein Klick auf den Namen zoomt hin. Mausrad zum Zoomen, Ziehen zum Verschieben.</value></data>
+  <data name="ProfileMapHint" xml:space="preserve"><value>Klicke auf eine Straße, um den Mod zu finden, der sie hinzufügt. Häkchen entfernen blendet die Straßen eines Mods aus; ein Klick auf den Namen zoomt hin. Mausrad zum Zoomen, Ziehen zum Verschieben.</value></data>
   <data name="LegendHeader" xml:space="preserve"><value>Mods, die die Karte ändern</value></data>
   <data name="LegendShowAll" xml:space="preserve"><value>Alle zeigen</value></data>
   <data name="LegendModsOnly" xml:space="preserve"><value>Nur Mods</value></data>
@@ -546,4 +546,102 @@ Das Spiel sieht die Mods dort nicht, startet also schneller und zeigt eine kürz
   <data name="LegendCovered" xml:space="preserve"><value>Alle Sektoren werden von Mods darüber ersetzt</value></data>
   <data name="LegendProtected" xml:space="preserve"><value>Geschützt, daher sind seine Straßen nicht lesbar</value></data>
   <data name="LegendGame" xml:space="preserve"><value>Spiel und DLCs</value></data>
+  <data name="MapRoadFrom" xml:space="preserve"><value>Straße hinzugefügt von</value></data>
+  <data name="MapShowInLoadOrder" xml:space="preserve"><value>In der Ladereihenfolge zeigen</value></data>
+  <data name="CutMods" xml:space="preserve"><value>Ausschneiden</value></data>
+  <data name="PasteAbove" xml:space="preserve"><value>Darüber einfügen</value></data>
+  <data name="PasteBelow" xml:space="preserve"><value>Darunter einfügen</value></data>
+  <data name="CancelCut" xml:space="preserve"><value>Ausschneiden abbrechen</value></data>
+  <data name="CutBadge" xml:space="preserve"><value>Ausgeschnitten</value></data>
+  <data name="CutDone" xml:space="preserve"><value>{0:N0} Mod(s) ausgeschnitten. Wähle einen Mod und drücke Strg+V, um sie darüber einzufügen (Strg+Umschalt+V: darunter), oder Esc zum Abbrechen.</value></data>
+  <data name="PasteDone" xml:space="preserve"><value>{0:N0} Mod(s) verschoben. Speichere, um die neue Reihenfolge zu behalten.</value></data>
+  <data name="StatsButton" xml:space="preserve"><value>Statistik …</value></data>
+  <data name="StatsButtonHint" xml:space="preserve"><value>Firma, Geld, Fuhrpark, Garagen und Fahrer aus dem neuesten Spielstand dieses Profils.</value></data>
+  <data name="StatsTitle" xml:space="preserve"><value>Statistik: {0}</value></data>
+  <data name="StatsLoading" xml:space="preserve"><value>Neuester Spielstand wird gelesen …</value></data>
+  <data name="StatsNoSave" xml:space="preserve"><value>Dieses Profil hat noch keine Spielstände.</value></data>
+  <data name="StatsError" xml:space="preserve"><value>Der neueste Spielstand konnte nicht gelesen werden: {0}</value></data>
+  <data name="StatsFromSave" xml:space="preserve"><value>Aus dem Spielstand „{0}“, {1}.</value></data>
+  <data name="StatsNote" xml:space="preserve"><value>Aus dem neuesten Spielstand gelesen; nichts wird geändert. Die Einnahmen umfassen nur die Tage, die das Spiel speichert.</value></data>
+  <data name="StatMoney" xml:space="preserve"><value>Geld</value></data>
+  <data name="StatLoansDetail" xml:space="preserve"><value>Kredite: {0:N0} ({1})</value></data>
+  <data name="StatLevel" xml:space="preserve"><value>Stufe</value></data>
+  <data name="StatXp" xml:space="preserve"><value>{0:N0} EP</value></data>
+  <data name="StatDistance" xml:space="preserve"><value>Von dir gefahren</value></data>
+  <data name="StatFleetKm" xml:space="preserve"><value>Kilometerstände des Fuhrparks</value></data>
+  <data name="StatTrucks" xml:space="preserve"><value>Lkw</value></data>
+  <data name="StatTrailersDetail" xml:space="preserve"><value>Anhänger: {0:N0}</value></data>
+  <data name="StatGarages" xml:space="preserve"><value>Garagen</value></data>
+  <data name="StatGaragesDetail" xml:space="preserve"><value>Lkw-Stellplätze: {0:N0}</value></data>
+  <data name="StatDrivers" xml:space="preserve"><value>Angestellte Fahrer</value></data>
+  <data name="StatHq" xml:space="preserve"><value>Hauptsitz</value></data>
+  <data name="StatDays" xml:space="preserve"><value>Spieltage</value></data>
+  <data name="StatCities" xml:space="preserve"><value>Besuchte Städte</value></data>
+  <data name="StatExploredDetail" xml:space="preserve"><value>Erkundete Straßen: {0:P0}</value></data>
+  <data name="StatDealers" xml:space="preserve"><value>Gefundene Lkw-Händler</value></data>
+  <data name="StatRecruitDetail" xml:space="preserve"><value>Personalagenturen: {0:N0}</value></data>
+  <data name="StatFines" xml:space="preserve"><value>Bußgelder</value></data>
+  <data name="StatFinesDetail" xml:space="preserve"><value>Anzahl: {0:N0}</value></data>
+  <data name="StatFerries" xml:space="preserve"><value>Fähr- und Zugfahrten</value></data>
+  <data name="StatCreated" xml:space="preserve"><value>Profil erstellt</value></data>
+  <data name="StatsIncomeHeader" xml:space="preserve"><value>Firmeneinnahmen der letzten {0:N0} Spieltage</value></data>
+  <data name="StatRevenue" xml:space="preserve"><value>Umsatz</value></data>
+  <data name="StatCosts" xml:space="preserve"><value>Kosten</value></data>
+  <data name="StatCostsDetail" xml:space="preserve"><value>Löhne {0}, Wartung {1}, Kraftstoff {2}</value></data>
+  <data name="StatProfit" xml:space="preserve"><value>Gewinn</value></data>
+  <data name="StatsDayTooltip" xml:space="preserve"><value>Tag {0:N0}: Umsatz {1}, Gewinn {2}, {3:N0} km</value></data>
+  <data name="StatsDayAxis" xml:space="preserve"><value>(Spieltag)</value></data>
+  <data name="StatsSkillsHeader" xml:space="preserve"><value>Deine Fähigkeiten</value></data>
+  <data name="SkillAdr" xml:space="preserve"><value>ADR</value></data>
+  <data name="SkillLongDistance" xml:space="preserve"><value>Langstrecke</value></data>
+  <data name="SkillHighValue" xml:space="preserve"><value>Wertvolle Fracht</value></data>
+  <data name="SkillFragile" xml:space="preserve"><value>Zerbrechliche Fracht</value></data>
+  <data name="SkillJustInTime" xml:space="preserve"><value>Just-in-time-Lieferung</value></data>
+  <data name="SkillEco" xml:space="preserve"><value>Spritsparendes Fahren</value></data>
+  <data name="StatsTrucksTab" xml:space="preserve"><value>Lkw ({0:N0})</value></data>
+  <data name="StatsGaragesTab" xml:space="preserve"><value>Garagen ({0:N0})</value></data>
+  <data name="StatsDriversTab" xml:space="preserve"><value>Fahrer ({0:N0})</value></data>
+  <data name="ColModel" xml:space="preserve"><value>Modell</value></data>
+  <data name="ColPlate" xml:space="preserve"><value>Kennzeichen</value></data>
+  <data name="ColOdometer" xml:space="preserve"><value>Kilometerstand</value></data>
+  <data name="ColWear" xml:space="preserve"><value>Verschleiß</value></data>
+  <data name="ColGarage" xml:space="preserve"><value>Garage</value></data>
+  <data name="ColDriver" xml:space="preserve"><value>Fahrer aus</value></data>
+  <data name="ColCity" xml:space="preserve"><value>Stadt</value></data>
+  <data name="ColSlots" xml:space="preserve"><value>Plätze</value></data>
+  <data name="ColTrucks" xml:space="preserve"><value>Lkw</value></data>
+  <data name="ColDrivers" xml:space="preserve"><value>Fahrer</value></data>
+  <data name="ColRevenue" xml:space="preserve"><value>Umsatz</value></data>
+  <data name="ColProfit" xml:space="preserve"><value>Gewinn</value></data>
+  <data name="ColProductivity" xml:space="preserve"><value>Produktivität</value></data>
+  <data name="ColLevel" xml:space="preserve"><value>Stufe</value></data>
+  <data name="ColXp" xml:space="preserve"><value>EP</value></data>
+  <data name="ColSkills" xml:space="preserve"><value>Fähigkeiten (ADR · Lang · Wert · Zerbr. · JIT · Spar)</value></data>
+  <data name="JobsTab" xml:space="preserve"><value>Deine Aufträge ({0:N0})</value></data>
+  <data name="JobsNone" xml:space="preserve"><value>In diesem Spielstand gibt es noch keine abgeschlossenen Aufträge.</value></data>
+  <data name="JobsCount" xml:space="preserve"><value>Abgeschlossene Aufträge</value></data>
+  <data name="JobsDistance" xml:space="preserve"><value>Strecke mit Aufträgen</value></data>
+  <data name="JobsEarned" xml:space="preserve"><value>Verdient</value></data>
+  <data name="JobsPerKm" xml:space="preserve"><value>Im Schnitt {0} pro km</value></data>
+  <data name="JobsXp" xml:space="preserve"><value>EP aus Aufträgen</value></data>
+  <data name="JobsClean" xml:space="preserve"><value>Ohne Schaden geliefert</value></data>
+  <data name="JobsLongest" xml:space="preserve"><value>Längster Auftrag</value></data>
+  <data name="JobsTopCargo" xml:space="preserve"><value>Häufigste Fracht</value></data>
+  <data name="JobsTopRoute" xml:space="preserve"><value>Häufigste Strecke</value></data>
+  <data name="JobsTimes" xml:space="preserve"><value>{0:N0}-mal</value></data>
+  <data name="JobsDay" xml:space="preserve"><value>Tag {0:N0}, {1}</value></data>
+  <data name="JobKindQuick" xml:space="preserve"><value>Schnellauftrag</value></data>
+  <data name="JobKindSpecial" xml:space="preserve"><value>Spezialtransport</value></data>
+  <data name="ColFinished" xml:space="preserve"><value>Beendet</value></data>
+  <data name="ColFrom" xml:space="preserve"><value>Von</value></data>
+  <data name="ColTo" xml:space="preserve"><value>Nach</value></data>
+  <data name="ColCargo" xml:space="preserve"><value>Fracht</value></data>
+  <data name="ColMass" xml:space="preserve"><value>Gewicht (t)</value></data>
+  <data name="ColKm" xml:space="preserve"><value>km</value></data>
+  <data name="ColPayment" xml:space="preserve"><value>Bezahlung</value></data>
+  <data name="ColPerKm" xml:space="preserve"><value>Pro km</value></data>
+  <data name="ColDamage" xml:space="preserve"><value>Schaden</value></data>
+  <data name="ColTruck" xml:space="preserve"><value>Lkw</value></data>
+  <data name="ColKind" xml:space="preserve"><value>Auftrag</value></data>
+  <data name="JobKindCargo" xml:space="preserve"><value>Frachtbörse</value></data>
 </root>

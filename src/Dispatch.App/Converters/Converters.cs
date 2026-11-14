@@ -133,3 +133,20 @@ public sealed class VisibleWhenConverter : IValueConverter
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotSupportedException();
 }
+
+/// <summary>
+/// A width times a ratio plus an offset ("0.42", or "1 -34"): caps a row or panel at a share of its list's width, so it
+/// wraps or shortens instead of overflowing (list rows are otherwise given their own desired width).
+/// </summary>
+public sealed class RatioConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var parts = (parameter as string ?? "1").Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        double ratio = parts.Length > 0 && double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double r) ? r : 1;
+        double offset = parts.Length > 1 && double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double o) ? o : 0;
+        return value is double width && width > 0 ? Math.Max(0, (width * ratio) + offset) : double.PositiveInfinity;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
+}

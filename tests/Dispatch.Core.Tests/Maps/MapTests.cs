@@ -401,6 +401,21 @@ public sealed class MapComparisonTests
     }
 
     [Fact]
+    public void First_owners_and_click_distance()
+    {
+        var game = new MapLayer("Base game", Map(("sec+0000+0000", [1, 2], [])));
+        var mod = new MapLayer("Mod", Map(("sec+0000+0000", [2, 3], [])));
+        var owners = MapNetwork.FirstOwners([game, mod]);
+        owners[1].ShouldBe(0); // removed by the mod, still credited to the game
+        owners[2].ShouldBe(0);
+        owners[3].ShouldBe(1);
+
+        var road = new MapRoad(9, new MapPoint(0, 0), new MapPoint(100, 0), new MapPoint(1, 0), new MapPoint(1, 0));
+        MapNetwork.DistanceTo(road, new MapPoint(50, 7)).ShouldBe(7f, 0.01f);
+        MapNetwork.DistanceTo(road, new MapPoint(-30, 40)).ShouldBe(50f, 0.01f); // beyond the end: distance to A
+    }
+
+    [Fact]
     public void Readable_city_tokens() => MapComparison.Readable("gagra_abh").ShouldBe("Gagra Abh");
 
     [Fact]

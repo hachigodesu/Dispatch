@@ -8,8 +8,8 @@ using Serilog;
 
 namespace Dispatch.App.ViewModels;
 
-/// <summary>An archive to stack under or over the mod: a mod's name and package path.</summary>
-public sealed record MapSource(string Name, string Path);
+/// <summary>An archive to stack under or over the mod: a mod's name and package path (and its ID, for mods).</summary>
+public sealed record MapSource(string Name, string Path, string? PackageId = null);
 
 /// <summary>What to show: one mod, compared with the game and (from a profile) the mods below and above it.</summary>
 /// <param name="Below">Mods loaded below it, bottom first.</param>
@@ -92,6 +92,47 @@ public sealed partial class MapViewModel(MapRequest request) : ObservableObject
     /// <summary>True when there's something to draw (the zoom buttons and legend are shown).</summary>
     public bool HasMap => Scene is { Extent: not null };
 
+    // Which layer added each road (for clicks), and the layers in that order.
+    private Dictionary<ulong, int> _owners = [];
+    private List<MapSource> _layerSources = [];
+
+    /// <summary>The mod (or "Base game", "DLC …") that added the clicked road; null when nothing is selected.</summary>
+    [ObservableProperty]
+    private string? _clickedRoadFrom;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ShowInLoadOrderCommand))]
+    private string? _clickedPackageId;
+
+    /// <summary>Set by the main window: selects a mod in the Profiles editor (package ID).</summary>
+    public Action<string>? ShowInLoadOrderRequested { get; set; }
+
+    /// <summary>A click on the map: says which layer added that road; a click on nothing clears it.</summary>
+    public void OnRoadClicked(MapRoad? road)
+    {
+        if (road is { } r && _owners.TryGetValue(r.Uid, out int owner) && owner < _layerSources.Count)
+        {
+            ClickedRoadFrom = _layerSources[owner].Name;
+            ClickedPackageId = _layerSources[owner].PackageId;
+        }
+        else
+        {
+            ClickedRoadFrom = null;
+            ClickedPackageId = null;
+        }
+    }
+
+    private bool CanShowInLoadOrder() => ClickedPackageId is not null && ShowInLoadOrderRequested is not null;
+
+    [CommunityToolkit.Mvvm.Input.RelayCommand(CanExecute = nameof(CanShowInLoadOrder))]
+    private void ShowInLoadOrder()
+    {
+        if (ClickedPackageId is { } id)
+        {
+            ShowInLoadOrderRequested?.Invoke(id);
+        }
+    }
+
     partial void OnSceneChanged(MapScene? value) => OnPropertyChanged(nameof(HasMap));
 
     /// <summary>Reads everything (through the cache) on a background thread, then fills the summary.</summary>
@@ -146,6 +187,8 @@ public sealed partial class MapViewModel(MapRequest request) : ObservableObject
         var above = MapLoading.Read(cache, mapName, Request.Above, Step, cancel);
         var mod = MapLoading.Read(cache, mapName, [Request.Mod], Step, cancel)[0];
         var comparison = MapComparison.Compare(mod, below, above);
+        _owners = MapNetwork.FirstOwners([.. below, mod]);
+        _layerSources = [.. game, .. Request.Below, Request.Mod];
         Log.Information("Map {Map} for {Mod}: {Layers} layers read in {Seconds:F1}s; {Added} roads added, {Removed} removed",
                         mapName, Request.Mod.Path, done, (DateTime.UtcNow - started).TotalSeconds, comparison.AddedRoads.Count, comparison.RemovedRoads.Count);
         int unreadable = mods.Concat(above).Count(l => l.Map.IsUnreadable);

@@ -43,6 +43,9 @@ public interface IDialogs
 
     /// <summary>Opens a Profile map window (not modal) and starts reading the map.</summary>
     void ShowProfileMap(ViewModels.ProfileMapViewModel map);
+
+    /// <summary>Opens a Stats window (not modal) and starts reading the save.</summary>
+    void ShowStats(ViewModels.StatsViewModel stats);
 }
 
 public sealed class Dialogs : IDialogs
@@ -122,6 +125,13 @@ public sealed class Dialogs : IDialogs
     public void ShowProfileMap(ViewModels.ProfileMapViewModel map)
     {
         var window = new Views.ProfileMapWindow { Owner = Application.Current.MainWindow, DataContext = map };
+        window.Show();
+        _ = window.StartLoading();
+    }
+
+    public void ShowStats(ViewModels.StatsViewModel stats)
+    {
+        var window = new Views.StatsWindow { Owner = Application.Current.MainWindow, DataContext = stats };
         window.Show();
         _ = window.StartLoading();
     }

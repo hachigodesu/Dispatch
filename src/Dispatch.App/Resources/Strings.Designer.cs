@@ -998,4 +998,200 @@ public static class Strings
     public static string LegendProtected => Get(nameof(LegendProtected));
 
     public static string LegendGame => Get(nameof(LegendGame));
+
+    public static string MapRoadFrom => Get(nameof(MapRoadFrom));
+
+    public static string MapShowInLoadOrder => Get(nameof(MapShowInLoadOrder));
+
+    public static string CutMods => Get(nameof(CutMods));
+
+    public static string PasteAbove => Get(nameof(PasteAbove));
+
+    public static string PasteBelow => Get(nameof(PasteBelow));
+
+    public static string CancelCut => Get(nameof(CancelCut));
+
+    public static string CutBadge => Get(nameof(CutBadge));
+
+    public static string CutDone => Get(nameof(CutDone));
+
+    public static string PasteDone => Get(nameof(PasteDone));
+
+    public static string StatsButton => Get(nameof(StatsButton));
+
+    public static string StatsButtonHint => Get(nameof(StatsButtonHint));
+
+    public static string StatsTitle => Get(nameof(StatsTitle));
+
+    public static string StatsLoading => Get(nameof(StatsLoading));
+
+    public static string StatsNoSave => Get(nameof(StatsNoSave));
+
+    public static string StatsError => Get(nameof(StatsError));
+
+    public static string StatsFromSave => Get(nameof(StatsFromSave));
+
+    public static string StatsNote => Get(nameof(StatsNote));
+
+    public static string StatMoney => Get(nameof(StatMoney));
+
+    public static string StatLoansDetail => Get(nameof(StatLoansDetail));
+
+    public static string StatLevel => Get(nameof(StatLevel));
+
+    public static string StatXp => Get(nameof(StatXp));
+
+    public static string StatDistance => Get(nameof(StatDistance));
+
+    public static string StatFleetKm => Get(nameof(StatFleetKm));
+
+    public static string StatTrucks => Get(nameof(StatTrucks));
+
+    public static string StatTrailersDetail => Get(nameof(StatTrailersDetail));
+
+    public static string StatGarages => Get(nameof(StatGarages));
+
+    public static string StatGaragesDetail => Get(nameof(StatGaragesDetail));
+
+    public static string StatDrivers => Get(nameof(StatDrivers));
+
+    public static string StatHq => Get(nameof(StatHq));
+
+    public static string StatDays => Get(nameof(StatDays));
+
+    public static string StatCities => Get(nameof(StatCities));
+
+    public static string StatExploredDetail => Get(nameof(StatExploredDetail));
+
+    public static string StatDealers => Get(nameof(StatDealers));
+
+    public static string StatRecruitDetail => Get(nameof(StatRecruitDetail));
+
+    public static string StatFines => Get(nameof(StatFines));
+
+    public static string StatFinesDetail => Get(nameof(StatFinesDetail));
+
+    public static string StatFerries => Get(nameof(StatFerries));
+
+    public static string StatCreated => Get(nameof(StatCreated));
+
+    public static string StatsIncomeHeader => Get(nameof(StatsIncomeHeader));
+
+    public static string StatRevenue => Get(nameof(StatRevenue));
+
+    public static string StatCosts => Get(nameof(StatCosts));
+
+    public static string StatCostsDetail => Get(nameof(StatCostsDetail));
+
+    public static string StatProfit => Get(nameof(StatProfit));
+
+    public static string StatsDayTooltip => Get(nameof(StatsDayTooltip));
+
+    public static string StatsDayAxis => Get(nameof(StatsDayAxis));
+
+    public static string StatsSkillsHeader => Get(nameof(StatsSkillsHeader));
+
+    public static string SkillAdr => Get(nameof(SkillAdr));
+
+    public static string SkillLongDistance => Get(nameof(SkillLongDistance));
+
+    public static string SkillHighValue => Get(nameof(SkillHighValue));
+
+    public static string SkillFragile => Get(nameof(SkillFragile));
+
+    public static string SkillJustInTime => Get(nameof(SkillJustInTime));
+
+    public static string SkillEco => Get(nameof(SkillEco));
+
+    public static string StatsTrucksTab => Get(nameof(StatsTrucksTab));
+
+    public static string StatsGaragesTab => Get(nameof(StatsGaragesTab));
+
+    public static string StatsDriversTab => Get(nameof(StatsDriversTab));
+
+    public static string ColModel => Get(nameof(ColModel));
+
+    public static string ColPlate => Get(nameof(ColPlate));
+
+    public static string ColOdometer => Get(nameof(ColOdometer));
+
+    public static string ColWear => Get(nameof(ColWear));
+
+    public static string ColGarage => Get(nameof(ColGarage));
+
+    public static string ColDriver => Get(nameof(ColDriver));
+
+    public static string ColCity => Get(nameof(ColCity));
+
+    public static string ColSlots => Get(nameof(ColSlots));
+
+    public static string ColTrucks => Get(nameof(ColTrucks));
+
+    public static string ColDrivers => Get(nameof(ColDrivers));
+
+    public static string ColRevenue => Get(nameof(ColRevenue));
+
+    public static string ColProfit => Get(nameof(ColProfit));
+
+    public static string ColProductivity => Get(nameof(ColProductivity));
+
+    public static string ColLevel => Get(nameof(ColLevel));
+
+    public static string ColXp => Get(nameof(ColXp));
+
+    public static string ColSkills => Get(nameof(ColSkills));
+
+    public static string JobsTab => Get(nameof(JobsTab));
+
+    public static string JobsNone => Get(nameof(JobsNone));
+
+    public static string JobsCount => Get(nameof(JobsCount));
+
+    public static string JobsDistance => Get(nameof(JobsDistance));
+
+    public static string JobsEarned => Get(nameof(JobsEarned));
+
+    public static string JobsPerKm => Get(nameof(JobsPerKm));
+
+    public static string JobsXp => Get(nameof(JobsXp));
+
+    public static string JobsClean => Get(nameof(JobsClean));
+
+    public static string JobsLongest => Get(nameof(JobsLongest));
+
+    public static string JobsTopCargo => Get(nameof(JobsTopCargo));
+
+    public static string JobsTopRoute => Get(nameof(JobsTopRoute));
+
+    public static string JobsTimes => Get(nameof(JobsTimes));
+
+    public static string JobsDay => Get(nameof(JobsDay));
+
+    public static string JobKindQuick => Get(nameof(JobKindQuick));
+
+    public static string JobKindSpecial => Get(nameof(JobKindSpecial));
+
+    public static string ColFinished => Get(nameof(ColFinished));
+
+    public static string ColFrom => Get(nameof(ColFrom));
+
+    public static string ColTo => Get(nameof(ColTo));
+
+    public static string ColCargo => Get(nameof(ColCargo));
+
+    public static string ColMass => Get(nameof(ColMass));
+
+    public static string ColKm => Get(nameof(ColKm));
+
+    public static string ColPayment => Get(nameof(ColPayment));
+
+    public static string ColPerKm => Get(nameof(ColPerKm));
+
+    public static string ColDamage => Get(nameof(ColDamage));
+
+    public static string ColTruck => Get(nameof(ColTruck));
+
+    public static string ColKind => Get(nameof(ColKind));
+
+    public static string JobKindCargo => Get(nameof(JobKindCargo));
 }

@@ -10,47 +10,46 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance vm:ModsViewModel}">
     <Grid Margin="8">
+        <!-- The list and the details panel, with a drag handle between them (width remembered, see PaneLayout). -->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="420" />
-            <ColumnDefinition Width="360" />
+            <ColumnDefinition Width="*" MinWidth="360" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition x:Name="DetailsColumn" Width="360" MinWidth="260" MaxWidth="900" />
         </Grid.ColumnDefinitions>
+        <GridSplitter x:Name="DetailsSplitter" Grid.Column="1" Style="{StaticResource PaneSplitter}" />
 
-        <DockPanel Margin="0,0,12,0">
-            <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="250" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="210" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="Search" Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="{x:Static res:Strings.SearchMods}" />
-                <!-- Placeholder: WPF's TextBox has none built in, so overlay a hint while the box is empty. -->
-                <TextBlock Text="{x:Static res:Strings.SearchMods}" IsHitTestVisible="False" Margin="12,0,0,0"
-                           VerticalAlignment="Center" Style="{StaticResource Muted}"
-                           Visibility="{Binding Text, ElementName=Search, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
-                <ComboBox Grid.Column="1" ItemsSource="{Binding TypeOptions}" SelectedItem="{Binding TypeFilter}" Margin="8,0,0,0" />
-                <ComboBox Grid.Column="2" ItemsSource="{Binding ShowOptions}" SelectedItem="{Binding Show}" Margin="8,0,0,0" />
-                <TextBlock Grid.Column="3" Text="{Binding Summary}" Style="{StaticResource Muted}" TextWrapping="Wrap"
-                           VerticalAlignment="Center" Margin="12,0,0,0" />
-            </Grid>
-            <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,6">
-                <Button Content="{x:Static res:Strings.InstallMods}" Command="{Binding InstallCommand}" Margin="0,0,6,0" />
-                <Button Content="{x:Static res:Strings.UninstallMods}" Command="{Binding UninstallCommand}" Margin="0,0,12,0" />
-                <TextBlock Text="{x:Static res:Strings.DropHint}" Style="{StaticResource Muted}" FontSize="11" VerticalAlignment="Center" />
+        <DockPanel>
+            <!-- Search and filters wrap onto more lines when the list is narrow. -->
+            <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,2">
+                <Grid Width="250" Margin="0,0,8,6">
+                    <TextBox x:Name="Search" Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="{x:Static res:Strings.SearchMods}" />
+                    <!-- Placeholder: WPF's TextBox has none built in, so overlay a hint while the box is empty. -->
+                    <TextBlock Text="{x:Static res:Strings.SearchMods}" IsHitTestVisible="False" Margin="12,0,0,0"
+                               VerticalAlignment="Center" Style="{StaticResource Muted}" TextWrapping="NoWrap"
+                               Visibility="{Binding Text, ElementName=Search, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
+                </Grid>
+                <ComboBox Width="150" ItemsSource="{Binding TypeOptions}" SelectedItem="{Binding TypeFilter}" Margin="0,0,8,6" />
+                <ComboBox Width="210" ItemsSource="{Binding ShowOptions}" SelectedItem="{Binding Show}" Margin="0,0,12,6" />
+                <TextBlock Text="{Binding Summary}" Style="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,0,6" />
             </WrapPanel>
-            <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,6">
-                <Button Content="{x:Static res:Strings.LibraryMoveUnused}" Command="{Binding MoveUnusedToLibraryCommand}" Margin="0,0,6,0"
+            <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,2">
+                <Button Content="{x:Static res:Strings.InstallMods}" Command="{Binding InstallCommand}" Margin="0,0,6,6" />
+                <Button Content="{x:Static res:Strings.UninstallMods}" Command="{Binding UninstallCommand}" Margin="0,0,12,6" />
+                <TextBlock Text="{x:Static res:Strings.DropHint}" Style="{StaticResource Muted}" FontSize="11" VerticalAlignment="Center" Margin="0,0,0,6" />
+            </WrapPanel>
+            <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,2">
+                <Button Content="{x:Static res:Strings.LibraryMoveUnused}" Command="{Binding MoveUnusedToLibraryCommand}" Margin="0,0,6,6"
                         ToolTip="{x:Static res:Strings.LibraryHint}" />
-                <Button Content="{x:Static res:Strings.LibraryMoveAllBack}" Command="{Binding MoveAllBackCommand}" Margin="0,0,6,0" />
-                <Button Content="{x:Static res:Strings.LibraryOpen}" Command="{Binding OpenLibraryCommand}" Margin="0,0,12,0" />
-                <TextBlock Text="{Binding LibrarySummary}" Style="{StaticResource Muted}" FontSize="11" VerticalAlignment="Center" />
+                <Button Content="{x:Static res:Strings.LibraryMoveAllBack}" Command="{Binding MoveAllBackCommand}" Margin="0,0,6,6" />
+                <Button Content="{x:Static res:Strings.LibraryOpen}" Command="{Binding OpenLibraryCommand}" Margin="0,0,12,6" />
+                <TextBlock Text="{Binding LibrarySummary}" Style="{StaticResource Muted}" FontSize="11" VerticalAlignment="Center" Margin="0,0,0,6" />
             </WrapPanel>
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+            <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,6">
                 <TextBlock Text="{Binding SelectionLabel}" FontWeight="SemiBold" Margin="0,0,10,0"
                            Visibility="{Binding SelectionLabel, Converter={StaticResource VisibleWhen}}" />
                 <TextBlock Text="{x:Static res:Strings.MultiSelectHint}" Style="{StaticResource Muted}" FontSize="11" />
-            </StackPanel>
+            </WrapPanel>
             <TextBlock DockPanel.Dock="Bottom" Text="{Binding Message}" TextWrapping="Wrap" Foreground="SeaGreen" Margin="0,6,0,0"
                        Visibility="{Binding Message, Converter={StaticResource VisibleWhen}}" />
             <ListBox x:Name="ModList" ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" HorizontalContentAlignment="Stretch"
@@ -76,7 +75,7 @@
                 </ListBox.ContextMenu>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="vm:ModItemViewModel">
-                        <Grid Margin="0,2">
+                        <Grid Margin="0,2" HorizontalAlignment="Left" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListBox}, Converter={StaticResource Ratio}, ConverterParameter='1 -36'}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="72" />
                                 <ColumnDefinition Width="*" />
@@ -89,7 +88,7 @@
                                 <TextBlock Text="{Binding ListSubtitle}" Style="{StaticResource Muted}" FontSize="11"
                                            TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                             </StackPanel>
-                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <WrapPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ListBox}, Converter={StaticResource Ratio}, ConverterParameter=0.42}">
                                 <Border Style="{StaticResource Badge}" Background="#4A6A8A" Margin="0,0,6,0"
                                         Visibility="{Binding InLibrary, Converter={StaticResource VisibleWhen}}">
                                     <TextBlock Text="{x:Static res:Strings.LibraryBadge}" Style="{StaticResource BadgeText}" />
@@ -106,13 +105,13 @@
                                         Background="{Binding CompatStatus, Converter={StaticResource CompatToBrush}}">
                                     <TextBlock Text="{Binding CompatLabel}" Style="{StaticResource BadgeText}" />
                                 </Border>
-                            </StackPanel>
+                            </WrapPanel>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </DockPanel>
 
-        <v:ModDetailsView Grid.Column="1" DataContext="{Binding Selected}" />
+        <v:ModDetailsView Grid.Column="2" DataContext="{Binding Selected}" />
     </Grid>
 </UserControl>

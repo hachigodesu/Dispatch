@@ -54,6 +54,59 @@ public sealed class MapCanvas : FrameworkElement
         set => SetValue(SceneProperty, value);
     }
 
+    /// <summary>A click (not a drag) on the map: the nearest road within a few pixels, or none.</summary>
+    public event EventHandler<MapRoadClickedEventArgs>? RoadClicked;
+
+    /// <summary>The road drawn highlighted on top (set from a click, or cleared with null).</summary>
+    public MapRoad? HighlightedRoad
+    {
+        get => _highlighted;
+        set
+        {
+            _highlighted = value;
+            InvalidateVisual();
+        }
+    }
+
+    private MapRoad? _highlighted;
+
+    /// <summary>The nearest road to a point on screen within <paramref name="pixels"/>, searching the top layers first.</summary>
+    public (MapSceneLayer Layer, MapRoad Road)? RoadAt(Point screen, double pixels = 6)
+    {
+        if (!_hasView || Scene is not { } scene)
+        {
+            return null;
+        }
+
+        var (wx, wz) = _view.ToWorld(screen);
+        var p = new MapPoint((float)wx, (float)wz);
+        float tolerance = (float)(pixels / _view.Scale);
+        var probe = new MapRect(p.X, p.Z, p.X, p.Z).Inflate(tolerance);
+        (MapSceneLayer Layer, MapRoad Road)? best = null;
+        float bestDistance = tolerance;
+        for (int li = scene.Layers.Count - 1; li >= 0; li--)
+        {
+            var layer = scene.Layers[li];
+            foreach (var road in layer.Roads)
+            {
+                if (!road.Bounds.Intersects(probe))
+                {
+                    continue;
+                }
+
+                // A faded layer only wins when it's clearly closer: the highlighted mod is easier to click.
+                float d = MapNetwork.DistanceTo(road, p) * (layer.Dim ? 1.5f : 1f);
+                if (d < bestDistance)
+                {
+                    bestDistance = d;
+                    best = (layer, road);
+                }
+            }
+        }
+
+        return best;
+    }
+
     /// <summary>True once a bitmap for the current scene has been drawn (screenshots wait for it).</summary>
     public bool HasRendered { get; private set; }
 
@@ -95,6 +148,7 @@ public sealed class MapCanvas : FrameworkElement
 
         _bitmap = null;
         _hasView = false;
+        _highlighted = null;
         if (scene is not null)
         {
             FitTo(scene.Focus ?? scene.Extent);
@@ -165,9 +219,21 @@ public sealed class MapCanvas : FrameworkElement
 
     protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
     {
+        var up = e.GetPosition(this);
+        bool click = _dragFrom is { } from && Math.Abs(up.X - from.X) + Math.Abs(up.Y - from.Y) < 4;
         _dragFrom = null;
         ReleaseMouseCapture();
         Cursor = null;
+        if (click && RoadAt(up) is { } hit)
+        {
+            HighlightedRoad = hit.Road;
+            RoadClicked?.Invoke(this, new MapRoadClickedEventArgs(hit.Layer, hit.Road));
+        }
+        else if (click)
+        {
+            HighlightedRoad = null;
+            RoadClicked?.Invoke(this, new MapRoadClickedEventArgs(null, null));
+        }
     }
 
     // ---- Drawing ---------------------------------------------------------------------------------------------
@@ -191,7 +257,33 @@ public sealed class MapCanvas : FrameworkElement
             dc.DrawImage(_bitmap, new Rect(left, top, _bitmapView.Width * k, _bitmapView.Height * k));
         }
 
+        DrawHighlight(dc, view);
         DrawLabels(dc, view);
+    }
+
+    /// <summary>The clicked road: a dark outline with a yellow core, wide enough to find even when zoomed out.</summary>
+    private void DrawHighlight(DrawingContext dc, View view)
+    {
+        if (_highlighted is not { } road)
+        {
+            return;
+        }
+
+        var g = new StreamGeometry();
+        using (var ctx = g.Open())
+        {
+            ctx.BeginFigure(view.ToScreen(road.A), false, false);
+            for (int k = 1; k <= 24; k++)
+            {
+                ctx.LineTo(view.ToScreen(road.At(k / 24f)), true, true);
+            }
+        }
+
+        g.Freeze();
+        var outline = new Pen(new SolidColorBrush(Color.FromRgb(0x1A, 0x1A, 0x1A)), 9) { StartLineCap = PenLineCap.Round, EndLineCap = PenLineCap.Round, LineJoin = PenLineJoin.Round };
+        var core = new Pen(new SolidColorBrush(Color.FromRgb(0xFF, 0xD5, 0x00)), 5) { StartLineCap = PenLineCap.Round, EndLineCap = PenLineCap.Round, LineJoin = PenLineJoin.Round };
+        dc.DrawGeometry(null, outline, g);
+        dc.DrawGeometry(null, core, g);
     }
 
     /// <summary>City labels; strong ones first. A label that would overlap one already placed is left out.</summary>
@@ -305,7 +397,8 @@ internal static class MapRenderer
 
             foreach (var layer in scene.Layers)
             {
-                var pen = Pen(layer.Color, layer.Width + (zoomed * layer.ZoomWidth), layer.Dashed);
+                var color = layer.Dim ? Color.FromArgb(0x48, layer.Color.R, layer.Color.G, layer.Color.B) : layer.Color;
+                var pen = Pen(color, (layer.Width + (zoomed * layer.ZoomWidth)) * (layer.Dim ? 0.8 : 1), layer.Dashed);
                 dc.DrawGeometry(null, pen, Geometry(layer.Roads, layer.Prefabs, world, scale, S, layer.AlwaysShow, cancel));
             }
         }

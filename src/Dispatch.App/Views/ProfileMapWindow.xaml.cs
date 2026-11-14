@@ -8,7 +8,25 @@ public partial class ProfileMapWindow : Window
 {
     private readonly CancellationTokenSource _cancel = new();
 
-    public ProfileMapWindow() => InitializeComponent();
+    public ProfileMapWindow()
+    {
+        InitializeComponent();
+        Services.PaneLayout.Remember(LegendSplitter, (LegendColumn, "roadmap.legend"));
+        Map.RoadClicked += (_, e) => (DataContext as ProfileMapViewModel)?.OnRoadClicked(e.Layer);
+    }
+
+    /// <summary>A clicked road selects its mod's row: bring that row into view.</summary>
+    private void OnLegendSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        if (LegendList.SelectedItem is { } item)
+        {
+            LegendList.ScrollIntoView(item);
+        }
+        else
+        {
+            Map.HighlightedRoad = null;
+        }
+    }
 
     /// <summary>The map control (screenshots wait for its first render).</summary>
     public MapCanvas MapControl => Map;

@@ -6,7 +6,11 @@ namespace Dispatch.App.Views;
 
 public partial class ModsView : UserControl
 {
-    public ModsView() => InitializeComponent();
+    public ModsView()
+    {
+        InitializeComponent();
+        Services.PaneLayout.Remember(DetailsSplitter, (DetailsColumn, "mods.details"));
+    }
 
     /// <summary>Fills "Add to profile ▸" and "Remove from profile ▸" with the current profiles each time the menu opens.</summary>
     private void OnContextMenuOpening(object sender, ContextMenuEventArgs e)

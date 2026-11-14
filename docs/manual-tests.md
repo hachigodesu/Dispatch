@@ -175,6 +175,27 @@ and close the game unless a step says otherwise.
   subtitle says "as if it were added at the top"; with one that is in it, it's compared at its real place. A Europe
   mod in the Grand Utopia profile says it doesn't change that profile's roads.
 
+## After 0.9.0: road clicks, cut and paste, stats
+- [ ] Road map: click a road → it's outlined yellow, its mod's legend row is selected and scrolled into view, the other
+  mods fade. Click empty map → back to normal. **Show in load order** brings the main window forward with that mod
+  selected. A drag never counts as a click.
+- [ ] Show on map (one mod): click a grey, red and blue road → the box names the base game/DLC/mod that added it.
+- [ ] Load order: select two mods, Ctrl+X → faded with "Cut"; select another mod, Ctrl+V → they move above it, the
+  profile is unsaved; Ctrl+Shift+V puts them below; Esc cancels. Right-click shows the same and Move to top/bottom,
+  Remove, Show on map. Discard restores the order.
+- [ ] Profiles → **Stats…** on a played profile: the figures match the game (money, level, trucks, garages, drivers);
+  the chart's tooltips show each day; the tables sort by clicking a header. A profile without saves has the button off.
+  Maximized, the chart fills the row and the tables the rest; in a small window the page scrolls.
+- [ ] Stats → **Your jobs**: the newest jobs match the game's delivery log (cargo, from/to, payment, km); company and
+  cargo names are the game's (in the UI language where the game has one); sorting by payment or €/km works.
+
+## After 0.9.0: resizable areas
+- [ ] Profiles: drag the handles between the profiles list, the load order and the side panel; the cursor changes and
+  the grip lights up. Buttons, hints and the side panel's tabs wrap when an area gets narrow; mod badges wrap under
+  each other instead of being cut off. Restart Dispatch: the widths are remembered.
+- [ ] Mods (list | details), Road map (map | legend) and Stats (chart | skills) resize the same way; the Mods filters
+  and buttons wrap. Settings' buttons wrap in a narrow window.
+
 ## Release
 - [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-<version>-setup.exe`.
 - [ ] Install: no admin prompt, Start-menu entry, the app starts. Uninstall: asks about deleting data; **No** keeps
