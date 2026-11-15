@@ -196,6 +196,18 @@ and close the game unless a step says otherwise.
 - [ ] Mods (list | details), Road map (map | legend) and Stats (chart | skills) resize the same way; the Mods filters
   and buttons wrap. Settings' buttons wrap in a narrow window.
 
+## After 0.10.0: DLC names and checks, head tracking
+- [ ] Settings → **Your DLC**: the map expansions you own are listed by name, everything else under "Other DLC".
+- [ ] A mod that declares DLC (e.g. a ProMods part): its details list each DLC by name with ✓ (owned) or ✗.
+- [ ] Mods → Show: **Needs DLC you don't own** lists only mods with a ✗ DLC (empty if you own everything they need).
+- [ ] Launch a profile with a mod needing an unowned DLC (or check the window with screenshot tab 17): the warning
+  names the DLC and its mods; Cancel doesn't start the game, **Launch anyway** does. No warning when everything's owned.
+- [ ] Settings → Head tracking: tick "Start OpenTrack and AITrack…" → both paths are filled in and show "Found".
+  Launch the game from Dispatch → OpenTrack opens, then AITrack; head tracking works in the game. Quit the game → both
+  close. Start OpenTrack yourself first → Dispatch doesn't start a second one and doesn't close yours.
+- [ ] Untick "Close them when the game closes" → they stay open after the game. A wrong path → "Not found", and
+  launching still starts the game.
+
 ## Release
 - [ ] `powershell -ExecutionPolicy Bypass -File installer\build.ps1` (needs Inno Setup 6) → `artifacts\Dispatch-<version>-setup.exe`.
 - [ ] Install: no admin prompt, Start-menu entry, the app starts. Uninstall: asks about deleting data; **No** keeps

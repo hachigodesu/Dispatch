@@ -18,7 +18,8 @@ public sealed record GameSnapshot(
     IReadOnlyList<ProfileSnapshot> Profiles,
     IReadOnlyDictionary<string, Compatibility> Compatibility,
     IReadOnlyDictionary<string, string> NamesFromProfiles,
-    IReadOnlyList<Dispatch.Core.Games.GameDefinition> InstalledGames)
+    IReadOnlyList<Dispatch.Core.Games.GameDefinition> InstalledGames,
+    Dispatch.Core.Games.DlcCatalog Dlc)
 {
     /// <summary>Package IDs in any profile's load order (local and Steam Cloud).</summary>
     public HashSet<string> UsedPackageIds { get; } =
@@ -67,7 +68,10 @@ public sealed record GameSnapshot(
         {
             compat.TryAdd(m.PackageId, CompatibilityChecker.Evaluate(m, env.Version, env.OwnedDlc, log));
         }
-        return new GameSnapshot(env, scan, log, profiles, compat, names, FindInstalledGames(platform, settings, env));
+        // DLC names and what the player owns (each installed dlc_*.scs and its manifest, about half a second).
+        var dlc = Dispatch.Core.Games.DlcCatalog.Read(env.InstallDir, game.Id, cancel);
+        Log.Information("Owned DLC: {Count}", dlc.Owned.Count);
+        return new GameSnapshot(env, scan, log, profiles, compat, names, FindInstalledGames(platform, settings, env), dlc);
     }
 
     /// <summary>The games that look installed (install folder or Documents folder found). The shown game is always listed.</summary>

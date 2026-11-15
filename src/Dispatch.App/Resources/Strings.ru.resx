@@ -644,4 +644,26 @@ Dispatch оставит только данные, которых эта вер�
   <data name="ColTruck" xml:space="preserve"><value>Грузовик</value></data>
   <data name="ColKind" xml:space="preserve"><value>Рейс</value></data>
   <data name="JobKindCargo" xml:space="preserve"><value>Рынок грузов</value></data>
+  <data name="DlcOwned" xml:space="preserve"><value>У вас есть это DLC.</value></data>
+  <data name="DlcNotOwned" xml:space="preserve"><value>У вас нет этого DLC: игра не включит мод.</value></data>
+  <data name="ShowMissingDlc" xml:space="preserve"><value>Нужно DLC, которого у вас нет</value></data>
+  <data name="HealthMissingDlcWhich" xml:space="preserve"><value>Не хватает: {0}</value></data>
+  <data name="DlcHeader" xml:space="preserve"><value>Ваши DLC</value></data>
+  <data name="DlcHint" xml:space="preserve"><value>Требования модов к DLC проверяются по этому списку. Steam устанавливает только купленные DLC.</value></data>
+  <data name="DlcMapsHeader" xml:space="preserve"><value>Расширения карты</value></data>
+  <data name="DlcOthersHeader" xml:space="preserve"><value>Другие DLC ({0:N0})</value></data>
+  <data name="HeadTrackingHeader" xml:space="preserve"><value>Отслеживание головы</value></data>
+  <data name="HeadTrackingStart" xml:space="preserve"><value>Запускать OpenTrack и AITrack, когда Dispatch запускает игру</value></data>
+  <data name="HeadTrackingHint" xml:space="preserve"><value>Сначала запускается OpenTrack, затем AITrack. Уже запущенные программы не трогаются.</value></data>
+  <data name="HeadTrackingClose" xml:space="preserve"><value>Закрывать их при закрытии игры</value></data>
+  <data name="HeadTrackingFind" xml:space="preserve"><value>Найти заново</value></data>
+  <data name="HeadTrackingNotSet" xml:space="preserve"><value>Не указано: эта программа не будет запущена.</value></data>
+  <data name="HeadTrackingFound" xml:space="preserve"><value>Найдено.</value></data>
+  <data name="HeadTrackingMissing" xml:space="preserve"><value>По этому пути не найдено.</value></data>
+  <data name="HeadTrackingExeFilter" xml:space="preserve"><value>Программы (*.exe)|*.exe</value></data>
+  <data name="HeadTrackingFailed" xml:space="preserve"><value>Не удалось запустить {0}: {1}</value></data>
+  <data name="MissingDlcTitle" xml:space="preserve"><value>Не хватает DLC</value></data>
+  <data name="MissingDlcHeader" xml:space="preserve"><value>Некоторым модам в «{0}» нужны DLC, которых у вас нет</value></data>
+  <data name="MissingDlcExplain" xml:space="preserve"><value>Игра не включит эти моды, из-за чего могут сломаться зависящие от них карты и соединения. Их можно убрать на вкладке «Состояние» или всё равно запустить игру.</value></data>
+  <data name="MissingDlcLaunchAnyway" xml:space="preserve"><value>Всё равно запустить</value></data>
 </root>

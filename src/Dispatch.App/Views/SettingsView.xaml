@@ -38,6 +38,27 @@
                 <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Settings.Dlc, Mode=OneWay}" Style="{StaticResource FieldValue}" />
             </Grid>
 
+            <!-- The DLCs the player owns, by name: what mods' DLC requirements are checked against. -->
+            <TextBlock Text="{x:Static res:Strings.DlcHeader}" Style="{StaticResource SectionHeader}" Margin="0,20,0,4" />
+            <TextBlock Text="{x:Static res:Strings.DlcHint}" Style="{StaticResource Muted}" Margin="0,0,0,6" />
+            <TextBlock Text="{x:Static res:Strings.DlcMapsHeader}" FontWeight="SemiBold" Margin="0,0,0,4" />
+            <ItemsControl ItemsSource="{Binding Settings.MapDlcs}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource Badge}" Background="#2E7D32" Margin="0,0,4,4">
+                            <TextBlock Text="{Binding}" Style="{StaticResource BadgeText}" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Text="{Binding Settings.OtherDlcsHeader}" FontWeight="SemiBold" Margin="0,6,0,2" />
+            <TextBlock Text="{Binding Settings.OtherDlcs}" TextWrapping="Wrap" Style="{StaticResource Muted}" />
+
             <TextBlock Text="{x:Static res:Strings.Problems}" Style="{StaticResource SectionHeader}" Margin="0,20,0,8" />
             <TextBlock Text="{x:Static res:Strings.NoProblems}" Style="{StaticResource Muted}"
                        Visibility="{Binding HasProblems, Converter={StaticResource VisibleWhen}, ConverterParameter=invert}" />
@@ -137,6 +158,40 @@
             <WrapPanel Margin="0,8,0,0">
                 <Button Content="{x:Static res:Strings.RestoreFolder}" Command="{Binding Profiles.RestoreFolderCommand}" Margin="0,0,8,6" />
                 <Button Content="{x:Static res:Strings.RecycleBackup}" Command="{Binding Profiles.RecycleFullBackupCommand}" Margin="0,0,8,6" />
+            </WrapPanel>
+
+            <!-- Head tracking: start OpenTrack and AITrack with the game -->
+            <TextBlock x:Name="HeadTrackingSection" Text="{x:Static res:Strings.HeadTrackingHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />
+            <CheckBox IsChecked="{Binding Settings.StartHeadTracking}">
+                <TextBlock Text="{x:Static res:Strings.HeadTrackingStart}" TextWrapping="Wrap" />
+            </CheckBox>
+            <TextBlock Text="{x:Static res:Strings.HeadTrackingHint}" Style="{StaticResource Muted}" FontSize="11" Margin="0,2,0,6" />
+            <Grid IsEnabled="{Binding Settings.StartHeadTracking}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="170" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="OpenTrack" Style="{StaticResource FieldLabel}" />
+                <TextBox Grid.Column="1" Text="{Binding Settings.OpenTrackPath, UpdateSourceTrigger=LostFocus}" Margin="0,4" />
+                <Button Grid.Column="2" Content="{x:Static res:Strings.Browse}" Command="{Binding Settings.BrowseOpenTrackCommand}" Margin="8,4,0,4" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Settings.OpenTrackStatus}" Style="{StaticResource Muted}" FontSize="11" />
+                <TextBlock Grid.Row="2" Text="AITrack" Style="{StaticResource FieldLabel}" />
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Settings.AiTrackPath, UpdateSourceTrigger=LostFocus}" Margin="0,4" />
+                <Button Grid.Row="2" Grid.Column="2" Content="{x:Static res:Strings.Browse}" Command="{Binding Settings.BrowseAiTrackCommand}" Margin="8,4,0,4" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Settings.AiTrackStatus}" Style="{StaticResource Muted}" FontSize="11" />
+            </Grid>
+            <WrapPanel Margin="0,6,0,0" IsEnabled="{Binding Settings.StartHeadTracking}">
+                <CheckBox IsChecked="{Binding Settings.CloseHeadTrackingWithGame}" Margin="0,0,16,6">
+                    <TextBlock Text="{x:Static res:Strings.HeadTrackingClose}" TextWrapping="Wrap" />
+                </CheckBox>
+                <Button Content="{x:Static res:Strings.HeadTrackingFind}" Command="{Binding Settings.FindHeadTrackingCommand}" Margin="0,0,0,6" />
             </WrapPanel>
 
             <TextBlock Text="{x:Static res:Strings.LanguageHeader}" Style="{StaticResource SectionHeader}" Margin="0,24,0,4" />

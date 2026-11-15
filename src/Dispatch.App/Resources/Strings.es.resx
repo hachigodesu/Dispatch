@@ -644,4 +644,26 @@ El juego no ve los mods que están ahí, así que arranca más rápido y su list
   <data name="ColTruck" xml:space="preserve"><value>Camión</value></data>
   <data name="ColKind" xml:space="preserve"><value>Trabajo</value></data>
   <data name="JobKindCargo" xml:space="preserve"><value>Mercado de mercancías</value></data>
+  <data name="DlcOwned" xml:space="preserve"><value>Tienes este DLC.</value></data>
+  <data name="DlcNotOwned" xml:space="preserve"><value>No tienes este DLC: el juego no activará el mod.</value></data>
+  <data name="ShowMissingDlc" xml:space="preserve"><value>Necesita un DLC que no tienes</value></data>
+  <data name="HealthMissingDlcWhich" xml:space="preserve"><value>Falta: {0}</value></data>
+  <data name="DlcHeader" xml:space="preserve"><value>Tus DLC</value></data>
+  <data name="DlcHint" xml:space="preserve"><value>Los requisitos de DLC de los mods se comprueban con estos. Steam solo instala los DLC que tienes.</value></data>
+  <data name="DlcMapsHeader" xml:space="preserve"><value>Expansiones de mapa</value></data>
+  <data name="DlcOthersHeader" xml:space="preserve"><value>Otros DLC ({0:N0})</value></data>
+  <data name="HeadTrackingHeader" xml:space="preserve"><value>Seguimiento de cabeza</value></data>
+  <data name="HeadTrackingStart" xml:space="preserve"><value>Iniciar OpenTrack y AITrack al lanzar el juego desde Dispatch</value></data>
+  <data name="HeadTrackingHint" xml:space="preserve"><value>Primero se inicia OpenTrack y luego AITrack. Los programas que ya están abiertos se dejan como están.</value></data>
+  <data name="HeadTrackingClose" xml:space="preserve"><value>Cerrarlos al cerrar el juego</value></data>
+  <data name="HeadTrackingFind" xml:space="preserve"><value>Volver a buscarlos</value></data>
+  <data name="HeadTrackingNotSet" xml:space="preserve"><value>Sin indicar: este no se iniciará.</value></data>
+  <data name="HeadTrackingFound" xml:space="preserve"><value>Encontrado.</value></data>
+  <data name="HeadTrackingMissing" xml:space="preserve"><value>No se encuentra en esta ruta.</value></data>
+  <data name="HeadTrackingExeFilter" xml:space="preserve"><value>Programas (*.exe)|*.exe</value></data>
+  <data name="HeadTrackingFailed" xml:space="preserve"><value>No se pudo iniciar {0}: {1}</value></data>
+  <data name="MissingDlcTitle" xml:space="preserve"><value>DLC que faltan</value></data>
+  <data name="MissingDlcHeader" xml:space="preserve"><value>Algunos mods de «{0}» necesitan DLC que no tienes</value></data>
+  <data name="MissingDlcExplain" xml:space="preserve"><value>El juego no activará estos mods, lo que puede romper mapas y conectores que dependen de ellos. Puedes quitarlos en la pestaña «Estado» o lanzar el juego igualmente.</value></data>
+  <data name="MissingDlcLaunchAnyway" xml:space="preserve"><value>Lanzar igualmente</value></data>
 </root>

@@ -644,4 +644,26 @@ Gra nie widzi modów w bibliotece, więc uruchamia się szybciej, a jej lista mo
   <data name="ColTruck" xml:space="preserve"><value>Ciężarówka</value></data>
   <data name="ColKind" xml:space="preserve"><value>Zlecenie</value></data>
   <data name="JobKindCargo" xml:space="preserve"><value>Rynek towarów</value></data>
+  <data name="DlcOwned" xml:space="preserve"><value>Masz to DLC.</value></data>
+  <data name="DlcNotOwned" xml:space="preserve"><value>Nie masz tego DLC: gra nie włączy moda.</value></data>
+  <data name="ShowMissingDlc" xml:space="preserve"><value>Wymaga DLC, którego nie masz</value></data>
+  <data name="HealthMissingDlcWhich" xml:space="preserve"><value>Brakuje: {0}</value></data>
+  <data name="DlcHeader" xml:space="preserve"><value>Twoje DLC</value></data>
+  <data name="DlcHint" xml:space="preserve"><value>Wymagania DLC modów są z nimi porównywane. Steam instaluje tylko DLC, które masz.</value></data>
+  <data name="DlcMapsHeader" xml:space="preserve"><value>Rozszerzenia mapy</value></data>
+  <data name="DlcOthersHeader" xml:space="preserve"><value>Inne DLC ({0:N0})</value></data>
+  <data name="HeadTrackingHeader" xml:space="preserve"><value>Śledzenie głowy</value></data>
+  <data name="HeadTrackingStart" xml:space="preserve"><value>Uruchamiaj OpenTrack i AITrack, gdy Dispatch uruchamia grę</value></data>
+  <data name="HeadTrackingHint" xml:space="preserve"><value>Najpierw startuje OpenTrack, potem AITrack. Programy, które już działają, zostają bez zmian.</value></data>
+  <data name="HeadTrackingClose" xml:space="preserve"><value>Zamykaj je po zamknięciu gry</value></data>
+  <data name="HeadTrackingFind" xml:space="preserve"><value>Znajdź je ponownie</value></data>
+  <data name="HeadTrackingNotSet" xml:space="preserve"><value>Nie ustawiono: ten program nie zostanie uruchomiony.</value></data>
+  <data name="HeadTrackingFound" xml:space="preserve"><value>Znaleziono.</value></data>
+  <data name="HeadTrackingMissing" xml:space="preserve"><value>Nie znaleziono pod tą ścieżką.</value></data>
+  <data name="HeadTrackingExeFilter" xml:space="preserve"><value>Programy (*.exe)|*.exe</value></data>
+  <data name="HeadTrackingFailed" xml:space="preserve"><value>Nie udało się uruchomić {0}: {1}</value></data>
+  <data name="MissingDlcTitle" xml:space="preserve"><value>Brakujące DLC</value></data>
+  <data name="MissingDlcHeader" xml:space="preserve"><value>Niektóre mody w „{0}” wymagają DLC, których nie masz</value></data>
+  <data name="MissingDlcExplain" xml:space="preserve"><value>Gra nie włączy tych modów, co może zepsuć zależne od nich mapy i łączniki. Możesz je usunąć w karcie „Stan” albo mimo to uruchomić grę.</value></data>
+  <data name="MissingDlcLaunchAnyway" xml:space="preserve"><value>Uruchom mimo to</value></data>
 </root>

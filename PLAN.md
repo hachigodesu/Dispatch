@@ -649,6 +649,28 @@ shown: 8–12, 14, 19–21. Totals: jobs, km, earned and €/km, XP, share witho
 most driven route. Cargo and company names come from the game and the profile's mods (`GameNames`:
 `def/cargo/*.sui` → `@@key@@` → `locale/<lang>/` translations; `def/company/*.sui` names), in the UI language.
 
+### After 0.10.0 (2026-11-15, requested for 0.11.0)
+
+**DLC names** (`Core/Games/DlcCatalog.cs`, read when a game is loaded, about 0.4 s for 107 DLCs). Steam installs only
+owned DLCs, so each `dlc_*.scs` in the game folder is an owned DLC. Its `dlc_<id>.manifest.sii` gives `display_name`
+("DLC - Nordic Horizons", the prefix is dropped), `features[]` (map, cargo, bus…) and `steam_app_id`. Names of DLCs the
+player doesn't own can't be read locally (the in-game DLC browser fetches them online), so a table of ETS2 DLC names
+(as their manifests give them, ETS2 1.62) is built in, ATS `dlc_xx` IDs are named after the US state, and anything else
+is tidied ("dlc_some_pack" → "Some Pack"). The manifest names are English in every language (that's how the game shows
+them too). Names replace IDs in mod details, compatibility text, Health, map layers and the Settings "Your DLC"
+section (map expansions as badges: known map DLCs, ATS states, or a DLC whose only feature is map).
+
+**DLC checks.** Mods declare DLC in their manifest's `dlc_dependencies`; a mod that needs DLC without declaring it
+can't be detected. Mod details list each required DLC with ✓/✗. The Mods tab filter **Needs DLC you don't own**.
+Health's missing-DLC issue names the DLCs (`ProfileHealthIssue.Detail` = the IDs). **Before launching**, if active mods
+need a DLC that isn't owned, `MissingDlcWindow` lists them per DLC with **Launch anyway** / Cancel (the default).
+
+**Head tracking** (Settings): start OpenTrack and AITrack with the game (`Core/Games/HeadTracking.cs`). Paths are found
+from the uninstall entries in the registry and `Program Files\opentrack`, `Program Files\aitrack*` (newest version
+first), or picked by hand; each shows Found / Not found. On launch OpenTrack starts first, then AITrack (AITrack sends
+to OpenTrack's UDP input); programs already running are left alone. With "Close them when the game closes" (on by
+default) only the programs Dispatch started are closed (window close, then killed after 10 s) when the game exits.
+
 ---
 
 ## 7. Risks, unknowns and spikes

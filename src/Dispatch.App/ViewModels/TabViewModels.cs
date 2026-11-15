@@ -91,6 +91,145 @@ public sealed partial class SettingsViewModel(AppSettings settings, AppPaths pat
             ? "—"
             : string.Join(Environment.NewLine, env.Accounts.Select(a => a.PersonaName + (a.IsActive ? " " + Strings.SignedIn : "")));
         Dlc = env.OwnedDlc.Count.ToString(CultureInfo.CurrentCulture);
+        var owned = DlcNames.Catalog.Owned;
+        MapDlcs = owned.Where(DlcNames.Catalog.IsMapExpansion).Select(d => d.Name).ToList();
+        var others = owned.Where(d => !MapDlcs.Contains(d.Name)).Select(d => d.Name).ToList();
+        OtherDlcs = others.Count == 0 ? "—" : string.Join(", ", others);
+        OtherDlcsHeader = string.Format(CultureInfo.CurrentCulture, Strings.DlcOthersHeader, others.Count);
+    }
+
+    /// <summary>Owned map expansions by name ("Nordic Horizons"…), shown as badges.</summary>
+    [ObservableProperty]
+    private IReadOnlyList<string> _mapDlcs = [];
+
+    /// <summary>Every other owned DLC (cargo packs, trailers, paint jobs…), comma-separated.</summary>
+    [ObservableProperty]
+    private string _otherDlcs = "";
+
+    [ObservableProperty]
+    private string _otherDlcsHeader = "";
+
+    // ---- Head tracking ------------------------------------------------------------------------------------------
+
+    /// <summary>Start OpenTrack and AITrack when Dispatch launches the game.</summary>
+    public bool StartHeadTracking
+    {
+        get => settings.StartHeadTracking;
+        set
+        {
+            if (settings.StartHeadTracking != value)
+            {
+                settings.StartHeadTracking = value;
+                if (value)
+                {
+                    // First time on: fill in the programs where they're usually installed.
+                    OpenTrackPath = OpenTrackPath.Length > 0 ? OpenTrackPath : Dispatch.Core.Games.HeadTracking.FindOpenTrack() ?? "";
+                    AiTrackPath = AiTrackPath.Length > 0 ? AiTrackPath : Dispatch.Core.Games.HeadTracking.FindAiTrack() ?? "";
+                }
+
+                SaveSettings();
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public bool CloseHeadTrackingWithGame
+    {
+        get => settings.CloseHeadTrackingWithGame;
+        set
+        {
+            if (settings.CloseHeadTrackingWithGame != value)
+            {
+                settings.CloseHeadTrackingWithGame = value;
+                SaveSettings();
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public string OpenTrackPath
+    {
+        get => settings.OpenTrackPath ?? "";
+        set
+        {
+            if ((settings.OpenTrackPath ?? "") != value)
+            {
+                settings.OpenTrackPath = value.Length == 0 ? null : value;
+                SaveSettings();
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(OpenTrackStatus));
+            }
+        }
+    }
+
+    public string AiTrackPath
+    {
+        get => settings.AiTrackPath ?? "";
+        set
+        {
+            if ((settings.AiTrackPath ?? "") != value)
+            {
+                settings.AiTrackPath = value.Length == 0 ? null : value;
+                SaveSettings();
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AiTrackStatus));
+            }
+        }
+    }
+
+    /// <summary>"Found" / "Not found" under each path, so a wrong path shows before launching.</summary>
+    public string OpenTrackStatus => PathStatus(OpenTrackPath);
+
+    public string AiTrackStatus => PathStatus(AiTrackPath);
+
+    private static string PathStatus(string path) =>
+        path.Length == 0 ? Strings.HeadTrackingNotSet : File.Exists(path) ? Strings.HeadTrackingFound : Strings.HeadTrackingMissing;
+
+    [RelayCommand]
+    private void BrowseOpenTrack()
+    {
+        if (PickExe(OpenTrackPath) is { } p)
+        {
+            OpenTrackPath = p;
+        }
+    }
+
+    [RelayCommand]
+    private void BrowseAiTrack()
+    {
+        if (PickExe(AiTrackPath) is { } p)
+        {
+            AiTrackPath = p;
+        }
+    }
+
+    [RelayCommand]
+    private void FindHeadTracking()
+    {
+        OpenTrackPath = Dispatch.Core.Games.HeadTracking.FindOpenTrack() ?? OpenTrackPath;
+        AiTrackPath = Dispatch.Core.Games.HeadTracking.FindAiTrack() ?? AiTrackPath;
+    }
+
+    private void SaveSettings()
+    {
+        try
+        {
+            settings.Save(paths.SettingsFile);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            Serilog.Log.Warning(ex, "Settings couldn't be saved");
+        }
+    }
+
+    private static string? PickExe(string start)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = Strings.HeadTrackingExeFilter,
+            InitialDirectory = Path.GetDirectoryName(start) is { } dir && Directory.Exists(dir) ? dir : "",
+        };
+        return dialog.ShowDialog() == true ? dialog.FileName : null;
     }
 
     [RelayCommand]

@@ -27,7 +27,7 @@ public enum HealthIssueKind
 /// <summary>A mod an issue is about. <paramref name="Replacement"/>: the newer copy to use instead (OlderCopyActive).</summary>
 public sealed record HealthMod(string PackageId, string DisplayName, ModInfo? Mod, ModInfo? Replacement = null);
 
-/// <param name="Detail">SaveNeedsMods: the save's name.</param>
+/// <param name="Detail">SaveNeedsMods: the save's name. MissingDlc: the missing DLC IDs, comma-separated.</param>
 public sealed record HealthIssue(HealthIssueKind Kind, IReadOnlyList<HealthMod> Mods, string? Detail = null);
 
 /// <summary>Everything a profile's health is judged by. <paramref name="Installed"/> covers mod\, the library and the Workshop.</summary>
@@ -52,6 +52,7 @@ public static class ProfileHealthCheck
         var missing = new List<HealthMod>();
         var wrongVersion = new List<HealthMod>();
         var missingDlc = new List<HealthMod>();
+        var missingDlcIds = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
         var older = new List<HealthMod>();
         var warned = new List<HealthMod>();
         var active = input.TopFirst.Select(e => e.PackageId).ToHashSet(StringComparer.Ordinal);
@@ -73,6 +74,7 @@ public static class ProfileHealthCheck
             else if (compat.Status == CompatStatus.MissingDlc)
             {
                 missingDlc.Add(item);
+                missingDlcIds.UnionWith(compat.MissingDlc);
             }
 
             if (input.Duplicates.TryGetValue(mod, out var dup) && dup.IsOlder && !active.Contains(dup.Newest.PackageId))
@@ -88,7 +90,10 @@ public static class ProfileHealthCheck
 
         Add(issues, HealthIssueKind.MissingMods, missing);
         Add(issues, HealthIssueKind.WrongVersion, wrongVersion);
-        Add(issues, HealthIssueKind.MissingDlc, missingDlc);
+        if (missingDlc.Count > 0)
+        {
+            issues.Add(new HealthIssue(HealthIssueKind.MissingDlc, missingDlc, string.Join(",", missingDlcIds))); // Detail: the DLC IDs
+        }
         Add(issues, HealthIssueKind.OlderCopyActive, older);
 
         if (input.NewestSave is { } save)

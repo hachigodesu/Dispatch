@@ -46,6 +46,9 @@ public interface IDialogs
 
     /// <summary>Opens a Stats window (not modal) and starts reading the save.</summary>
     void ShowStats(ViewModels.StatsViewModel stats);
+
+    /// <summary>Lists active mods that need DLC the player doesn't own; true = launch anyway.</summary>
+    bool ConfirmMissingDlc(ViewModels.MissingDlcViewModel missing);
 }
 
 public sealed class Dialogs : IDialogs
@@ -128,6 +131,9 @@ public sealed class Dialogs : IDialogs
         window.Show();
         _ = window.StartLoading();
     }
+
+    public bool ConfirmMissingDlc(ViewModels.MissingDlcViewModel missing) =>
+        new Views.MissingDlcWindow { Owner = Application.Current.MainWindow, DataContext = missing }.ShowDialog() == true;
 
     public void ShowStats(ViewModels.StatsViewModel stats)
     {

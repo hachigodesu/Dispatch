@@ -246,7 +246,9 @@ public sealed partial class HealthViewModel(ProfilesViewModel profiles, Action<P
                 };
 
             case HealthIssueKind.MissingDlc:
-                return new HealthIssueViewModel(string.Format(CultureInfo.CurrentCulture, Strings.HealthMissingDlcTitle, issue.Mods.Count), names)
+                string dlcs = Services.DlcNames.List((issue.Detail ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries));
+                return new HealthIssueViewModel(string.Format(CultureInfo.CurrentCulture, Strings.HealthMissingDlcTitle, issue.Mods.Count),
+                                                string.Format(CultureInfo.CurrentCulture, Strings.HealthMissingDlcWhich, dlcs) + "\n" + names)
                 {
                     PrimaryLabel = editable ? Strings.HealthFixRemove : null,
                     Primary = editable ? Remove() : null,

@@ -27,9 +27,10 @@ something is installed somewhere unusual, you can set the paths in **Settings**.
 ### See all your mods
 - Reads every mod format the game uses: folders, ZIP (including "protected" ZIPs), and HashFS v1 and v2 `.scs`
   archives. It covers local mods and Steam Workshop items.
-- Shows each mod's icon, description, version, author, type and required DLC.
+- Shows each mod's icon, description, version, author, type and required DLC. DLCs are shown by name ("Nordic
+  Horizons", not `dlc_polar`), with a tick or a cross for whether you own each one.
 - **Compatibility warnings:** made for a different game version, needs a DLC you don't own, or has no version
-  information.
+  information. The **Needs DLC you don't own** filter lists those mods, and Settings shows the DLC you own.
 - **The game's own verdicts:** the warnings the game wrote about each mod in its log the last time you played.
 - **Duplicates and outdated copies:** the same mod in several files or versions, or installed both locally and from
   the Workshop.
@@ -97,7 +98,10 @@ Copies are started directly, not through Steam, so Steam must be running and Ste
 them.
 
 ### Also
-- **Launch the game** from Dispatch, with the right version for the selected profile.
+- **Launch the game** from Dispatch, with the right version for the selected profile. If active mods need a DLC you
+  don't own, Dispatch says which before starting the game.
+- **Head tracking:** Dispatch can start **OpenTrack** and **AITrack** together with the game, and close them when the
+  game closes (Settings → Head tracking; it finds both programs where they're usually installed).
 - **Euro Truck Simulator 2 and American Truck Simulator.** Switch between them in Settings.
 - **Languages:** English, German, Spanish, French, Polish, Portuguese (Brazil) and Russian.
 - **Updates:** Dispatch checks this page for new releases at most once a day. You can turn that off in Settings. The

@@ -34,6 +34,7 @@ public class ProfileHealthTests
         issues[0].Mods.Single().PackageId.ShouldBe("gone");
         issues[1].Mods.Single().PackageId.ShouldBe("for160");
         issues[2].Mods.Single().PackageId.ShouldBe("needs_north");
+        issues[2].Detail.ShouldBe("dlc_north"); // which DLC is missing
         issues[3].Mods.Single().Replacement!.PackageId.ShouldBe("trucks_v2");
         issues[4].Detail.ShouldBe("autosave");
         issues[4].Mods.Select(m => (m.PackageId, m.Mod is not null)).ShouldBe([("saved_only", true), ("gone_too", false)]);

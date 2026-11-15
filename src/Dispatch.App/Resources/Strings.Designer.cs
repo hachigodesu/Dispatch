@@ -1194,4 +1194,48 @@ public static class Strings
     public static string ColKind => Get(nameof(ColKind));
 
     public static string JobKindCargo => Get(nameof(JobKindCargo));
+
+    public static string DlcOwned => Get(nameof(DlcOwned));
+
+    public static string DlcNotOwned => Get(nameof(DlcNotOwned));
+
+    public static string ShowMissingDlc => Get(nameof(ShowMissingDlc));
+
+    public static string HealthMissingDlcWhich => Get(nameof(HealthMissingDlcWhich));
+
+    public static string DlcHeader => Get(nameof(DlcHeader));
+
+    public static string DlcHint => Get(nameof(DlcHint));
+
+    public static string DlcMapsHeader => Get(nameof(DlcMapsHeader));
+
+    public static string DlcOthersHeader => Get(nameof(DlcOthersHeader));
+
+    public static string HeadTrackingHeader => Get(nameof(HeadTrackingHeader));
+
+    public static string HeadTrackingStart => Get(nameof(HeadTrackingStart));
+
+    public static string HeadTrackingHint => Get(nameof(HeadTrackingHint));
+
+    public static string HeadTrackingClose => Get(nameof(HeadTrackingClose));
+
+    public static string HeadTrackingFind => Get(nameof(HeadTrackingFind));
+
+    public static string HeadTrackingNotSet => Get(nameof(HeadTrackingNotSet));
+
+    public static string HeadTrackingFound => Get(nameof(HeadTrackingFound));
+
+    public static string HeadTrackingMissing => Get(nameof(HeadTrackingMissing));
+
+    public static string HeadTrackingExeFilter => Get(nameof(HeadTrackingExeFilter));
+
+    public static string HeadTrackingFailed => Get(nameof(HeadTrackingFailed));
+
+    public static string MissingDlcTitle => Get(nameof(MissingDlcTitle));
+
+    public static string MissingDlcHeader => Get(nameof(MissingDlcHeader));
+
+    public static string MissingDlcExplain => Get(nameof(MissingDlcExplain));
+
+    public static string MissingDlcLaunchAnyway => Get(nameof(MissingDlcLaunchAnyway));
 }

@@ -215,6 +215,28 @@ public partial class App : Application
                 Views.MainWindow.SaveScreenshot(w, screenshot);
                 w.Close();
             }
+            else if (tab == 17)
+            {
+                // The missing-DLC warning shown before launching, with sample rows (nothing is launched).
+                var sample = viewModel.CheckMissingDlc() ?? new MissingDlcViewModel(viewModel.Profiles.Selected?.Name ?? "",
+                [
+                    new MissingDlcRow(DlcNames.Name("dlc_iberia"), "Portugal Rebuild, ProMods Map Package"),
+                    new MissingDlcRow(DlcNames.Name("dlc_polar"), "Northern Open Spaces"),
+                ]);
+                var w = new MissingDlcWindow { DataContext = sample, Owner = window, WindowStartupLocation = WindowStartupLocation.Manual };
+                w.Show();
+                await Task.Delay(500);
+                Views.MainWindow.SaveScreenshot(w, screenshot);
+                w.Close();
+            }
+            else if (tab == 18)
+            {
+                // Settings with head tracking switched on and the programs found (settings are read-only here: not saved).
+                viewModel.Settings.StartHeadTracking = true;
+                viewModel.Settings.FindHeadTrackingCommand.Execute(null);
+                await Task.Delay(300);
+                window.SaveScreenshot(screenshot, 18);
+            }
             else if (tab is 15 or 16)
             {
                 // Narrow areas (nothing saved): 15 = profiles list at its minimum, a wide side panel squeezing the load

@@ -88,6 +88,16 @@ public sealed class AppSettings
     [System.Text.Json.Serialization.JsonIgnore]
     public bool ReadOnly { get; set; }
 
+    /// <summary>Start OpenTrack and AITrack when Dispatch launches the game (Settings, Head tracking).</summary>
+    public bool StartHeadTracking { get; set; }
+
+    public string? OpenTrackPath { get; set; }
+
+    public string? AiTrackPath { get; set; }
+
+    /// <summary>Close the head-tracking programs Dispatch started once the game has closed.</summary>
+    public bool CloseHeadTrackingWithGame { get; set; } = true;
+
     /// <summary>Widths of resizable areas the user dragged (e.g. "profiles.list"), in DIPs. See PaneLayout.</summary>
     public Dictionary<string, double> PaneWidths { get; set; } = [];
 

@@ -24,11 +24,12 @@ public partial class MainWindow : Window
     public void SaveScreenshot(string path, int tab, int sidePanel = 0)
     {
         bool settingsEnd = tab == 5; // 5 = Settings, scrolled to the bottom (language, updates, about)
-        bool settingsVersions = tab == 6; // 6 = Settings, scrolled to Game versions
+        // 6 = Settings, scrolled to Game versions; 18 = scrolled to Head tracking.
+        FrameworkElement? section = tab switch { 6 => SettingsPage.VersionsSection, 18 => SettingsPage.HeadTrackingSection, _ => null };
         // 0 Profiles, 1 Mods, 2 Settings, 7 Health (the option's numbers predate the Health tab).
-        Tabs.SelectedIndex = tab switch { 2 or 5 or 6 => 3, 7 => 2, _ => tab };
+        Tabs.SelectedIndex = tab switch { 2 or 5 or 6 or 18 => 3, 7 => 2, _ => tab };
         ProfilesPage.SidePanel.SelectedIndex = sidePanel;
-        if (settingsEnd || settingsVersions)
+        if (settingsEnd || section is not null)
         {
             Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             if (SettingsPage.Content is System.Windows.Controls.ScrollViewer scroll)
@@ -37,9 +38,9 @@ public partial class MainWindow : Window
                 {
                     scroll.ScrollToEnd();
                 }
-                else
+                else if (section is not null)
                 {
-                    var top = SettingsPage.VersionsSection.TransformToAncestor(scroll).Transform(new Point(0, 0));
+                    var top = section.TransformToAncestor(scroll).Transform(new Point(0, 0));
                     scroll.ScrollToVerticalOffset(scroll.VerticalOffset + top.Y - 8);
                 }
             }

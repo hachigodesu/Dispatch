@@ -58,6 +58,17 @@ internal sealed class AutoYesDialogs : IDialogs
 
     public void ShowStats(ViewModels.StatsViewModel stats) => StatsWindows.Add(stats);
 
+    /// <summary>The last missing-DLC warning shown before a launch, and the answer to give (false = cancel).</summary>
+    public ViewModels.MissingDlcViewModel? LastMissingDlc { get; private set; }
+
+    public bool MissingDlcAnswer { get; set; }
+
+    public bool ConfirmMissingDlc(ViewModels.MissingDlcViewModel missing)
+    {
+        LastMissingDlc = missing;
+        return MissingDlcAnswer;
+    }
+
     public IReadOnlyList<ViewModels.ProfileItemViewModel> PickProfiles(string title, string prompt,
                                                                         IReadOnlyList<ViewModels.ProfileItemViewModel> profiles)
     {
@@ -137,7 +148,8 @@ internal static class SelfTest
             bool map = await MapAsync(vm, dialogs, profileName, Step);
             bool cut = CutPaste(vm, profileName, Step);
             bool stats = await StatsAsync(vm, dialogs, profileName, Step);
-            m4 = m4 && bulk && v1 && v2 && versions && map && cut && stats;
+            bool dlc = DlcAndHeadTracking(vm, profileName, Step);
+            m4 = m4 && bulk && v1 && v2 && versions && map && cut && stats && dlc;
             Step($"dialog errors: {(dialogs.Errors.Count == 0 ? "none" : string.Join(" / ", dialogs.Errors))}");
             ok = saved && restored && m3 && m4 && !vm.Mods.TypeOptions.Contains("Maps") && dialogs.Errors.Count == 0;
         }
@@ -249,6 +261,42 @@ internal static class SelfTest
         bool shown = vm.SelectInLoadOrder(p.Selected, entry.PackageId) && p.SelectedEntry?.PackageId == entry.PackageId && vm.SelectedTab == 0;
         step($"click a road: road map selects its mod and fades the rest, Map window names its layer: {clicked}; show in load order: {shown}");
         return stack && read && gameOnly && inProfile && layered && toggled && clicked && shown;
+    }
+
+    /// <summary>
+    /// DLC: owned DLCs have names; a (generated, never saved) active mod that needs a DLC nobody owns is caught by the
+    /// launch check, named; head-tracking settings find or report the programs. Nothing is launched or saved.
+    /// </summary>
+    private static bool DlcAndHeadTracking(MainViewModel vm, string profileName, Action<string> step)
+    {
+        var catalog = DlcNames.Catalog;
+        bool named = catalog.Owned.All(d => d.Name.Length > 0 && !d.Name.StartsWith("dlc_", StringComparison.OrdinalIgnoreCase));
+
+        var p = vm.Profiles;
+        p.Selected = p.Items.First(i => i.Name == profileName && !i.IsCloud);
+        bool cleanBefore = vm.CheckMissingDlc() is null || p.LoadOrder.Any(l => l.Mod?.NeedsMissingDlc == true);
+        var manifest = new Dispatch.Core.Mods.ModManifest("dispatch_selftest_dlc", "1.0", "Dispatch Self-Test DLC Mod", null, ["map"], null, null, [],
+                                                         ["dlc_dispatch_selftest_missing"], null, []);
+        var info = new Dispatch.Core.Mods.ModInfo("DispatchSelfTest_dlc", Dispatch.Core.Mods.ModSource.Local, null, "selftest", "selftest",
+                                                  Dispatch.Core.Mods.Packages.PackageFormat.Zip, 0, DateTime.UtcNow, manifest, null, 0, null, null, null, []);
+        var compat = Dispatch.Core.Mods.CompatibilityChecker.Evaluate(info, null, catalog.Owned.Select(d => d.Id).ToHashSet(StringComparer.OrdinalIgnoreCase), null);
+        var item = new ModItemViewModel(info, compat, null, []);
+        p.LoadOrder.Add(new LoadOrderItemViewModel(new ActiveModEntry(info.PackageId, item.DisplayName), item));
+        var missing = vm.CheckMissingDlc();
+        bool caught = item.NeedsMissingDlc && item.DlcRequirements.Single() is { Owned: false, Name: "Dispatch Selftest Missing" } &&
+                      missing?.Rows.Any(r => r.Dlc == "Dispatch Selftest Missing" && r.Mods.Contains("Dispatch Self-Test DLC Mod", StringComparison.Ordinal)) == true;
+        p.DiscardCommand.Execute(null);
+        bool discarded = p.LoadOrder.All(l => l.PackageId != info.PackageId) && !p.IsDirty;
+
+        // Head tracking: turning it on fills in the programs where they're installed (settings are read-only here).
+        var s = vm.Settings;
+        bool wasOn = s.StartHeadTracking;
+        s.StartHeadTracking = true;
+        string status = $"OpenTrack: {s.OpenTrackStatus} AITrack: {s.AiTrackStatus}";
+        s.StartHeadTracking = wasOn;
+        step($"DLC: {catalog.Owned.Count} owned, all named: {named}; missing DLC caught before launch: {caught} (no false alarm before: {cleanBefore}); " +
+             $"discarded: {discarded}; head tracking: {status}");
+        return named && caught && discarded && cleanBefore;
     }
 
     /// <summary>Cut the top mod, paste it below the last one: an unsaved move (then discarded). Nothing is saved.</summary>

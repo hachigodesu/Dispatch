@@ -8,6 +8,14 @@ using Dispatch.Core.Profiles;
 namespace Dispatch.App.ViewModels;
 
 /// <summary>One installed mod, shaped for display. Wraps the immutable Core <see cref="ModInfo"/>.</summary>
+/// <summary>A DLC a mod asks for: its name and whether the player owns it.</summary>
+public sealed record DlcRequirement(string Name, bool Owned)
+{
+    public string Tooltip => Owned ? Resources.Strings.DlcOwned : Resources.Strings.DlcNotOwned;
+
+    public string Label => (Owned ? "✓ " : "✗ ") + Name;
+}
+
 public sealed partial class ModItemViewModel : ObservableObject
 {
     private readonly Action<ModItemViewModel>? _saveNote;
@@ -100,7 +108,16 @@ public sealed partial class ModItemViewModel : ObservableObject
 
     public string CompatibleVersions => string.Join(", ", Mod.Manifest?.CompatibleVersions ?? []);
 
-    public string DlcDependencies => string.Join(", ", Mod.Manifest?.DlcDependencies ?? []);
+    public string DlcDependencies => Services.DlcNames.List(Mod.Manifest?.DlcDependencies ?? []);
+
+    /// <summary>The DLCs the mod declares, each with its name and whether the player owns it (shown as badges).</summary>
+    public IReadOnlyList<DlcRequirement> DlcRequirements => (Mod.Manifest?.DlcDependencies ?? [])
+        .Select(id => new DlcRequirement(Services.DlcNames.Name(id), Services.DlcNames.Catalog.Owns(id))).ToList();
+
+    public bool HasDlcRequirements => Mod.Manifest?.DlcDependencies.Count > 0;
+
+    /// <summary>The mod needs a DLC the player doesn't own (the game won't activate it).</summary>
+    public bool NeedsMissingDlc => Compatibility.MissingDlc.Count > 0;
 
     public CompatStatus CompatStatus => Compatibility.Status;
 
@@ -124,7 +141,7 @@ public sealed partial class ModItemViewModel : ObservableObject
                 CompatReason.GameSaysIncompatible => Strings.CompatDetailGameSaysIncompatible,
                 CompatReason.NoManifest => Strings.CompatDetailNoManifest,
                 CompatReason.Unreadable => Strings.CompatDetailUnreadable,
-                CompatReason.MissingDlc => string.Format(CultureInfo.CurrentCulture, Strings.CompatDetailMissingDlc, string.Join(", ", c.MissingDlc)),
+                CompatReason.MissingDlc => string.Format(CultureInfo.CurrentCulture, Strings.CompatDetailMissingDlc, Services.DlcNames.List(c.MissingDlc)),
                 CompatReason.UnknownGameVersion => Strings.CompatDetailUnknownGameVersion,
                 CompatReason.Workshop => Strings.CompatDetailWorkshop,
                 CompatReason.NoVersions => Strings.CompatDetailNoVersions,

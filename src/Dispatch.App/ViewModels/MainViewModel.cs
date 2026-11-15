@@ -209,6 +209,7 @@ public sealed partial class MainViewModel : ObservableObject
         LaunchGameCommand.NotifyCanExecuteChanged();
         if (!value)
         {
+            StopHeadTracking(); // only the programs Dispatch started, and only when asked to
             Versions.CleanUpRebuilt(afterGameClosed: true); // a packed copy's rebuilt files go once the game has closed
             Versions.StartAutoRepack(); // and a repack that launching stopped carries on
         }
@@ -225,6 +226,13 @@ public sealed partial class MainViewModel : ObservableObject
     {
         if (!Profiles.ConfirmLeave())
         {
+            return;
+        }
+
+        // Mods that need DLC the player doesn't own won't be activated by the game: say so before it starts.
+        if (CheckMissingDlc() is { } missing && !_dialogs.ConfirmMissingDlc(missing))
+        {
+            Log.Information("Launch cancelled: {Count} DLC missing for active mods", missing.Rows.Count);
             return;
         }
 
@@ -245,6 +253,7 @@ public sealed partial class MainViewModel : ObservableObject
         {
             try
             {
+                StartHeadTracking();
                 Process.Start(GameLauncher.ThroughSteam(_game))?.Dispose();
                 Log.Information("Launched {Game} through Steam", _game.ShortName);
             }
@@ -280,6 +289,7 @@ public sealed partial class MainViewModel : ObservableObject
                 return;
             }
 
+            StartHeadTracking();
             Process.Start(GameLauncher.Directly(_game, install))?.Dispose();
             Log.Information("Launched {Game} {Version} from {Folder}", _game.ShortName, install.Version, install.Folder);
         }
@@ -287,6 +297,99 @@ public sealed partial class MainViewModel : ObservableObject
         {
             _dialogs.ShowError(string.Format(CultureInfo.CurrentCulture, Strings.LaunchCopyFailed, label, ex.Message));
         }
+    }
+
+    /// <summary>
+    /// The open profile's active mods that need DLC the player doesn't own, grouped by DLC (named), or null when every
+    /// requirement is met. The game won't activate such mods.
+    /// </summary>
+    internal MissingDlcViewModel? CheckMissingDlc()
+    {
+        var rows = Profiles.LoadOrder
+            .Where(l => l.Mod is { NeedsMissingDlc: true })
+            .SelectMany(l => l.Mod!.Compatibility.MissingDlc.Select(dlc => (Dlc: dlc, l.DisplayName)))
+            .GroupBy(x => x.Dlc, StringComparer.OrdinalIgnoreCase)
+            .Select(g => new MissingDlcRow(DlcNames.Name(g.Key), string.Join(", ", g.Select(x => x.DisplayName).Distinct())))
+            .OrderBy(r => r.Dlc, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+        return rows.Count == 0 ? null : new MissingDlcViewModel(Profiles.Selected?.Name ?? "", rows);
+    }
+
+    private readonly List<Process> _headTracking = [];
+
+    /// <summary>
+    /// Starts OpenTrack, then AITrack, when Settings asks for it (Head tracking). Programs already running are left
+    /// alone and not closed later; only the ones started here are remembered.
+    /// </summary>
+    private void StartHeadTracking()
+    {
+        if (!_settings.StartHeadTracking)
+        {
+            return;
+        }
+
+        foreach (string exe in HeadTracking.ToStart(_settings.OpenTrackPath, _settings.AiTrackPath, _platform.IsProcessRunning))
+        {
+            try
+            {
+                var process = Process.Start(new ProcessStartInfo(exe) { WorkingDirectory = Path.GetDirectoryName(exe) ?? "", UseShellExecute = true });
+                if (process is not null)
+                {
+                    _headTracking.Add(process);
+                }
+
+                Log.Information("Started head tracking: {Program}", Path.GetFileName(exe));
+            }
+            catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+            {
+                Log.Warning(ex, "Head tracking program {Program} couldn't be started", exe);
+                _dialogs.ShowError(string.Format(CultureInfo.CurrentCulture, Strings.HeadTrackingFailed, Path.GetFileName(exe), ex.Message));
+            }
+        }
+    }
+
+    /// <summary>After the game closed: asks the head-tracking programs Dispatch started to close (forced after 10 s).</summary>
+    private void StopHeadTracking()
+    {
+        if (_headTracking.Count == 0)
+        {
+            return;
+        }
+
+        var started = _headTracking.ToList();
+        _headTracking.Clear();
+        if (!_settings.CloseHeadTrackingWithGame)
+        {
+            started.ForEach(p => p.Dispose());
+            return;
+        }
+
+        _ = Task.Run(() =>
+        {
+            foreach (var p in started)
+            {
+                try
+                {
+                    if (!p.HasExited && p.CloseMainWindow() && p.WaitForExit(10_000))
+                    {
+                        Log.Information("Closed head tracking: {Program}", p.ProcessName);
+                    }
+                    else if (!p.HasExited)
+                    {
+                        p.Kill();
+                        Log.Information("Head tracking program didn't close; ended it");
+                    }
+                }
+                catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception)
+                {
+                    // Already gone, or not ours to end any more.
+                }
+                finally
+                {
+                    p.Dispose();
+                }
+            }
+        });
     }
 
     public ObservableCollection<string> Problems { get; } = [];
@@ -448,6 +551,7 @@ public sealed partial class MainViewModel : ObservableObject
             }
 
             _snapshot = snapshot;
+            DlcNames.Catalog = snapshot.Dlc; // before the views fill, so they show DLC names
             Mods.Load(snapshot);
             if (broughtBack > 0)
             {

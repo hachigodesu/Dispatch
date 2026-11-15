@@ -34,7 +34,7 @@ internal static class MapLoading
     {
         string stem = Path.GetFileNameWithoutExtension(path);
         return stem.StartsWith("dlc_", StringComparison.OrdinalIgnoreCase)
-            ? string.Format(CultureInfo.CurrentCulture, Strings.MapDlc, stem[4..])
+            ? string.Format(CultureInfo.CurrentCulture, Strings.MapDlc, Services.DlcNames.Name(stem))
             : Strings.MapBaseGame;
     }
 

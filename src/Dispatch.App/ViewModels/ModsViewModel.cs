@@ -40,7 +40,8 @@ public sealed partial class ModsViewModel : ObservableObject
         _refresh = refresh;
         _move = move;
         SelectedMods.CollectionChanged += (_, _) => OnSelectionChanged();
-        ShowOptions = [Strings.ShowAll, Strings.ShowDuplicates, Strings.ShowUnused, Strings.ShowInLibrary, Strings.ShowProblems, Strings.ShowGameWarnings];
+        ShowOptions = [Strings.ShowAll, Strings.ShowDuplicates, Strings.ShowUnused, Strings.ShowInLibrary, Strings.ShowProblems, Strings.ShowMissingDlc,
+                       Strings.ShowGameWarnings];
         _show = Strings.ShowAll;
     }
 
@@ -204,6 +205,7 @@ public sealed partial class ModsViewModel : ObservableObject
         : Show == Strings.ShowUnused ? m.UsedIn.Count == 0
         : Show == Strings.ShowGameWarnings ? m.HasGameMessages
         : Show == Strings.ShowInLibrary ? m.InLibrary
+        : Show == Strings.ShowMissingDlc ? m.NeedsMissingDlc
         : Show != Strings.ShowProblems || m.CompatStatus is CompatStatus.VersionMismatch or CompatStatus.MissingDlc or CompatStatus.Unreadable;
 
     /// <summary>Set by the main window: opens the Map window for a mod ("Show on map").</summary>

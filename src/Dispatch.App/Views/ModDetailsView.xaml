@@ -66,7 +66,22 @@
                     <TextBlock Grid.Row="3" Text="{x:Static res:Strings.CompatibleVersions}" Style="{StaticResource FieldLabel}" />
                     <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding CompatibleVersions, Mode=OneWay}" Style="{StaticResource FieldValue}" />
                     <TextBlock Grid.Row="4" Text="{x:Static res:Strings.DlcDependencies}" Style="{StaticResource FieldLabel}" />
-                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding DlcDependencies, Mode=OneWay}" Style="{StaticResource FieldValue}" />
+                    <!-- One badge per required DLC: green when owned, red when not. -->
+                    <ItemsControl Grid.Row="4" Grid.Column="1" ItemsSource="{Binding DlcRequirements}" Margin="0,6,0,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="vm:DlcRequirement">
+                                <Border Style="{StaticResource Badge}" Margin="0,0,4,4" ToolTip="{Binding Tooltip}"
+                                        Background="{Binding Owned, Converter={StaticResource BoolToBrush}, ConverterParameter=#2E7D32|#C62828}">
+                                    <TextBlock Text="{Binding Label}" Style="{StaticResource BadgeText}" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                     <TextBlock Grid.Row="5" Text="{x:Static res:Strings.Format}" Style="{StaticResource FieldLabel}" />
                     <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding FormatLabel, Mode=OneWay}" Style="{StaticResource FieldValue}" />
                     <TextBlock Grid.Row="6" Text="{x:Static res:Strings.Size}" Style="{StaticResource FieldLabel}" />
